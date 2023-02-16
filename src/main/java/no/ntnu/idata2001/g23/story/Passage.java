@@ -2,7 +2,6 @@ package no.ntnu.idata2001.g23.story;
 
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.DuplicateLinkException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +36,12 @@ public class Passage {
      * Adds a link to this passage.
      *
      * @param link The link to add.
-     * @throws DuplicateLinkException The link is already added to this passage.
      */
-    public void addLink(Link link) throws DuplicateLinkException{
+    public void addLink(Link link) {
         if (!links.contains(link)) {
             links.add(link);
         } else {
-            throw new DuplicateLinkException(link.getText());
+            throw new DuplicateLinkException("\"" + link.getText() + "\" is already added to the passage");
         }
     }
 
@@ -71,6 +69,13 @@ public class Passage {
                 + "Links: " + links;
     }
 
+    /**
+     * Checks if another object equals this passage.
+     *
+     * @param obj The object to check if equals this passage.
+     * @return True if checked object is an instance of passage,
+     * with matching title, content & links.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

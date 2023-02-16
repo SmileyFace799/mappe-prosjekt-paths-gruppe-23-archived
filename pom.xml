@@ -8,7 +8,7 @@
     <artifactId>mappe-prosjekt-paths-gruppe-23</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- Use porperties for versions. Properties are like variables -->
+    <!-- Use properties for versions. Properties are like variables -->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -41,7 +41,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
             </plugin>
-            <!-- JavaFX Maven plugin, to enabeling javafx:run -->
+            <!-- JavaFX Maven plugin, to enabling javafx:run -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -99,7 +99,7 @@
                         <!--
                             set which of the goals in the plugin to execute. The JavaDoc plugin
                             has a total of 16 goals to choose from. See: https://maven.apache.org/plugins/maven-javadoc-plugin/
-                            The most common once beeing either "javadoc" or "jar"
+                            The most common once being either "javadoc" or "jar"
                         -->
                         <goals>
                             <goal>javadoc</goal>
