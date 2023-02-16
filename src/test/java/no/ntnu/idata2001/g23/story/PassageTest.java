@@ -58,7 +58,7 @@ class PassageTest {
 
     @Test
     void testAdditionOfDuplicateLink() {
-        assertDoesNotThrow(() -> validPassage.addLink(link));
+        validPassage.addLink(link);
         assertThrows(DuplicateLinkException.class, () -> validPassage.addLink(link));
     }
 
@@ -81,7 +81,7 @@ class PassageTest {
         assertNotEquals(new Passage("Different title", "Test content"), validPassage);
         assertNotEquals(new Passage("Test title", "Different content"), validPassage);
         Passage differentPassage = new Passage("Test title", "Test content");
-        assertDoesNotThrow(() -> differentPassage.addLink(link));
+        differentPassage.addLink(link);
         assertNotEquals(differentPassage, validPassage);
         assertEquals(new Passage("Test title", "Test content"), validPassage);
 

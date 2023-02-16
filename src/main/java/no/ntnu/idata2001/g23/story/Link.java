@@ -73,8 +73,7 @@ public class Link {
      */
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Link) {
-            Link otherLink = (Link) other;
+        if (other instanceof Link otherLink) {
             return text.equals(otherLink.getText()) &&
                     reference.equals(otherLink.getReference());
         } else {
