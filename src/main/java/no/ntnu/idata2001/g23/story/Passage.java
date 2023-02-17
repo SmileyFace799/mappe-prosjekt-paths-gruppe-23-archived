@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.story;
 
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateLinkException;
+import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +15,10 @@ public class Passage {
 
     public Passage(String title, String content) {
         if (title == null || title.isBlank()) {
-            throw new BlankStringException("title");
+            throw new BlankStringException("String \"title\" cannot be null or blank");
         }
         if (content == null || content.isBlank()) {
-            throw new BlankStringException("content");
+            throw new BlankStringException("String \"Content\" cannot be null or blank");
         }
         this.title = title;
         this.content = content;
@@ -41,7 +41,7 @@ public class Passage {
         if (!links.contains(link)) {
             links.add(link);
         } else {
-            throw new DuplicateLinkException("\"" + link.getText() + "\" is already added to the passage");
+            throw new DuplicateElementException("Link \"" + link.getText() + "\" is already added to the passage");
         }
     }
 

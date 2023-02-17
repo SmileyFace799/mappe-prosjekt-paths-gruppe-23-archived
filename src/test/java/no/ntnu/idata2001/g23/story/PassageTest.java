@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.story;
 
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateLinkException;
+import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -33,14 +33,13 @@ class PassageTest {
     void testCreationOfPassageWithValidParameters() {
         assertEquals("Test title", validPassage.getTitle());
         assertEquals("Test content", validPassage.getContent());
+        assertFalse(validPassage.hasLinks());
     }
 
     /**
-     * Tests the following:
+     * Asserts the following:
      * <ul>
-     *     <li>The passage has no initial links when created.</li>
-     *     <li>{@code Passage.addLink(...)} does not throw an exception when adding a link,
-     *     when the passage does <b>not</b> contain said link.</li>
+     *     <li>Adding a new link to the passage does not throw an exception.</li>
      *     <li>The passage has links after successfully adding one.</li>
      *     <li>The passage has exactly 1 link.</li>
      *     <li>The 1 link contained in the passage is the link added.</li>
@@ -48,7 +47,6 @@ class PassageTest {
      */
     @Test
     void testValidAdditionOfLink() {
-        assertFalse(validPassage.hasLinks());
         assertDoesNotThrow(() -> validPassage.addLink(link));
         assertTrue(validPassage.hasLinks());
         List<Link> links = validPassage.getLinks();
@@ -59,11 +57,11 @@ class PassageTest {
     @Test
     void testAdditionOfDuplicateLink() {
         validPassage.addLink(link);
-        assertThrows(DuplicateLinkException.class, () -> validPassage.addLink(link));
+        assertThrows(DuplicateElementException.class, () -> validPassage.addLink(link));
     }
 
     /**
-     * Tests the following:
+     * Asserts the following:
      * <ul>
      *     <li>A passage equals itself</li>
      *     <li>A passage does not equal a non-passage object</li>
