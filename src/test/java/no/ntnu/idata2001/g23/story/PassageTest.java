@@ -76,11 +76,13 @@ class PassageTest {
         assertEquals(validPassage, validPassage);
         assertNotEquals(null, validPassage);
         assertNotEquals(new Object(), validPassage);
+
         assertNotEquals(new Passage("Different title", "Test content"), validPassage);
         assertNotEquals(new Passage("Test title", "Different content"), validPassage);
         Passage differentPassage = new Passage("Test title", "Test content");
         differentPassage.addLink(link);
         assertNotEquals(differentPassage, validPassage);
+
         assertEquals(new Passage("Test title", "Test content"), validPassage);
 
     }
