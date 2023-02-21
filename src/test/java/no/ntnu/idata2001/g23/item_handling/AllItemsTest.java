@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ItemListTest {
-    private final ItemList testItemList = ItemList.getTestItems();
+class AllItemsTest {
+    private final AllItems allTestItems = AllItems.getTestItems();
 
     @Test
     void testValidFetchingOfItems() {
-        Item fetchedItem = assertDoesNotThrow(() -> testItemList.getItem(item -> true));
+        Item fetchedItem = assertDoesNotThrow(() -> allTestItems.getItem(item -> true));
         assertNotNull(fetchedItem);
 
     }
@@ -32,20 +32,20 @@ class ItemListTest {
         long seed1 = 1234;
         long seed2 = 4321;
 
-        testItemList.setRandomSeed(seed1);
+        allTestItems.setRandomSeed(seed1);
         ArrayList<Item> firstHundredItems1 = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            firstHundredItems1.add(testItemList.getItem(item -> true));
+            firstHundredItems1.add(allTestItems.getItem(item -> true));
         }
-        testItemList.setRandomSeed(seed1);
+        allTestItems.setRandomSeed(seed1);
         ArrayList<Item> firstHundredItems2 = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            firstHundredItems2.add(testItemList.getItem(item -> true));
+            firstHundredItems2.add(allTestItems.getItem(item -> true));
         }
-        testItemList.setRandomSeed(seed2);
+        allTestItems.setRandomSeed(seed2);
         ArrayList<Item> firstHundredItems3 = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            firstHundredItems3.add(testItemList.getItem(item -> true));
+            firstHundredItems3.add(allTestItems.getItem(item -> true));
         }
 
         assertEquals(firstHundredItems2, firstHundredItems1);
@@ -58,12 +58,12 @@ class ItemListTest {
     @Test
     void testRandomFetchingOfItems() {
         //Can be any seed that doesn't return the same item 100 times in a row.
-        testItemList.setRandomSeed(6969);
+        allTestItems.setRandomSeed(6969);
 
-        Item initialItem = testItemList.getItem(Item -> true);
+        Item initialItem = allTestItems.getItem(Item -> true);
         ArrayList<Item> randomlyFetchedItems = new ArrayList<>();
         for (int i = 1; i < 100; i++) {
-            randomlyFetchedItems.add(testItemList.getItem(item -> true));
+            randomlyFetchedItems.add(allTestItems.getItem(item -> true));
         }
         assertFalse(randomlyFetchedItems.stream().allMatch(item -> item == initialItem));
     }
@@ -74,14 +74,14 @@ class ItemListTest {
     @Test
     void testFilteredFetchingOfItems() {
         for (int i = 0; i < 100; i++) {
-            assertEquals("Test name", testItemList.getItem(
+            assertEquals("Test name", allTestItems.getItem(
                     item -> item.getName().equals("Test name")).getName());
-            assertEquals("Another description", testItemList.getItem(
+            assertEquals("Another description", allTestItems.getItem(
                     item -> item.getDescription().equals("Another description")).getDescription());
-            assertEquals(5, testItemList.getItem(
+            assertEquals(5, allTestItems.getItem(
                     Sword.class, sword -> sword.getBaseDamage() == 5).getBaseDamage());
         }
 
-        assertThrows(NullValueException.class, () -> testItemList.getItem(item -> false));
+        assertThrows(NullValueException.class, () -> allTestItems.getItem(item -> false));
     }
 }

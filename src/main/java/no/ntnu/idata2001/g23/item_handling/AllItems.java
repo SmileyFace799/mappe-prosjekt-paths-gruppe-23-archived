@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class ItemList {
+public class AllItems {
     private final List<Item> items;
     private final Random random;
 
-    private ItemList(List<Item> items) {
+    private AllItems(List<Item> items) {
         if (items == null || items.isEmpty()) {
             throw new EmptyArrayException("List<item> \"items\" cannot be null or empty");
         }
@@ -27,8 +27,8 @@ public class ItemList {
      *
      * @return A complete list of every item in the game.
      */
-    public static ItemList getGameItems() {
-        return new ItemList(List.of(
+    public static AllItems getGameItems() {
+        return new AllItems(List.of(
                 new Sword(69, 0.25, 500,
                         "Big Chungus Blade", "Blade of the Chungus, UwU"),
                 new MiscItem(5000, "Large gold nugget",
@@ -41,8 +41,8 @@ public class ItemList {
      *
      * @return A list of some test items.
      */
-    public static ItemList getTestItems() {
-        return new ItemList(List.of(
+    public static AllItems getTestItems() {
+        return new AllItems(List.of(
                 new MiscItem(500, "Test name", "Test description"),
                 new MiscItem(250, "Another name", "Another description"),
                 new Sword(5, 0.25, 500,
