@@ -21,7 +21,8 @@ public abstract class Weapon extends Item {
      * @param name           The weapon's name.
      * @param description    The weapon's description.
      */
-    protected Weapon(int baseDamage, double baseCritChance, int value, String name, String description) {
+    protected Weapon(int baseDamage, double baseCritChance, int value,
+                     String name, String description) {
         super(value, name, description);
         if (baseDamage < 0) {
             throw new NegativeNumberException("int \"damage\" cannot be negative");

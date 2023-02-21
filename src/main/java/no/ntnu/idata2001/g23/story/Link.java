@@ -2,9 +2,6 @@ package no.ntnu.idata2001.g23.story;
 
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Connects passages between the different parts of a story.
  */
@@ -74,8 +71,8 @@ public class Link {
     @Override
     public boolean equals(Object other) {
         if (other instanceof Link otherLink) {
-            return text.equals(otherLink.getText()) &&
-                    reference.equals(otherLink.getReference());
+            return text.equals(otherLink.getText())
+                    && reference.equals(otherLink.getReference());
         } else {
             return false;
         }

@@ -1,15 +1,18 @@
-package no.ntnu.idata2001.g23.item_handling;
+package no.ntnu.idata2001.g23.itemhandling;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Predicate;
 import no.ntnu.idata2001.g23.exceptions.EmptyArrayException;
 import no.ntnu.idata2001.g23.exceptions.NullValueException;
 import no.ntnu.idata2001.g23.items.Item;
 import no.ntnu.idata2001.g23.items.MiscItem;
 import no.ntnu.idata2001.g23.items.weapons.Sword;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Predicate;
 
+/**
+ * A collection of all the items used in the game.
+ */
 public class AllItems {
     private final List<Item> items;
     private final Random random;
@@ -50,19 +53,24 @@ public class AllItems {
         ));
     }
 
+    /**
+     * Sets a seed for any randomization used by this class.
+     *
+     * @param seed The seed to set.
+     */
     public void setRandomSeed(long seed) {
         random.setSeed(seed);
     }
 
     /**
-     * Returns a copy of a random item from the list, based on the filter condition passed.
-     * The copy is created so that {@code original != copy} is true,
-     * while {@code original.equals(copy)} is also true.
-     * Passing a seed to the constructor when initiating an ItemList will make the randomness consistent.
+     * Returns a copy of a random item from the initialized list of items,
+     * based on the filter condition passed. The copy is created so that
+     * {@code original != copy} is true, while {@code original.equals(copy)} is also true.
      *
-     * @param filter A lambda expression that takes an Item, and returns a boolean,
-     *               representing if the item should be in the draw pool of filtered items.
-     * @return A random item that fits the filtered criteria.
+     * @param filter A lambda expression that takes an Item, and returns a boolean.
+     *               The returned boolean determines if the item
+     *               should be able to get randomly picked or not.
+     * @return A random item that satisfies the filtered criteria.
      */
     public Item getItem(Predicate<Item> filter) {
         List<Item> filteredItems = items.stream().filter(filter).toList();
@@ -74,16 +82,30 @@ public class AllItems {
         Item copy;
         try {
             copy = itemClass.getConstructor(itemClass).newInstance(item);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
+                 | InvocationTargetException e) {
             //TODO: Ask Arne what to do here bruh
             throw new RuntimeException(e);
         }
         return copy;
     }
 
+    /**
+     * Returns a copy of a random item from the initialized list of items,
+     * based on the filter type & condition passed. The copy is created so that
+     * {@code original != copy} is true, while {@code original.equals(copy)} is also true.
+     *
+     * @param typeFilter The class to filter items of. The returned item will be of this class,
+     *                   and the class must extend {@code Item}.
+     * @param filter     A lambda expression that takes an instance of class {@code typeFilter},
+     *                   and returns a boolean. The returned boolean determines if the item
+     *                   should be able to get randomly picked or not.
+     * @return An instance of class {@code typeFilter} that
+     *         satisfies the filtered criteria.
+     */
     public <T extends Item> T getItem(Class<T> typeFilter, Predicate<T> filter) {
-        Predicate<Item> itemFilter = item -> typeFilter.isInstance(item) && filter.test(typeFilter.cast(item));
+        Predicate<Item> itemFilter = item ->
+                typeFilter.isInstance(item) && filter.test(typeFilter.cast(item));
         return typeFilter.cast(getItem(itemFilter));
     }
 

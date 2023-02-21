@@ -1,9 +1,9 @@
 package no.ntnu.idata2001.g23.story;
 
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
 import java.util.ArrayList;
 import java.util.List;
+import no.ntnu.idata2001.g23.exceptions.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
 
 /**
  * A smaller part/segment of a story.
@@ -13,6 +13,12 @@ public class Passage {
     private final String content;
     private final ArrayList<Link> links = new ArrayList<>();
 
+    /**
+     * Makes a passage.
+     *
+     * @param title   The title of the passage. Must not be null or blank.
+     * @param content The content of the passage. Must not be null or blank.
+     */
     public Passage(String title, String content) {
         if (title == null || title.isBlank()) {
             throw new BlankStringException("String \"title\" cannot be null or blank");
@@ -41,7 +47,8 @@ public class Passage {
         if (!links.contains(link)) {
             links.add(link);
         } else {
-            throw new DuplicateElementException("Link \"" + link.getText() + "\" is already added to the passage");
+            throw new DuplicateElementException("Link \"" + link.getText()
+                    + "\" is already added to the passage");
         }
     }
 
@@ -50,13 +57,13 @@ public class Passage {
     }
 
     /**
-     * Checks if this passage has any links or not
+     * Checks if this passage has any links or not.
      *
      * @return A boolean representing if the passage has any links:
-     * <ul>
-     *     <li>{@code true}: The passage has links.</li>
-     *     <li>{@code false}: The passage has no links.</li>
-     * </ul>
+     *         <ul>
+     *             <li>{@code true}: The passage has links.</li>
+     *             <li>{@code false}: The passage has no links.</li>
+     *         </ul>
      */
     public boolean hasLinks() {
         return !links.isEmpty();
@@ -74,7 +81,7 @@ public class Passage {
      *
      * @param obj The object to check if equals this passage.
      * @return True if checked object is an instance of passage,
-     * with matching title, content & links.
+     *         with matching title, content & links.
      */
     @Override
     public boolean equals(Object obj) {

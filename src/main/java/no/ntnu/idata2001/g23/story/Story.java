@@ -1,18 +1,26 @@
 package no.ntnu.idata2001.g23.story;
 
+import java.util.Collection;
+import java.util.HashMap;
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
 import no.ntnu.idata2001.g23.exceptions.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.NullValueException;
 
-import java.util.Collection;
-import java.util.HashMap;
-
+/**
+ * A story containing passages for the player to navigate through.
+ */
 public class Story {
     private final String title;
     private final HashMap<Link, Passage> passages;
     private final Passage openingPassage;
 
+    /**
+     * Makes a story.
+     *
+     * @param title The title of the story. Must not be null or blank.
+     * @param openingPassage THe opening passage of the story. Must not be null.
+     */
     public Story(String title, Passage openingPassage) {
         if (title == null || title.isBlank()) {
             throw new BlankStringException("String \"title\" cannot be null or blank");
@@ -45,8 +53,8 @@ public class Story {
      * and then added to the {@code after}-passage's links.
      *
      * @param passage The passage to add to the story.
-     * @param after Another passage in the story that the added passage comes after.
-     *              This should only be {@code null} when adding the opening passage.
+     * @param after   Another passage in the story that the added passage comes after.
+     *                This should only be {@code null} when adding the opening passage.
      * @return The created link associated with the passage added.
      * @see Link
      */
@@ -60,7 +68,7 @@ public class Story {
         Link link = new Link(passageTitle, passageTitle);
         if (after != null) {
             if (!getPassages().contains(after)) {
-                throw new ElementNotFoundException("\"after\"-passage \""
+                throw new ElementNotFoundException("Passage \""
                         + after.getTitle() + "\" does not exist in this story");
             }
             after.addLink(link);

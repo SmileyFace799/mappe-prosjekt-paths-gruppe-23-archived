@@ -14,7 +14,8 @@ public class Sword extends Weapon {
      * @param name           The sword's name.
      * @param description    The sword's description.
      */
-    public Sword(int baseDamage, double baseCritChance, int value, String name, String description) {
+    public Sword(int baseDamage, double baseCritChance, int value,
+                 String name, String description) {
         super(baseDamage, baseCritChance, value, name, description);
     }
 

@@ -1,10 +1,10 @@
-package no.ntnu.idata2001.g23.item_handling;
+package no.ntnu.idata2001.g23.itemhandling;
 
+import java.util.ArrayList;
 import no.ntnu.idata2001.g23.exceptions.NullValueException;
 import no.ntnu.idata2001.g23.items.Item;
 import no.ntnu.idata2001.g23.items.weapons.Sword;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AllItemsTest {
