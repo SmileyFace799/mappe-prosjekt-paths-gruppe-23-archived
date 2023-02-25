@@ -32,12 +32,13 @@ public class Sword extends Weapon {
     @Override
     public String toString() {
         return "Value: " + value
-                + "\nSellable: " + sellable
+                + "\nSellable: " + isSellable()
                 + "\nName: " + name
                 + "\nDescription: " + description
                 + "\nCategory: " + getCategory()
                 + "\nBase damage: " + baseDamage
-                + "\nBase critical strike chance: " + baseCritChance;
+                + "\nBase critical strike chance: " + baseCritChance
+                + "\nStackable: " + isStackable();
     }
 
     @Override
@@ -53,10 +54,8 @@ public class Sword extends Weapon {
         }
         Weapon weapon = (Weapon) obj;
         return value == weapon.getValue()
-                && sellable == weapon.isSellable()
                 && name.equals(weapon.getName())
                 && description.equals(weapon.getDescription())
-                && getCategory().equals(weapon.getCategory())
                 && baseDamage == weapon.getBaseDamage()
                 && baseCritChance == weapon.getBaseCritChance();
     }
@@ -65,10 +64,8 @@ public class Sword extends Weapon {
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + value;
-        hash = 31 * hash + Boolean.hashCode(sellable);
         hash = 31 * hash + name.hashCode();
         hash = 31 * hash + description.hashCode();
-        hash = 31 * hash + getCategory().hashCode();
         hash = 31 * hash + baseDamage;
         hash = 31 * hash + Double.hashCode(baseCritChance);
         return hash;

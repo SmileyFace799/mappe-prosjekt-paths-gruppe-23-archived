@@ -23,7 +23,7 @@ public abstract class Weapon extends Item {
      */
     protected Weapon(int baseDamage, double baseCritChance, int value,
                      String name, String description) {
-        super(value, name, description);
+        super(value, name, description, 1);
         if (baseDamage < 0) {
             throw new NegativeNumberException("int \"damage\" cannot be negative");
         }
@@ -39,6 +39,11 @@ public abstract class Weapon extends Item {
         return baseDamage;
     }
 
+    @Override
+    public final int getMaxStackSize() {
+        return 1;
+    }
+
     public double getBaseCritChance() {
         return baseCritChance;
     }
@@ -46,12 +51,13 @@ public abstract class Weapon extends Item {
     @Override
     public String toString() {
         return "Value: " + value
-                + "\nSellable: " + sellable
+                + "\nSellable: " + isSellable()
                 + "\nName: " + name
                 + "\nDescription: " + description
                 + "\nCategory: " + getCategory()
                 + "\nBase damage: " + baseDamage
-                + "\nBase critical strike chance: " + baseCritChance;
+                + "\nBase critical strike chance: " + baseCritChance
+                + "\nStackable: " + isStackable();
     }
 
     @Override
@@ -67,10 +73,8 @@ public abstract class Weapon extends Item {
         }
         Weapon weapon = (Weapon) obj;
         return value == weapon.getValue()
-                && sellable == weapon.isSellable()
                 && name.equals(weapon.getName())
                 && description.equals(weapon.getDescription())
-                && getCategory().equals(weapon.getCategory())
                 && baseDamage == weapon.getBaseDamage()
                 && baseCritChance == weapon.getBaseCritChance();
     }
@@ -79,10 +83,8 @@ public abstract class Weapon extends Item {
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + value;
-        hash = 31 * hash + Boolean.hashCode(sellable);
         hash = 31 * hash + name.hashCode();
         hash = 31 * hash + description.hashCode();
-        hash = 31 * hash + getCategory().hashCode();
         hash = 31 * hash + baseDamage;
         hash = 31 * hash + Double.hashCode(baseCritChance);
         return hash;

@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.items;
 
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
+import no.ntnu.idata2001.g23.exceptions.NumberOutOfRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +12,7 @@ class MiscItemTest {
 
     @BeforeEach
     void before() {
-        validMiscItem = new MiscItem(500, "Test name", "Test description");
+        validMiscItem = new MiscItem(500, "Test name", "Test description", 8);
     }
 
     @Test
@@ -41,11 +42,13 @@ class MiscItemTest {
     }
 
     @Test
-    void testCreationOfMiscItemWithValidParameters() {
-        assertEquals(500, validMiscItem.getValue());
-        assertTrue(validMiscItem.isSellable());
-        assertEquals("Test name", validMiscItem.getName());
-        assertEquals("Test description", validMiscItem.getDescription());
+    void testCreationOfMistItemWithInvalidStackSize() {
+        assertThrows(NumberOutOfRangeException.class, () -> new MiscItem(
+                500, "Test name", "Test description", 0
+        ));
+        assertThrows(NumberOutOfRangeException.class, () -> new MiscItem(
+                500, "Test name", "Test description", 17
+        ));
     }
 
     @Test
@@ -53,6 +56,53 @@ class MiscItemTest {
         MiscItem unsellableMiscItem = new MiscItem(0, "Test name", "Test description");
         assertEquals(0, unsellableMiscItem.getValue());
         assertFalse(unsellableMiscItem.isSellable());
+    }
+
+    @Test
+    void testCreationOfMiscItemWithValidParameters() {
+        assertEquals(500, validMiscItem.getValue());
+        assertTrue(validMiscItem.isSellable());
+        assertEquals("Test name", validMiscItem.getName());
+        assertEquals("Test description", validMiscItem.getDescription());
+        assertEquals(8, validMiscItem.getCurrentStackSize());
+        assertEquals(4000, validMiscItem.getStackValue());
+    }
+
+    @Test
+    void testStackSizeIncreaseWithInvalidAmount() {
+        assertThrows(NumberOutOfRangeException.class, () ->
+                validMiscItem.increaseStack(0));
+        assertThrows(NumberOutOfRangeException.class, () ->
+                validMiscItem.increaseStack(17));
+    }
+
+
+    @Test
+    void testStackSizeIncreaseWithinMaxSize() {
+        int extras = assertDoesNotThrow(() -> validMiscItem.increaseStack(4));
+        assertEquals(12, validMiscItem.getCurrentStackSize());
+        assertEquals(0, extras);
+    }
+
+    @Test
+    void testStackSizeIncreaseAboveMaxSize() {
+        int extras = assertDoesNotThrow(() -> validMiscItem.increaseStack(12));
+        assertEquals(16, validMiscItem.getCurrentStackSize());
+        assertEquals(4, extras);
+    }
+
+    @Test
+    void testStackSizeDecreaseWithInvalidAmount() {
+        assertThrows(NumberOutOfRangeException.class, () ->
+                validMiscItem.decreaseStack(0));
+        assertThrows(NumberOutOfRangeException.class, () ->
+                validMiscItem.decreaseStack(8));
+    }
+
+    @Test
+    void testStackSizeDecreaseWithValidAmount() {
+        assertDoesNotThrow(() -> validMiscItem.decreaseStack(4));
+        assertEquals(4, validMiscItem.getCurrentStackSize());
     }
 
     @Test
@@ -74,9 +124,11 @@ class MiscItemTest {
                 "Different name", "Test description"), validMiscItem);
         assertNotEquals(new MiscItem(500,
                 "Test name", "Different description"), validMiscItem);
+        assertNotEquals(new MiscItem(500,
+                "Test name", "Test description", 4), validMiscItem);
 
         assertEquals(new MiscItem(500,
-                "Test name", "Test description"), validMiscItem);
+                "Test name", "Test description", 8), validMiscItem);
     }
 
 }

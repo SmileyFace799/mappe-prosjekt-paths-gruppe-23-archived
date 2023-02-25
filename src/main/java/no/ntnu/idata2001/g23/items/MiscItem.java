@@ -9,14 +9,20 @@ public class MiscItem extends Item {
      *
      * @param value       The base value of the item, used to calculate sell price.
      *                    If the value is 0, it will not be sellable.
+     * @param name The item's name.
      * @param description The item's description.
+     * @param stackAmount The item's initial stack amount.
      */
+    public MiscItem(int value, String name, String description, int stackAmount) {
+        super(value, name, description, stackAmount);
+    }
+
     public MiscItem(int value, String name, String description) {
-        super(value, name, description);
+        this(value, name, description, 1);
     }
 
     public MiscItem(MiscItem original) {
-        this(original.value, original.name, original.description);
+        this(original.value, original.name, original.description, original.getCurrentStackSize());
     }
 
     @Override
@@ -25,12 +31,20 @@ public class MiscItem extends Item {
     }
 
     @Override
+    public int getMaxStackSize() {
+        return 16;
+    }
+
+    @Override
     public String toString() {
         return "Value: " + value
-                + "\nSellable: " + sellable
+                + "\nSellable: " + isSellable()
                 + "\nName: " + name
                 + "\nDescription: " + description
-                + "\nCategory: " + getCategory();
+                + "\nCategory: " + getCategory()
+                + "\nCurrent stack size: " + stackSize
+                + "\nMax stack size: " + getMaxStackSize()
+                + "\nStackable: " + isStackable();
     }
 
     @Override
@@ -46,20 +60,18 @@ public class MiscItem extends Item {
         }
         MiscItem miscItem = (MiscItem) obj;
         return value == miscItem.getValue()
-                && sellable == miscItem.isSellable()
                 && name.equals(miscItem.getName())
                 && description.equals(miscItem.getDescription())
-                && getCategory().equals(miscItem.getCategory());
+                && stackSize == miscItem.getCurrentStackSize();
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + value;
-        hash = 31 * hash + Boolean.hashCode(sellable);
         hash = 31 * hash + name.hashCode();
         hash = 31 * hash + description.hashCode();
-        hash = 31 * hash + getCategory().hashCode();
+        hash = 31 * hash + stackSize;
         return hash;
     }
 }

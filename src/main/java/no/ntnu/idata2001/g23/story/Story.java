@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.story;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
 import no.ntnu.idata2001.g23.exceptions.ElementNotFoundException;
@@ -12,7 +13,7 @@ import no.ntnu.idata2001.g23.exceptions.NullValueException;
  */
 public class Story {
     private final String title;
-    private final HashMap<Link, Passage> passages;
+    private final Map<Link, Passage> passages;
     private final Passage openingPassage;
 
     /**
