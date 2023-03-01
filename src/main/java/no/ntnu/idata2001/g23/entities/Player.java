@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.entities;
 
 import java.util.ArrayList;
-import java.util.List;
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
 import no.ntnu.idata2001.g23.items.Item;
@@ -9,12 +8,10 @@ import no.ntnu.idata2001.g23.items.Item;
 /**
  * Represents a player with different attributes which can be affected in a story.
  */
-public class Player {
+public class Player extends GenericEntity {
     private final String name;
-    private final int health;
-    private final int score;
-    private final int gold;
-    private final ArrayList<Item> inventory = new ArrayList<>();
+    private int score;
+    private int gold;
 
     /**
      * Creates a player.
@@ -25,14 +22,11 @@ public class Player {
      * @param gold   How much gold the player has
      */
     public Player(String name, int health, int score, int gold) {
+        super(health, 16);
         if (name == null || name.isBlank()) {
             throw new BlankStringException("Name cannot be null or blank");
         }
-        if (health > 0) {
-            throw new NegativeNumberException("Health cannot be less than 0");
-        }
         this.name = name.trim();
-        this.health = health;
         this.score = score;
         this.gold = gold;
     }
@@ -52,16 +46,7 @@ public class Player {
      * @param health increases players health
      */
     public void addHealth(int health) {
-        //working on it
-    }
-
-    /**
-     * Shows how much health the player has.
-     *
-     * @return players health
-     */
-    public int getHealth() {
-        return health;
+        // same as in GenericEntity?
     }
 
     /**
@@ -70,7 +55,7 @@ public class Player {
      * @param points increases players score.
      */
     public void addScore(int points) {
-        //working on it
+        this.score += points;
     }
 
     /**
@@ -87,8 +72,11 @@ public class Player {
      *
      * @param gold increases players gold.
      */
-    public void addGold(int gold) {
-        //working on it
+    public void changeGold(int gold) {
+        if (this.gold + gold < 0) {
+            throw new NegativeNumberException("Gold cannot be less than 0.");
+        }
+        this.gold += gold;
     }
 
     /**
@@ -98,23 +86,5 @@ public class Player {
      */
     public int getGold() {
         return gold;
-    }
-
-    /**
-     * Adds an item to the inventory.
-     *
-     * @param item Adds item to the inventory
-     */
-    public void addToInventory(String item) {
-        //working on it
-    }
-
-    /**
-     * Returns list of items in the players inventory.
-     *
-     * @return list of items in inventory
-     */
-    public List<Item> getInventory() {
-        return inventory;
     }
 }

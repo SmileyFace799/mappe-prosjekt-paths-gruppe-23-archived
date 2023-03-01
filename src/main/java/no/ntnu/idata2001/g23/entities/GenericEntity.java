@@ -9,7 +9,7 @@ import no.ntnu.idata2001.g23.items.weapons.Weapon;
 /**
  * A generic entity.
  */
-public abstract class GenericEntity implements Actor {
+public abstract class GenericEntity {
     protected final Inventory<Item> inventory;
     protected int health;
     protected int maxHealth;
@@ -52,6 +52,17 @@ public abstract class GenericEntity implements Actor {
      */
     public void changeHealth(int health) {
         this.health = Math.max(Math.min(this.health + health, maxHealth), 0);
+    }
+
+
+    /**
+     * Adds an item to the inventory.
+     *
+     * @param index Inventory slot to put item at
+     * @param item Adds item to the inventory
+     */
+    public void addToInventory(int index, Item item) {
+        getInventory().changeItem(index, item);
     }
 
     /**
