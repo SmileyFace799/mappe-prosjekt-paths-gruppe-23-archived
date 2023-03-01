@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.entities;
 
 import no.ntnu.idata2001.g23.exceptions.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
 import no.ntnu.idata2001.g23.exceptions.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.itemhandling.Inventory;
 import no.ntnu.idata2001.g23.items.Item;
@@ -11,9 +10,9 @@ import no.ntnu.idata2001.g23.items.weapons.Weapon;
  * A generic entity.
  */
 public abstract class GenericEntity implements Actor {
+    protected final Inventory<Item> inventory;
     protected int health;
     protected int maxHealth;
-    protected final Inventory<Item> inventory;
     protected Weapon equippedWeapon;
 
     protected GenericEntity(int maxHealth, int inventorySize) {
@@ -42,31 +41,17 @@ public abstract class GenericEntity implements Actor {
     }
 
     /**
-     * Adds health to an entity.
+     * Changes an entity's health.
+     * If the resulting entity health exceeds the entity's max health,
+     * the health will be set to the max health.
+     * If the resulting entity health is less than 0,
+     * the health will be set to 0.
      *
-     * @param health The health to add, cannot be negative.
-     *               If the resulting entity health exceeds the entity's max health,
-     *               the health will be set to the max health.
+     * @param health The health to add or remove. Positive amounts add health,
+     *               negative amounts remove health.
      */
-    public void addHealth(int health) {
-        if (health < 0) {
-            throw new NegativeNumberException("Added health cannot be negative");
-        }
-        this.health = Math.min(this.health + health, maxHealth);
-    }
-
-    /**
-     * Removes health from an entity.
-     *
-     * @param health The health to remove, cannot be negative.
-     *               If the resulting entity health is less than 0,
-     *               the health will be set to 0.
-     */
-    public void removeHealth(int health) {
-        if (health < 0) {
-            throw new NegativeNumberException("Removed health cannot be negative");
-        }
-        this.health = Math.max(this.health - health, 0);
+    public void changeHealth(int health) {
+        this.health = Math.max(Math.min(this.health + health, maxHealth), 0);
     }
 
     /**
