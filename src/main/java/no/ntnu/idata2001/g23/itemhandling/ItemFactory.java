@@ -30,6 +30,8 @@ public class ItemFactory {
             case "Test item" -> item = new MiscItem(500, name, "Test description");
             case "Another test item" -> item = new MiscItem(500, name,
                     "Another test description");
+            case "Test sword" -> item = new Sword(5, 0.25, 500,
+                    name, "Test description");
             case "Big Chungus Blade" -> item = new Sword(69, 0.25, 500,
                     name, "Blade of the Chungus, UwU");
             case "Large gold nugget" -> item = new MiscItem(5000,

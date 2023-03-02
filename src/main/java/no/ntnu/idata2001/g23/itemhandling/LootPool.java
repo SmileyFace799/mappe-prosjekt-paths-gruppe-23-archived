@@ -1,7 +1,16 @@
 package no.ntnu.idata2001.g23.itemhandling;
 
-import java.util.*;
-import no.ntnu.idata2001.g23.exceptions.unchecked.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import no.ntnu.idata2001.g23.exceptions.unchecked.EmptyArrayException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.InvalidArraySizeException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.items.Item;
 
 /**

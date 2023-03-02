@@ -1,6 +1,7 @@
 package no.ntnu.idata2001.g23.goals;
 
 import no.ntnu.idata2001.g23.entities.Player;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 
 /**
  * Represents a minimum expected health value.
@@ -8,13 +9,20 @@ import no.ntnu.idata2001.g23.entities.Player;
 public class HealthGoal implements Goal {
     private final int minimumHealth;
 
+    /**
+     * Makes a health goal for the player to achieve.
+     *
+     * @param minimumHealth The minimum amount of health the player must have to complete this goal.
+     */
     public HealthGoal(int minimumHealth) {
+        if (minimumHealth <= 0) {
+            throw new NegativeOrZeroNumberException("Minimum health must be greater than 0");
+        }
         this.minimumHealth = minimumHealth;
     }
 
     @Override
     public boolean isFulfilled(Player player) {
-        //TODO: add isFulfilled HealthGoal
-        return true;
+        return player.getHealth() >= minimumHealth;
     }
 }

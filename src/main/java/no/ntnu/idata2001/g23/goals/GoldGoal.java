@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.goals;
 
 import no.ntnu.idata2001.g23.entities.Player;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 
 /**
  * Represents a minimum expected amount of gold.
@@ -9,16 +9,20 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 public class GoldGoal implements Goal {
     private final int minimumGold;
 
+    /**
+     * Makes a gold goal for the player to achieve.
+     *
+     * @param minimumGold The minimum amount of gold the player must have to complete this goal.
+     */
     public GoldGoal(int minimumGold) {
-        if (minimumGold < 0) {
-            throw new NegativeNumberException("Minimum gold cannot be negative numbers.");
+        if (minimumGold <= 0) {
+            throw new NegativeOrZeroNumberException("Minimum gold must be greater than 0");
         }
         this.minimumGold = minimumGold;
     }
 
     @Override
     public boolean isFulfilled(Player player) {
-        //TODO: add isFulfilled GoldGoal.
-        return true;
+        return player.getGold() >= minimumGold;
     }
 }

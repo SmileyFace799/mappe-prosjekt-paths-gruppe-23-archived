@@ -1,41 +1,39 @@
 package no.ntnu.idata2001.g23.itemhandling;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.*;
 import no.ntnu.idata2001.g23.items.Item;
-import no.ntnu.idata2001.g23.items.MiscItem;
-import no.ntnu.idata2001.g23.items.weapons.Sword;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InventoryTest {
-    private MiscItem inventoryMiscItem;
-    private Sword inventorySword;
-    private Inventory<Item> validInventory;
+    private Item inventoryMiscItem;
+    private Item inventorySword;
+    private Item otherItem;
+    private Inventory validInventory;
 
     @BeforeEach
     void before() {
-        inventoryMiscItem = new MiscItem(500, "Test name", "Test description", 8);
-        inventorySword = new Sword(5, 0.25, 500,
-                "Test name", "Test description");
-        validInventory = new Inventory<>(4);
-        validInventory.changeItem(0, inventoryMiscItem);
-        validInventory.changeItem(2, inventorySword);
+        inventoryMiscItem = ItemFactory.makeItem("Test item");
+        inventorySword = ItemFactory.makeItem("Test sword");
+        validInventory = new Inventory(3);
+        validInventory.addItem(inventoryMiscItem);
+        validInventory.addItem(inventorySword);
+
+        otherItem = ItemFactory.makeItem("Another test item");
     }
 
     @Test
     void testCreationOfInventoryWithInvalidSize() {
-        assertThrows(NegativeOrZeroNumberException.class, () -> new Inventory<>(0));
+        assertThrows(NegativeOrZeroNumberException.class, () -> new Inventory(0));
     }
 
     @Test
     void testCreationOfInventoryWithValidParameters() {
-        assertEquals(4, validInventory.getSize());
+        assertEquals(3, validInventory.getSize());
         assertEquals(inventoryMiscItem, validInventory.getItem(0));
-        assertNull(validInventory.getItem(1));
-        assertEquals(inventorySword, validInventory.getItem(2));
+        assertEquals(inventorySword, validInventory.getItem(1));
+        assertNull(validInventory.getItem(2));
     }
 
     @Test
@@ -45,24 +43,58 @@ class InventoryTest {
     }
 
     @Test
-    void testChangeItemWithInvalidIndex() {
-        assertThrows(NumberOutOfRangeException.class, () ->
-                validInventory.changeItem(-1, inventoryMiscItem));
-        assertThrows(NumberOutOfRangeException.class, () ->
-                validInventory.changeItem(4, inventoryMiscItem));
+    void testInventoryHasItem() {
+        assertTrue(validInventory.hasItem(inventoryMiscItem));
+        assertTrue(validInventory.hasItem(inventorySword));
+        assertFalse(validInventory.hasItem(otherItem));
     }
 
     @Test
-    void testValidChangingOfItem() {
-        assertEquals(inventoryMiscItem, assertDoesNotThrow(
-                () -> validInventory.changeItem(0, null)
-        ));
-        assertNull(validInventory.getItem(0));
+    void testAddItemWithInvalidItem() {
+        assertThrows(NullValueException.class, () ->
+                validInventory.addItem(null));
+    }
 
-        assertNull(assertDoesNotThrow(
-                () -> validInventory.changeItem(1, inventoryMiscItem)
-        ));
-        assertEquals(inventoryMiscItem, validInventory.getItem(1));
+    @Test
+    void testAddItemWithFullInventory() {
+        validInventory.addItem(otherItem);
+        assertThrows(FullInventoryException.class, () -> validInventory.addItem(otherItem));
+    }
+
+    @Test
+    void testValidAddingOfItem() {
+        assertDoesNotThrow(() -> validInventory.addItem(otherItem));
+        assertTrue(validInventory.hasItem(otherItem));
+    }
+
+    @Test
+    void testRemovingOfItemWithInvalidIndex() {
+        assertThrows(NumberOutOfRangeException.class, () -> validInventory.removeItem(-1));
+        assertThrows(NumberOutOfRangeException.class, () -> validInventory.removeItem(4));
+    }
+
+    @Test
+    void testValidRemovingOfItem() {
+        assertDoesNotThrow(() -> validInventory.removeItem(0));
+        assertFalse(validInventory.hasItem(inventoryMiscItem));
+        assertNull(validInventory.getItem(1));
+    }
+
+    @Test
+    void testInventoryHasSubsetOfItems() {
+        Inventory subset1 = new Inventory(2);
+        subset1.addItem(otherItem);
+        subset1.addItem(inventorySword);
+        Inventory subset2 = new Inventory(2);
+        subset2.addItem(otherItem);
+        subset2.addItem(inventoryMiscItem);
+        Inventory subset3 = new Inventory(2);
+        subset3.addItem(inventorySword);
+        subset3.addItem(inventoryMiscItem);
+
+        assertFalse(validInventory.hasItems(subset1));
+        assertFalse(validInventory.hasItems(subset2));
+        assertTrue(validInventory.hasItems(subset3));
     }
 
     @Test
@@ -71,13 +103,13 @@ class InventoryTest {
     }
 
     @Test
-    void testReductionOfInventoryWithNotEmptyReduceRange() {
-        assertThrows(NotEmptyException.class, () -> validInventory.setInventorySize(2));
+    void testReductionOfInventorySizeToLessThanTheAmountOfItems() {
+        assertThrows(NotEmptyException.class, () -> validInventory.setInventorySize(1));
     }
 
     @Test
     void testValidSettingOfInventorySize() {
-        assertDoesNotThrow(() -> validInventory.setInventorySize(3));
+        assertDoesNotThrow(() -> validInventory.setInventorySize(2));
         assertDoesNotThrow(() -> validInventory.setInventorySize(50));
     }
 }

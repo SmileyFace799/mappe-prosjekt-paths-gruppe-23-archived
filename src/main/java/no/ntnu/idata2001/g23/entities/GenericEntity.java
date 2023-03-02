@@ -3,14 +3,13 @@ package no.ntnu.idata2001.g23.entities;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.itemhandling.Inventory;
-import no.ntnu.idata2001.g23.items.Item;
 import no.ntnu.idata2001.g23.items.weapons.Weapon;
 
 /**
  * A generic entity.
  */
 public abstract class GenericEntity {
-    protected final Inventory<Item> inventory;
+    protected final Inventory inventory;
     protected int health;
     protected int maxHealth;
     protected Weapon equippedWeapon;
@@ -20,7 +19,7 @@ public abstract class GenericEntity {
             throw new NegativeOrZeroNumberException("Max health must be greater than 0");
         }
         this.maxHealth = maxHealth;
-        this.inventory = new Inventory<>(inventorySize);
+        this.inventory = new Inventory(inventorySize);
         this.equippedWeapon = null;
     }
 
@@ -32,7 +31,7 @@ public abstract class GenericEntity {
         return health == 0;
     }
 
-    public Inventory<Item> getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 
@@ -52,17 +51,6 @@ public abstract class GenericEntity {
      */
     public void changeHealth(int health) {
         this.health = Math.max(Math.min(this.health + health, maxHealth), 0);
-    }
-
-
-    /**
-     * Adds an item to the inventory.
-     *
-     * @param index Inventory slot to put item at
-     * @param item Adds item to the inventory
-     */
-    public void addToInventory(int index, Item item) {
-        getInventory().changeItem(index, item);
     }
 
     /**

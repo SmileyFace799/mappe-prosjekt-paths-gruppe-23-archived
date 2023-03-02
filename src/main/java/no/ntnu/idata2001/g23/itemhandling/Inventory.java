@@ -1,30 +1,32 @@
 package no.ntnu.idata2001.g23.itemhandling;
 
-import java.util.HashMap;
-import java.util.Map;
-import no.ntnu.idata2001.g23.exceptions.checked.FullInventoryException;
+import java.util.ArrayList;
+import java.util.List;
+import no.ntnu.idata2001.g23.exceptions.unchecked.FullInventoryException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.items.Item;
 
 /**
  * Any inventory used by an entity.
- *
- * @param <I> The type of items to be stored in the inventory.
- *            Can be any class extending {@code Item}.
  */
-public class Inventory<I extends Item> {
-    private final Map<Integer, I> contents;
+public class Inventory {
+    private final List<Item> contents;
     private int inventorySize = 1;
 
     public Inventory(int inventorySize) {
-        contents = new HashMap<>();
+        contents = new ArrayList<>();
         setInventorySize(inventorySize);
     }
 
     public int getSize() {
         return inventorySize;
+    }
+
+    public List<Item> getContents() {
+        return contents;
     }
 
     /**
@@ -34,48 +36,63 @@ public class Inventory<I extends Item> {
      * @return The item at the specified index. If there is no item at the specified index,
      *         this will return {@code null}.
      */
-    public I getItem(int index) {
+    public Item getItem(int index) {
         if (index < 0 || index >= inventorySize) {
             throw new NumberOutOfRangeException(
                     "int \"index\" must be between 0 and the inventory size");
         }
-        return contents.get(index);
+        Item foundItem = null;
+        if (index < contents.size()) {
+            foundItem = contents.get(index);
+        }
+        return foundItem;
     }
 
-    public boolean hasItem(int index) {
-        return contents.containsKey(index);
+    public boolean hasItem(Item item) {
+        return contents.contains(item);
     }
 
     /**
-     * Changes an item in the inventory at a specified index.
+     * Checks if the inventory contains a smaller subset of items.
      *
-     * @param index The index to put the specified item at.
-     * @param item  The item to put into the inventory. If this is {@code null},
-     *              it will remove the item at the specified index.
+     * @param items The subset of items to check for.
+     * @return if the provided subset of items all exist within the inventory.
      */
-    public I changeItem(int index, I item) {
-        if (index < 0 || index >= inventorySize) {
-            throw new NumberOutOfRangeException(
-                    "int \"index\" must be between 0 and the inventory size");
-        }
-        I returnItem;
-        if (item == null) {
-            returnItem = contents.remove(index);
-        } else {
-            returnItem = contents.put(index, item);
-        }
-        return returnItem;
+    public boolean hasItems(Inventory items) {
+        return items.getContents().stream().allMatch(targetMatch ->
+                contents.stream().anyMatch(inventoryItem ->
+                        inventoryItem.equals(targetMatch)));
     }
 
-    public void addItem(I item) throws FullInventoryException {
-        int index = 0;
-        while (hasItem(index)) {
-            index++;
-            if (index >= inventorySize) {
-                throw new FullInventoryException("Cannot add item, inventory is full");
-            }
+    /**
+     * Adds an item to the inventory.
+     *
+     * @param item The item to add to the inventory.
+     */
+    public void addItem(Item item) {
+        if (item == null) {
+            throw new NullValueException("\"item\" cannot be null");
         }
-        changeItem(index, item);
+        if (contents.size() == inventorySize) {
+            throw new FullInventoryException("Cannot add item, inventory is full");
+        }
+        contents.add(item);
+    }
+
+    /**
+     * Removes an item from the inventory.
+     * If there is no item at the specified index, this does nothing.
+     *
+     * @param index The index to remove an item at.
+     */
+    public void removeItem(int index) {
+        if (index < 0 || index > inventorySize) {
+            throw new NumberOutOfRangeException(
+                    "int \"index\" must be greater than 0, but less than the inventory size");
+        }
+        if (index < contents.size()) {
+            contents.remove(index);
+        }
     }
 
     /**
@@ -88,13 +105,9 @@ public class Inventory<I extends Item> {
         if (newSize <= 0) {
             throw new NegativeOrZeroNumberException("int \"newSize\" must be greater than 0");
         }
-        if (newSize < inventorySize) {
-            for (int i = newSize; i < inventorySize; i++) {
-                if (hasItem(i)) {
-                    throw new NotEmptyException("Cannot reduce inventory size: "
-                            + "The range that is to be removed is not empty");
-                }
-            }
+        if (newSize < contents.size()) {
+            throw new NotEmptyException("Cannot reduce inventory size: "
+                    + "The range that is to be removed is not empty");
         }
         inventorySize = newSize;
     }

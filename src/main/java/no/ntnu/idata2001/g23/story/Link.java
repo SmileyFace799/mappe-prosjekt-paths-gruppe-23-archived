@@ -1,10 +1,9 @@
 package no.ntnu.idata2001.g23.story;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-
 import java.util.List;
 import no.ntnu.idata2001.g23.actions.Action;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+
 /**
  * Connects passages between the different parts of a story.
  */

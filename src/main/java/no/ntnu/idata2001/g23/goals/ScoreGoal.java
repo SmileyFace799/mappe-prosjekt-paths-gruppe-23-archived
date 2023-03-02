@@ -9,16 +9,20 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 public class ScoreGoal implements Goal {
     int minimumPoints;
 
-    private ScoreGoal(int minimumPoints) {
+    /**
+     * Makes a score goal for the player to achieve.
+     *
+     * @param minimumPoints The minimum amount of points the player must have to complete this goal.
+     */
+    public ScoreGoal(int minimumPoints) {
         if (minimumPoints <= 0) {
-            throw new NegativeOrZeroNumberException("Score cannot be less than or 0.");
+            throw new NegativeOrZeroNumberException("Minimum score must be greater than 0");
         }
         this.minimumPoints = minimumPoints;
     }
 
     @Override
     public boolean isFulfilled(Player player) {
-        //TODO: Add isFulfilled ScoreGoal
-        return true;
+        return player.getScore() >= minimumPoints;
     }
 }
