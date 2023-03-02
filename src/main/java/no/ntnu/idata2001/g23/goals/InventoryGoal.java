@@ -17,5 +17,6 @@ public class InventoryGoal implements Goal {
     @Override
     public boolean isFulfilled(Player player) {
         //TODO: add ifFulfilled InventoryGoal
+        return true;
     }
 }

@@ -3,7 +3,7 @@ package no.ntnu.idata2001.g23.itemhandling;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.ntnu.idata2001.g23.exceptions.*;
+import no.ntnu.idata2001.g23.exceptions.unchecked.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

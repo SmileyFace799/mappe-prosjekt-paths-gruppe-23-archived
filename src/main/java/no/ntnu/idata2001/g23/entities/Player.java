@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.entities;
 
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 
 /**
  * Represents a player with different attributes which can be affected in a story.

@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.exceptions;
+package no.ntnu.idata2001.g23.exceptions.unchecked;
 
 /**
  * Thrown when an array is of an unexpected size.

@@ -1,12 +1,13 @@
 package no.ntnu.idata2001.g23.story;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
-import no.ntnu.idata2001.g23.exceptions.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.NullValueException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 
 /**
  * A story containing passages for the player to navigate through.
@@ -66,7 +67,8 @@ public class Story {
                     + "\" is already added to the story");
         }
 
-        Link link = new Link(passageTitle, passageTitle);
+        //TODO: Properly create links
+        Link link = new Link(passageTitle, passageTitle, new ArrayList<>());
         if (after != null) {
             if (!getPassages().contains(after)) {
                 throw new ElementNotFoundException("Passage \""

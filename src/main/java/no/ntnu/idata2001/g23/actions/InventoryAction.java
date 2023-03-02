@@ -1,6 +1,7 @@
 package no.ntnu.idata2001.g23.actions;
 
 import no.ntnu.idata2001.g23.entities.Player;
+import no.ntnu.idata2001.g23.exceptions.checked.FullInventoryException;
 import no.ntnu.idata2001.g23.items.Item;
 
 /**
@@ -15,10 +16,10 @@ public class InventoryAction implements Action {
 
     @Override
     public void execute(Player player) {
-        int index = 0;
-        while (player.getInventory().hasItem(index)) {
-            index++;
+        try {
+            player.getInventory().addItem(item);
+        } catch (FullInventoryException fie) {
+            //TODO: Handle this
         }
-        player.addToInventory(index, item);
     }
 }

@@ -2,9 +2,9 @@ package no.ntnu.idata2001.g23.story;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
-import no.ntnu.idata2001.g23.exceptions.NullValueException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

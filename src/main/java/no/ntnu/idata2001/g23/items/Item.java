@@ -1,8 +1,8 @@
 package no.ntnu.idata2001.g23.items;
 
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
-import no.ntnu.idata2001.g23.exceptions.NumberOutOfRangeException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 
 /**
  * Any item that can be stored in some inventory.

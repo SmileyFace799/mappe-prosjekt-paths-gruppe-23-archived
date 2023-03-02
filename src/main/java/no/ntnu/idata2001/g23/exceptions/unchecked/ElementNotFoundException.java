@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.exceptions;
+package no.ntnu.idata2001.g23.exceptions.unchecked;
 
 /**
  * Thrown when an element in a collection does not exist.

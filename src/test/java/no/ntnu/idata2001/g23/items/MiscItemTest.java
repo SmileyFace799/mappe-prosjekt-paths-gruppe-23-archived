@@ -1,8 +1,8 @@
 package no.ntnu.idata2001.g23.items;
 
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
-import no.ntnu.idata2001.g23.exceptions.NumberOutOfRangeException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

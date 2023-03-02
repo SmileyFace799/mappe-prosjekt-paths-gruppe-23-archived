@@ -1,6 +1,8 @@
 package no.ntnu.idata2001.g23.itemhandling;
 
-import no.ntnu.idata2001.g23.exceptions.*;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.items.Item;
 import no.ntnu.idata2001.g23.items.MiscItem;
 import no.ntnu.idata2001.g23.items.weapons.Sword;

@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.entities;
 
-import no.ntnu.idata2001.g23.exceptions.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.NegativeOrZeroNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.itemhandling.Inventory;
 import no.ntnu.idata2001.g23.items.Item;
 import no.ntnu.idata2001.g23.items.weapons.Weapon;

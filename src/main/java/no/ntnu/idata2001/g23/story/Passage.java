@@ -2,8 +2,8 @@ package no.ntnu.idata2001.g23.story;
 
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
 
 /**
  * A smaller part/segment of a story.

@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import no.ntnu.idata2001.g23.exceptions.EmptyArrayException;
-import no.ntnu.idata2001.g23.exceptions.NullValueException;
-import no.ntnu.idata2001.g23.exceptions.NumberOutOfRangeException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.EmptyArrayException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.items.Item;
 
 /**

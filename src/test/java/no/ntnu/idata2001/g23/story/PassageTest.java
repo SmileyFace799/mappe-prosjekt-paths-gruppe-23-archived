@@ -1,7 +1,8 @@
 package no.ntnu.idata2001.g23.story;
 
-import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.DuplicateElementException;
+import java.util.ArrayList;
+import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -14,7 +15,8 @@ class PassageTest {
     @BeforeEach
     public void before() {
         validPassage = new Passage("Test title", "Test content");
-        link = new Link("Test text", "Test reference");
+        //TODO: Update test lol
+        link = new Link("Test text", "Test reference", new ArrayList<>());
     }
 
     @Test

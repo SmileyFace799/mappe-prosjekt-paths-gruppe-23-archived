@@ -2,9 +2,10 @@ package no.ntnu.idata2001.g23.itemhandling;
 
 import java.util.HashMap;
 import java.util.Map;
-import no.ntnu.idata2001.g23.exceptions.NegativeOrZeroNumberException;
-import no.ntnu.idata2001.g23.exceptions.NotEmptyException;
-import no.ntnu.idata2001.g23.exceptions.NumberOutOfRangeException;
+import no.ntnu.idata2001.g23.exceptions.checked.FullInventoryException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.items.Item;
 
 /**
@@ -64,6 +65,17 @@ public class Inventory<I extends Item> {
             returnItem = contents.put(index, item);
         }
         return returnItem;
+    }
+
+    public void addItem(I item) throws FullInventoryException {
+        int index = 0;
+        while (hasItem(index)) {
+            index++;
+            if (index >= inventorySize) {
+                throw new FullInventoryException("Cannot add item, inventory is full");
+            }
+        }
+        changeItem(index, item);
     }
 
     /**

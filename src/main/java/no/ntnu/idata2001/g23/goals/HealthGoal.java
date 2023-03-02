@@ -15,5 +15,6 @@ public class HealthGoal implements Goal {
     @Override
     public boolean isFulfilled(Player player) {
         //TODO: add isFulfilled HealthGoal
+        return true;
     }
 }

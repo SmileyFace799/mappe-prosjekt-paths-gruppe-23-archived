@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.goals;
 
 import no.ntnu.idata2001.g23.entities.Player;
-import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 
 /**
  * Represents a minimum expected amount of gold.
@@ -19,5 +19,6 @@ public class GoldGoal implements Goal {
     @Override
     public boolean isFulfilled(Player player) {
         //TODO: add isFulfilled GoldGoal.
+        return true;
     }
 }
