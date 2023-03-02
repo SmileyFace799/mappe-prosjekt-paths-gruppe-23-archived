@@ -86,7 +86,7 @@ public abstract class Item {
     public int increaseStack(int amount) {
         if (amount < 1 || amount > getMaxStackSize()) {
             throw new NumberOutOfRangeException(
-                    "int \"amount\" must be between 0 and the max stack size");
+                    "int \"amount\" must be between 1, and the max stack size");
         }
         int amountLeft = Math.max(stackSize + amount - getMaxStackSize(), 0);
         stackSize += amount - amountLeft;
@@ -97,14 +97,28 @@ public abstract class Item {
      * Decreases the size of the stack.
      *
      * @param amount The amount to decrease the stack size by,
-     *               must be between 0, and 1 less than the stack size.
+     *               must be between 1, and 1 less than the stack size.
      */
     public void decreaseStack(int amount) {
         if (amount < 1 || amount > stackSize - 1) {
             throw new NumberOutOfRangeException(
-                    "int \"amount\" must be between 0 and 1 less than the stack size");
+                    "int \"amount\" must be between 1, and 1 less than the stack size");
         }
         stackSize -= amount;
+    }
+
+    /**
+     * Sets the amount of items in the stack.
+     *
+     * @param amount The amount to set the stack size to,
+     *               must be between 1 and the max stack size.
+     */
+    public void setStackSize(int amount) {
+        if (amount < 1 || amount > getMaxStackSize()) {
+            throw new NumberOutOfRangeException(
+                    "int \"amount\" must be between 1, and the max stack size");
+        }
+        stackSize = amount;
     }
 
     @Override

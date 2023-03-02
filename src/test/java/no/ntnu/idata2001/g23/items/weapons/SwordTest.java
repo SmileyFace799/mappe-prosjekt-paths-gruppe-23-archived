@@ -87,13 +87,6 @@ class SwordTest {
     }
 
     @Test
-    void testSwordCopy() {
-        Sword copySword = new Sword(validSword);
-        assertNotSame(validSword, copySword);
-        assertEquals(validSword, copySword);
-    }
-
-    @Test
     void testSwordEquals() {
         assertEquals(validSword, validSword);
         assertNotEquals(null, validSword);

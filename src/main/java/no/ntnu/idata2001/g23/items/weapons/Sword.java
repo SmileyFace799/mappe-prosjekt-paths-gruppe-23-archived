@@ -19,11 +19,6 @@ public class Sword extends Weapon {
         super(baseDamage, baseCritChance, value, name, description);
     }
 
-    public Sword(Sword original) {
-        this(original.baseDamage, original.baseCritChance, original.value,
-                original.name, original.description);
-    }
-
     @Override
     public String getCategory() {
         return "Weapon -> Sword";

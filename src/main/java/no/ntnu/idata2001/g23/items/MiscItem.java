@@ -21,10 +21,6 @@ public class MiscItem extends Item {
         this(value, name, description, 1);
     }
 
-    public MiscItem(MiscItem original) {
-        this(original.value, original.name, original.description, original.getCurrentStackSize());
-    }
-
     @Override
     public String getCategory() {
         return "Miscellaneous";

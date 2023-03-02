@@ -106,13 +106,6 @@ class MiscItemTest {
     }
 
     @Test
-    void testMiscItemCopy() {
-        MiscItem copyMiscItem = new MiscItem(validMiscItem);
-        assertNotSame(validMiscItem, copyMiscItem);
-        assertEquals(validMiscItem, copyMiscItem);
-    }
-
-    @Test
     void testMiscItemEquals() {
         assertEquals(validMiscItem, validMiscItem);
         assertNotEquals(null, validMiscItem);
