@@ -1,9 +1,7 @@
 package no.ntnu.idata2001.g23.entities;
 
-import java.util.ArrayList;
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.NegativeNumberException;
-import no.ntnu.idata2001.g23.items.Item;
 
 /**
  * Represents a player with different attributes which can be affected in a story.
@@ -38,15 +36,6 @@ public class Player extends GenericEntity {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Increases the player's health.
-     *
-     * @param health increases players health
-     */
-    public void addHealth(int health) {
-        // same as in GenericEntity?
     }
 
     /**

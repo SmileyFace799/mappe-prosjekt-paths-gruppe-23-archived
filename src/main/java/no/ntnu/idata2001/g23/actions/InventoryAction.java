@@ -7,11 +7,12 @@ import no.ntnu.idata2001.g23.items.Item;
  * Adds an item to the players inventory.
  */
 public class InventoryAction implements Action {
-    private Item item;
+    private final Item item;
 
-    InventoryAction(Item item) {
+    public InventoryAction(Item item) {
         this.item = item;
     }
+
     @Override
     public void execute(Player player) {
         int index = 0;

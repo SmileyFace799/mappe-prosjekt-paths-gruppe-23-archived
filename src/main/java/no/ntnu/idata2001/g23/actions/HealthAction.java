@@ -6,11 +6,12 @@ import no.ntnu.idata2001.g23.entities.Player;
  * Changes the player's health.
  */
 public class HealthAction implements Action {
-    private int health;
+    private final int health;
 
-    HealthAction(int health) {
+    public HealthAction(int health) {
         this.health = health;
     }
+
     @Override
     public void execute(Player player) {
         player.changeHealth(health);

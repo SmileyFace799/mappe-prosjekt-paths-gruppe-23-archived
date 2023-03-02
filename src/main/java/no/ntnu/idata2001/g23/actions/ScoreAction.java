@@ -6,13 +6,14 @@ import no.ntnu.idata2001.g23.entities.Player;
  * Alters the players score.
  */
 public class ScoreAction implements Action {
-    private int points;
+    private final int points;
 
-    ScoreAction(int points) {
+    public ScoreAction(int points) {
         this.points = points;
     }
+
     @Override
     public void execute(Player player) {
-
+        player.addScore(points);
     }
 }

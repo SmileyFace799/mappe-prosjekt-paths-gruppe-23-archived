@@ -3,7 +3,7 @@ package no.ntnu.idata2001.g23.actions;
 import no.ntnu.idata2001.g23.entities.Player;
 
 /**
- * An action that happens when passing from one passage to another.
+ * Represents a future change in the player's state. Changes the player's state along the way.
  */
 public interface Action {
     void execute(Player player);

@@ -1,27 +1,28 @@
 package no.ntnu.idata2001.g23.story;
 
+import java.util.List;
+import no.ntnu.idata2001.g23.actions.Action;
 import no.ntnu.idata2001.g23.exceptions.BlankStringException;
-
 /**
  * Connects passages between the different parts of a story.
  */
+
 public class Link {
     // The text
     private final String text;
     // Where the link leads to
     private final String reference;
     // Actions that affects the players attributes
-    //TODO: Add action methods after we have finished oppgave 7.
-    //private final ArrayList<Action> actions = new ArrayList<>();
+    private List<Action> actions;
 
     /**
-     * Creates a link.
+     * Creates an instance of a link.
      *
      * @param text      The text indicates a choice or action in the story.
      * @param reference The reference identifies a passage (a part of the story).
+     * @param actions   Actions are objects that can affect the attributes of a player.
      */
-    // @param actions Actions are objects that can affect the attributes of a player.
-    public Link(String text, String reference) {
+    public Link(String text, String reference, List<Action> actions) {
         if (text == null || text.isBlank()) {
             throw new BlankStringException("Text cannot be null or blank");
         }
@@ -30,10 +31,11 @@ public class Link {
         }
         this.text = text.trim();
         this.reference = reference.trim();
+        this.actions = actions;
     }
 
     /**
-     * Returns the text.
+     * Returns the text, which indicates a choice or an action.
      *
      * @return The text.
      */
@@ -49,9 +51,19 @@ public class Link {
     public String getReference() {
         return reference;
     }
-    //public void addAction(actions Action) throws duplicateActionException{}
-    //public String getActions() {return getActions;}
-    //public void setGetActions(String getActions) {this.getActions = getActions;}
+
+    public void addAction(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return The actions.
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
 
     /**
      * Returns a multi-line string containing the text, reference and actions.
@@ -59,7 +71,7 @@ public class Link {
      * @return A multi-line string containing the text, reference and actions.
      */
     public String toString() {
-        return text + "\n" + reference + "\n"; //+ actions;
+        return text + "\n" + reference + "\n" + actions + "\n";
     }
 
     /**
