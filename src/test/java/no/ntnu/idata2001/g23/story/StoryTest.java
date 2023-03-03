@@ -12,6 +12,7 @@ import java.util.Collection;
 
 class StoryTest {
     private Passage openingPassage;
+    private Link nextLink;
     private Passage nextPassage;
     private Story validStory;
 
@@ -19,6 +20,8 @@ class StoryTest {
     void before() {
         openingPassage = new Passage("Opening passage", "Test content");
         nextPassage = new Passage("Next passage", "Test content");
+        nextLink = new Link("Next link", nextPassage.getTitle(), null);
+        nextPassage.addLink(nextLink);
         validStory = new Story("Test story", openingPassage);
     }
 
@@ -47,6 +50,7 @@ class StoryTest {
         Collection<Passage> passages = validStory.getPassages();
         assertEquals(1, passages.size());
         assertTrue(passages.contains(openingPassage));
+        assertEquals(openingPassage, validStory.getOpeningPassage());
     }
 
     /**
@@ -62,21 +66,22 @@ class StoryTest {
     @Test
     void testValidAdditionOfPassage() {
         Collection<Passage> passages = validStory.getPassages();
-        Link nextLink = assertDoesNotThrow(() -> validStory.addPassage(nextPassage, openingPassage));
+        assertDoesNotThrow(() -> validStory.addPassage(nextLink, nextPassage));
         assertEquals(2, passages.size());
         assertTrue(passages.contains(nextPassage));
-        assertTrue(openingPassage.getLinks().contains(nextLink));
+        assertEquals(nextPassage, validStory.getPassage(nextLink));
     }
 
     @Test
-    void testAdditionOfDuplicatePassage() {
+    void testAdditionOfDuplicateLink() {
+        validStory.addPassage(nextLink, nextPassage);
         assertThrows(DuplicateElementException.class, () ->
-                validStory.addPassage(openingPassage, openingPassage));
+                validStory.addPassage(nextLink, nextPassage));
     }
 
     @Test
-    void testAdditionOfPassageWithoutAfter() {
-        assertThrows(NullValueException.class, () -> validStory.addPassage(nextPassage, null));
+    void testAdditionOfPassageWithNoLink() {
+        assertThrows(NullValueException.class, () -> validStory.addPassage(null, nextPassage));
     }
 
 }

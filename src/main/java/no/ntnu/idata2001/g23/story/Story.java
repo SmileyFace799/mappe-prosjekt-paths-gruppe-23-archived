@@ -33,7 +33,7 @@ public class Story {
         this.title = title;
         passages = new HashMap<>();
         this.openingPassage = openingPassage;
-        addPassage(openingPassage, null);
+        addPassage(new Link("Opening passage", openingPassage.getTitle(), null), openingPassage);
 
     }
 
@@ -51,36 +51,21 @@ public class Story {
 
     /**
      * Adds a passage to the story. When adding a passage,
-     * a {@code Link} is automatically created as a reference to the passage,
-     * and then added to the {@code after}-passage's links.
+     * a {@code Link} must be provided as a way to get to the passage.
      *
+     * @param link THe link that leads to the passage.
      * @param passage The passage to add to the story.
-     * @param after   Another passage in the story that the added passage comes after.
-     *                This should only be {@code null} when adding the opening passage.
-     * @return The created link associated with the passage added.
      * @see Link
      */
-    public Link addPassage(Passage passage, Passage after) {
-        String passageTitle = passage.getTitle();
-        if (getPassages().contains(passage)) {
-            throw new DuplicateElementException("Passage \"" + passageTitle
-                    + "\" is already added to the story");
+    public void addPassage(Link link, Passage passage) {
+        if (link == null) {
+            throw new NullValueException("\"link\" cannot be null");
         }
-
-        //TODO: Properly create links
-        Link link = new Link(passageTitle, passageTitle, new ArrayList<>());
-        if (after != null) {
-            if (!getPassages().contains(after)) {
-                throw new ElementNotFoundException("Passage \""
-                        + after.getTitle() + "\" does not exist in this story");
-            }
-            after.addLink(link);
-        } else if (!openingPassage.equals(passage)) {
-            throw new NullValueException("The \"after\"-passage should only be null "
-                    + "in the case of the opening passage");
+        if (passages.containsKey(link)) {
+            throw new DuplicateElementException("Link \"" + link
+                    + "\" already links to a passage in the story");
         }
         passages.put(link, passage);
-        return link;
     }
 
     /**
