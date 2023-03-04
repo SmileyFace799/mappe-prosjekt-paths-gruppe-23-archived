@@ -2,8 +2,10 @@ package no.ntnu.idata2001.g23.story;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,10 @@ class StoryTest {
 
     @BeforeEach
     void before() {
-        openingPassage = new Passage("Opening passage", "Test content");
         nextPassage = new Passage("Next passage", "Test content");
         nextLink = new Link("Next link", nextPassage.getTitle(), null);
-        nextPassage.addLink(nextLink);
+        openingPassage = new Passage("Opening passage", "Test content");
+        openingPassage.addLink(nextLink);
         validStory = new Story("Test story", openingPassage);
     }
 
@@ -53,6 +55,16 @@ class StoryTest {
         assertEquals(openingPassage, validStory.getOpeningPassage());
     }
 
+    @Test
+    void testAdditionOfNullPassage() {
+        assertThrows(NullValueException.class, () -> validStory.addPassage(null));
+    }
+
+    @Test
+    void testAdditionOfDuplicatePassage() {
+        assertThrows(DuplicateElementException.class, () -> validStory.addPassage(openingPassage));
+    }
+
     /**
      * Asserts the following:
      * <ul>
@@ -66,22 +78,46 @@ class StoryTest {
     @Test
     void testValidAdditionOfPassage() {
         Collection<Passage> passages = validStory.getPassages();
-        assertDoesNotThrow(() -> validStory.addPassage(nextLink, nextPassage));
+        assertDoesNotThrow(() -> validStory.addPassage(nextPassage));
         assertEquals(2, passages.size());
         assertTrue(passages.contains(nextPassage));
         assertEquals(nextPassage, validStory.getPassage(nextLink));
     }
 
     @Test
-    void testAdditionOfDuplicateLink() {
-        validStory.addPassage(nextLink, nextPassage);
-        assertThrows(DuplicateElementException.class, () ->
-                validStory.addPassage(nextLink, nextPassage));
+    void testRemovingOfPassageWithNullLink() {
+        assertThrows(NullValueException.class, () -> validStory.removePassage(null));
     }
 
     @Test
-    void testAdditionOfPassageWithNoLink() {
-        assertThrows(NullValueException.class, () -> validStory.addPassage(null, nextPassage));
+    void testRemovingOfPassageThatIsLinkedTo() {
+        validStory.addPassage(nextPassage);
+        assertThrows(IllegalStateException.class, () -> validStory.removePassage(nextLink));
     }
 
+    @Test
+    void testValidRemovingOfPassage() {
+        validStory.addPassage(new Passage("Unlinked passage", "Unlinked content"));
+        assertDoesNotThrow(() -> validStory.removePassage(new Link(
+                "Unlinked link", "Unlinked passage", null)));
+    }
+
+    @Test
+    void testGettingOfPassageWithNullLink() {
+        assertThrows(NullValueException.class, () -> validStory.getPassage(null));
+    }
+
+    @Test
+    void testGettingOfPassageWithBrokenLink() {
+        assertThrows(ElementNotFoundException.class, () -> validStory.getPassage(nextLink));
+    }
+
+    @Test
+    void testGettingBrokenLinks() {
+        validStory.addPassage(nextPassage);
+        Link brokenLink = new Link(
+                "Broken link", "A non-existant passage", null);
+        validStory.getOpeningPassage().addLink(brokenLink);
+        assertEquals(List.of(brokenLink), validStory.getBrokenLinks());
+    }
 }

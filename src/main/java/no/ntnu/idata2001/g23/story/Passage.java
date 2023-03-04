@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 
 /**
  * A smaller part/segment of a story.
@@ -44,6 +45,9 @@ public class Passage {
      * @param link The link to add.
      */
     public void addLink(Link link) {
+        if (link == null) {
+            throw new NullValueException("\"link\" cannot be null");
+        }
         if (!links.contains(link)) {
             links.add(link);
         } else {

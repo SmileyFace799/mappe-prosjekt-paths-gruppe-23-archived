@@ -3,6 +3,7 @@ package no.ntnu.idata2001.g23.story;
 import java.util.ArrayList;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -54,6 +55,11 @@ class PassageTest {
         List<Link> links = validPassage.getLinks();
         assertEquals(1, links.size());
         assertTrue(links.contains(link));
+    }
+
+    @Test
+    void testAdditonofNullLink() {
+        assertThrows(NullValueException.class, () -> validPassage.addLink(null));
     }
 
     @Test

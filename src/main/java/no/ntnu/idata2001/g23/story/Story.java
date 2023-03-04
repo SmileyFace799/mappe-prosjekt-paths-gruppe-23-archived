@@ -3,6 +3,7 @@ package no.ntnu.idata2001.g23.story;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
@@ -14,7 +15,7 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
  */
 public class Story {
     private final String title;
-    private final Map<Link, Passage> passages;
+    private final Map<String, Passage> passages;
     private final Passage openingPassage;
 
     /**
@@ -33,7 +34,7 @@ public class Story {
         this.title = title;
         passages = new HashMap<>();
         this.openingPassage = openingPassage;
-        addPassage(new Link("Opening passage", openingPassage.getTitle(), null), openingPassage);
+        addPassage(openingPassage);
 
     }
 
@@ -50,22 +51,40 @@ public class Story {
     }
 
     /**
-     * Adds a passage to the story. When adding a passage,
-     * a {@code Link} must be provided as a way to get to the passage.
+     * Adds a passage to the story.
      *
-     * @param link THe link that leads to the passage.
      * @param passage The passage to add to the story.
-     * @see Link
      */
-    public void addPassage(Link link, Passage passage) {
+    public void addPassage(Passage passage) {
+        if (passage == null) {
+            throw new NullValueException("\"passage\" cannot be null");
+        }
+        if (getPassages().contains(passage)) {
+            throw new DuplicateElementException("Passage \"" + passage.getTitle()
+                    + "\" is already added to the story");
+        }
+        passages.put(passage.getTitle(), passage);
+    }
+
+    /**
+     * Removes a passage from the story.
+     *
+     * @param link A link to the passage that should be removed.
+     */
+    public void removePassage(Link link) {
         if (link == null) {
             throw new NullValueException("\"link\" cannot be null");
         }
-        if (passages.containsKey(link)) {
-            throw new DuplicateElementException("Link \"" + link
-                    + "\" already links to a passage in the story");
+        String passageToRemoveTitle = link.getReference();
+        for (Passage passage : getPassages()) {
+            for (Link passageLink : passage.getLinks()) {
+                if (passageLink.getReference().equals(passageToRemoveTitle)) {
+                    throw new IllegalStateException(
+                            "Other passages in the story link to this passage, cannot remove it");
+                }
+            }
         }
-        passages.put(link, passage);
+        passages.remove(passageToRemoveTitle);
     }
 
     /**
@@ -75,10 +94,32 @@ public class Story {
      * @return The passage associated with the provided link.
      */
     public Passage getPassage(Link link) {
-        if (!passages.containsKey(link)) {
+        if (link == null) {
+            throw new NullValueException("\"link\" cannot be null");
+        }
+        String passageName = link.getReference();
+        if (!passages.containsKey(passageName)) {
             throw new ElementNotFoundException("No passage associated with Link \""
                     + link.getText() + "\" was found");
         }
-        return passages.get(link);
+        return passages.get(passageName);
+    }
+
+    /**
+     * Finds and returns a list of dead links.
+     * A link is considered "dead" if it refers to a passage that doesn't exist in the story.
+     *
+     * @return A list of all dead links in the story.
+     */
+    public List<Link> getBrokenLinks() {
+        List<Link> brokenLinks = new ArrayList<>();
+        for (Passage passage : getPassages()) {
+            for (Link passageLink : passage.getLinks()) {
+                if (!passages.containsKey(passageLink.getReference())) {
+                    brokenLinks.add(passageLink);
+                }
+            }
+        }
+        return brokenLinks;
     }
 }
