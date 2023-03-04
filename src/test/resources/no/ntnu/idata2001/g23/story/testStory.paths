@@ -4,7 +4,7 @@ Haunted House
 You are in a small, dimly lit room. There is a door in front of you.
 There is also an entrance behind you.
 [Try to open the door] (Another room)
-[Go behind you] (Test room) {Item: Test item, Gold: 500}
+[Go behind you] (Test room) {Inventory: Test item} {Gold: 500}
 
 ::Another room
 The door opens to another room. You have reached the end of the game, there is no other option than going back
