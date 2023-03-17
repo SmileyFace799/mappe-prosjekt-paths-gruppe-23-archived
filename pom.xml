@@ -29,8 +29,8 @@
         <!--
         Details about your application, like where is the main()-method
         -->
-        <application.main>fill.in.your.main.class</application.main>
-        <application.filename>TheFileNameOfYourApplication</application.filename>
+        <application.main>no.ntnu.idata2001.g23.DungeonApp</application.main>
+        <application.filename>mappe-prosjekt-paths-gruppe-23</application.filename>
     </properties>
 
     <build>
