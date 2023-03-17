@@ -1,5 +1,6 @@
 package no.ntnu.idata2001.g23.story;
 
+import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idata2001.g23.actions.Action;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
@@ -32,7 +33,11 @@ public class Link {
         }
         this.text = text.trim();
         this.reference = reference.trim();
-        this.actions = actions;
+        if (actions == null || actions.isEmpty()) {
+            this.actions = new ArrayList<>();
+        } else {
+            this.actions = actions;
+        }
     }
 
     /**

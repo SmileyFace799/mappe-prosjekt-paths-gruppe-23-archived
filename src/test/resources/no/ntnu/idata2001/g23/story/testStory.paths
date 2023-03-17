@@ -7,7 +7,7 @@ There is also an entrance behind you.
 [Go behind you] (Test room) {Inventory: Test item} {Gold: 500}
 
 ::Another room
-The door opens to another room. You have reached the end of the game, there is no other option than going back
+The door opens to another room. You have reached the end of the game, there is no other option than going back.
 [Go back] (Beginnings)
 
 ::Test room

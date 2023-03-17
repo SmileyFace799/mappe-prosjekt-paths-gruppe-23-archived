@@ -122,4 +122,30 @@ public class Story {
         }
         return brokenLinks;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Story story = (Story) obj;
+        return title.equals(story.title)
+                && openingPassage.equals(story.openingPassage)
+                && passages.equals(story.passages);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + title.hashCode();
+        hash = 31 * hash + openingPassage.hashCode();
+        hash = 31 * hash + passages.hashCode();
+        return hash;
+    }
 }
