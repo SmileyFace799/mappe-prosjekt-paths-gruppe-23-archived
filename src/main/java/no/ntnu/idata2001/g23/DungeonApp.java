@@ -1,22 +1,16 @@
 package no.ntnu.idata2001.g23;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import no.ntnu.idata2001.g23.textures.TxLoader;
+import no.ntnu.idata2001.g23.javafx.MenuContentFactory;
 
 /**
  * Main class that boots the game.
@@ -26,39 +20,24 @@ public class DungeonApp extends Application {
         launch(args);
     }
 
-    private static final Integer[] BASE_RESOLUTION = new Integer[]{3840, 2160};
+    public static final int BASE_WIDTH = 3840;
+    public static final int BASE_HEIGHT = 2160;
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Paths game");
         primaryStage.setMinWidth(720);
         primaryStage.setMinHeight(540);
-        primaryStage.setFullScreenExitHint("");
+        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyCode.F11.equals(event.getCode())) {
+                primaryStage.setFullScreen(!primaryStage.isFullScreen());
+            }
+        });
 
-        VBox root = new VBox(60);
-
-        root.setAlignment(Pos.CENTER);
-        root.setStyle("-fx-font-size: 72px;");
-        root.setBackground(new Background(new BackgroundImage(
-                TxLoader.getImage("bg.png"),
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                new BackgroundSize(1.0, 1.0, true, true, true, false)
-        )));
-        root.getChildren().add(TxLoader.getImageView(
-                "tempTitle.png", 2000, 0, true));
-        root.getChildren().add(new Rectangle(0, 200));
-
-        Button playButton = new Button("Play Game");
-        root.getChildren().add(playButton);
-
-        Button settingsButton = new Button("Settings");
-        root.getChildren().add(settingsButton);
-
-        Button quitButton = new Button("Quit Game");
-        quitButton.setOnAction(ae -> Platform.exit());
-        root.getChildren().add(quitButton);
+        StackPane root = new StackPane();
+        MenuContentFactory menuContentFactory = new MenuContentFactory(root);
+        root.getChildren().add(menuContentFactory.getContent("mainMenu"));
 
         Scene scene = new Scene(new Group(root), 1280, 720);
         scene.setFill(Color.BLACK);
@@ -69,8 +48,8 @@ public class DungeonApp extends Application {
             double newHeight = scene.getHeight();
 
             double scaleFactor = Math.min(
-                    newWidth / BASE_RESOLUTION[0],
-                    newHeight / BASE_RESOLUTION[1]
+                    newWidth / BASE_WIDTH,
+                    newHeight / BASE_HEIGHT
             );
 
 
