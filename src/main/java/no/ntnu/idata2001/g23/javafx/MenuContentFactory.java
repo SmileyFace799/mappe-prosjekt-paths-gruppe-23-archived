@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -13,7 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import no.ntnu.idata2001.g23.DungeonApp;
 import no.ntnu.idata2001.g23.textures.TxLoader;
 
 public class MenuContentFactory {
@@ -106,6 +107,9 @@ public class MenuContentFactory {
         content.getChildren().add(new Rectangle(0, 200));
 
         Button startNewStory = new Button("Start New Story");
+        startNewStory.setOnAction(ae -> Transitions.contentTransition(
+                root, content, getNewGame()
+        ));
         content.getChildren().add(startNewStory);
 
         Button loadgame = new Button("Load Game");
@@ -118,6 +122,49 @@ public class MenuContentFactory {
         backButton.setOnAction(ae -> Transitions.contentTransition(
                 root, content, getMainMenu()));
         content.getChildren().add(backButton);
+        return content;
+    }
+
+    // side og button som starter nytt spill
+    public Node getNewGame() {
+        VBox content = new VBox(60);
+        content.setAlignment(Pos.CENTER);
+        content.setStyle(Css.CONTENT_FONT_STYLE);
+        content.setBackground(new Background(new BackgroundImage(
+                TxLoader.getImage("bg.png"),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(1.0, 1.0, true, true, true, false)
+        )));
+
+        Text newGameTitle = new Text("New game");
+        newGameTitle.setStyle(Css.TITLE_FONT_STYLE);
+        content.getChildren().add(newGameTitle);
+
+        TextField playerName = new TextField();
+        playerName.setMaxWidth(500);
+        playerName.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.isContentChange()) {
+                String newText = change.getControlNewText();
+                int maxLength = 10;
+                if (newText.length() > maxLength) {
+                    change.setText(newText.substring(0, maxLength));
+                    change.setRange(0, change.getControlText().length());
+                }
+            }
+            return change;
+        }));
+        content.getChildren().add(playerName);
+
+        Button startPlaying = new Button("Start playing");
+        content.getChildren().add(startPlaying);
+
+        Button backButton = new Button("Go Back");
+        backButton.setOnAction(ae -> Transitions.contentTransition(
+                root, content, getPlayGame()));
+        content.getChildren().add(backButton);
+
         return content;
     }
 }
