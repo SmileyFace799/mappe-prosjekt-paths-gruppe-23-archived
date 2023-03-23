@@ -37,7 +37,7 @@ public class DungeonApp extends Application {
 
         StackPane root = new StackPane();
         MenuContentFactory menuContentFactory = new MenuContentFactory(root);
-        root.getChildren().add(menuContentFactory.getContent("mainMenu"));
+        root.getChildren().add(menuContentFactory.getMainMenu());
 
         Scene scene = new Scene(new Group(root), 1280, 720);
         scene.setFill(Color.BLACK);
