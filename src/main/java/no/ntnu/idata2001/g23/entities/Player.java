@@ -7,9 +7,10 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
  * Represents a player with different attributes which can be affected in a story.
  */
 public class Player extends GenericEntity {
-    private final String name;
-    private int score;
-    private int gold;
+    private final String name; //required
+    private int health; // optional
+    private int score; //optional
+    private int gold; //optional
 
     /**
      * Creates a player.
@@ -28,6 +29,17 @@ public class Player extends GenericEntity {
         this.score = score;
         this.gold = gold;
     }
+//    private Player(PlayerBuilder builder){
+//        this.name = builder.name;
+//        this.health = builder.health;
+//        this.score = builder.score;
+//        this.gold = builder.score;
+//    }
+    public String toString() {
+        return String.format("%s (Health: %d, Score: %d, Gold: %d)", name, health, score, gold);
+    }
+
+    // no setters, only getters - to provide immutability
 
     /**
      * Returns the players name.
@@ -45,6 +57,10 @@ public class Player extends GenericEntity {
      */
     public void addScore(int points) {
         this.score += points;
+    }
+
+    public int getHealth() {
+        return health;
     }
 
     /**
