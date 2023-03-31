@@ -1,5 +1,6 @@
-package no.ntnu.idata2001.g23.javafx;
+package no.ntnu.idata2001.g23.ui;
 
+//TODO: make necessary changes to DungeonApp before deleting this class and transfer to using styles.css instead.
 /**
  * a.
  */
