@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23;
+package no.ntnu.idata2001.g23.model;
 
 import java.util.List;
 import no.ntnu.idata2001.g23.model.entities.Player;
