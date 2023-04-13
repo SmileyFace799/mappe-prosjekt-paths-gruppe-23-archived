@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.entities;
 
 /**
- * Helps to build a desired player with all mandatory attributes and a combination of optional attributes.
+ * Builds a desired player with all mandatory attributes and a combination of optional attributes.
  */
 public class PlayerBuilder {
     private final String name; //required
@@ -10,7 +10,7 @@ public class PlayerBuilder {
     private int gold = 0; //optional
 
     public PlayerBuilder(String name) {
-    this.name = name;
+        this.name = name;
     }
 
     public PlayerBuilder withHealth(int health) {
@@ -27,10 +27,10 @@ public class PlayerBuilder {
         this.gold = gold;
         return this;
     }
-//
-//    public Player build() {
-//        return Player(this);
-//    }
+
+    //public Player build() {
+    //    return Player(this);
+    //}
 
     // How to use the PlayerBuilder in main app:
 
