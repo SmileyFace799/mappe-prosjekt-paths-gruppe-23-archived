@@ -1,11 +1,11 @@
 package no.ntnu.idata2001.g23;
 
 import java.util.List;
-import no.ntnu.idata2001.g23.entities.Player;
-import no.ntnu.idata2001.g23.goals.Goal;
-import no.ntnu.idata2001.g23.story.Link;
-import no.ntnu.idata2001.g23.story.Passage;
-import no.ntnu.idata2001.g23.story.Story;
+import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.goals.Goal;
+import no.ntnu.idata2001.g23.model.story.Link;
+import no.ntnu.idata2001.g23.model.story.Passage;
+import no.ntnu.idata2001.g23.model.story.Story;
 
 /**
  * A game that can be player, with everything needed to play it.

@@ -10,7 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import no.ntnu.idata2001.g23.javafx.MenuContentFactory;
+import no.ntnu.idata2001.g23.view.javafx.MenuContentFactory;
 
 /**
  * Main class that boots the game.
