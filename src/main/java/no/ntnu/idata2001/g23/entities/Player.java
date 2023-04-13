@@ -8,7 +8,6 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
  */
 public class Player extends GenericEntity {
     private final String name; //required
-    private int health; // optional
     private int score; //optional
     private int gold; //optional
 
@@ -29,12 +28,13 @@ public class Player extends GenericEntity {
         this.score = score;
         this.gold = gold;
     }
-//    private Player(PlayerBuilder builder){
-//        this.name = builder.name;
-//        this.health = builder.health;
-//        this.score = builder.score;
-//        this.gold = builder.score;
-//    }
+    //private Player(PlayerBuilder builder){
+    //    this.name = builder.name;
+    //    this.health = builder.health;
+    //    this.score = builder.score;
+    //    this.gold = builder.score;
+    //}
+
     public String toString() {
         return String.format("%s (Health: %d, Score: %d, Gold: %d)", name, health, score, gold);
     }
@@ -57,10 +57,6 @@ public class Player extends GenericEntity {
      */
     public void addScore(int points) {
         this.score += points;
-    }
-
-    public int getHealth() {
-        return health;
     }
 
     /**

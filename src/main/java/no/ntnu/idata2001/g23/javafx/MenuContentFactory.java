@@ -28,7 +28,7 @@ public class MenuContentFactory {
         VBox content = new VBox(60);
 
         content.setAlignment(Pos.CENTER);
-        content.setStyle(Css.CONTENT_FONT_STYLE);
+        //content.setStyle(Css.CONTENT_FONT_STYLE);
         content.setBackground(new Background(new BackgroundImage(
                 TxLoader.getImage("bg.png"),
                 BackgroundRepeat.NO_REPEAT,
@@ -65,7 +65,7 @@ public class MenuContentFactory {
         VBox content = new VBox(60);
 
         content.setAlignment(Pos.CENTER);
-        content.setStyle(Css.CONTENT_FONT_STYLE);
+        //content.setStyle(Css.CONTENT_FONT_STYLE);
         content.setBackground(new Background(new BackgroundImage(
                 TxLoader.getImage("bg.png"),
                 BackgroundRepeat.NO_REPEAT,
@@ -75,7 +75,7 @@ public class MenuContentFactory {
         )));
 
         Text settingsTitle = new Text("Settings");
-        settingsTitle.setStyle(Css.TITLE_FONT_STYLE);
+        //settingsTitle.setStyle(Css.TITLE_FONT_STYLE);
         content.getChildren().add(settingsTitle);
 
         content.getChildren().add(new Rectangle(0, 200));
@@ -91,7 +91,7 @@ public class MenuContentFactory {
         VBox content = new VBox(60);
 
         content.setAlignment(Pos.CENTER);
-        content.setStyle(Css.CONTENT_FONT_STYLE);
+        //content.setStyle(Css.CONTENT_FONT_STYLE);
         content.setBackground(new Background(new BackgroundImage(
                 TxLoader.getImage("bg.png"),
                 BackgroundRepeat.NO_REPEAT,
@@ -101,7 +101,7 @@ public class MenuContentFactory {
         )));
 
         Text playGameTitle = new Text("Play Game");
-        playGameTitle.setStyle(Css.TITLE_FONT_STYLE);
+        //playGameTitle.setStyle(Css.TITLE_FONT_STYLE);
         content.getChildren().add(playGameTitle);
 
         content.getChildren().add(new Rectangle(0, 200));
@@ -129,7 +129,7 @@ public class MenuContentFactory {
     public Node getNewGame() {
         VBox content = new VBox(60);
         content.setAlignment(Pos.CENTER);
-        content.setStyle(Css.CONTENT_FONT_STYLE);
+        //content.setStyle(Css.CONTENT_FONT_STYLE);
         content.setBackground(new Background(new BackgroundImage(
                 TxLoader.getImage("bg.png"),
                 BackgroundRepeat.NO_REPEAT,
@@ -139,7 +139,7 @@ public class MenuContentFactory {
         )));
 
         Text newGameTitle = new Text("New game");
-        newGameTitle.setStyle(Css.TITLE_FONT_STYLE);
+        //newGameTitle.setStyle(Css.TITLE_FONT_STYLE);
         content.getChildren().add(newGameTitle);
 
         TextField playerName = new TextField();
