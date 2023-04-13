@@ -1,16 +1,12 @@
 package no.ntnu.idata2001.g23;
 
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import no.ntnu.idata2001.g23.view.javafx.MenuContentFactory;
+import no.ntnu.idata2001.g23.view.scenes.MainMenuScene;
 
 /**
  * Main class that boots the game.
@@ -35,37 +31,9 @@ public class DungeonApp extends Application {
             }
         });
 
-        StackPane root = new StackPane();
-        MenuContentFactory menuContentFactory = new MenuContentFactory(root);
-        root.getChildren().add(menuContentFactory.getMainMenu());
-
-        Scene scene = new Scene(new Group(root), 1280, 720);
-        scene.setFill(Color.BLACK);
+        MainMenuScene mainMenuScene = new MainMenuScene();
+        Scene scene = mainMenuScene.getScene();
         primaryStage.setScene(scene);
-
-        Runnable sizeChangeListener = () -> {
-            double newWidth = scene.getWidth();
-            double newHeight = scene.getHeight();
-
-            double scaleFactor = Math.min(
-                    newWidth / BASE_WIDTH,
-                    newHeight / BASE_HEIGHT
-            );
-
-
-            Scale scale = new Scale(scaleFactor, scaleFactor);
-            scale.setPivotX(0);
-            scale.setPivotY(0);
-            scene.getRoot().getTransforms().setAll(scale);
-
-            root.setPrefWidth(newWidth  / scaleFactor);
-            root.setPrefHeight(newHeight / scaleFactor);
-        };
-
-        scene.widthProperty().addListener((observableValue, oldValue, newValue) ->
-                sizeChangeListener.run());
-        scene.heightProperty().addListener((observableValue, oldValue, newValue) ->
-                sizeChangeListener.run());
         primaryStage.setFullScreen(true);
         primaryStage.show();
     }
