@@ -2,8 +2,8 @@ package no.ntnu.idata2001.g23.model.story;
 
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.model.actions.Action;
 
 /**
  * Connects passages between the different parts of a story.

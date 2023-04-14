@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.model.goals;
 
-import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
+import no.ntnu.idata2001.g23.model.entities.Player;
 
 /**
  * Represents a minimum expected health value.

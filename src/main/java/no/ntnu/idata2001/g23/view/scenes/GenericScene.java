@@ -8,17 +8,22 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import no.ntnu.idata2001.g23.DungeonApp;
+import no.ntnu.idata2001.g23.controllers.GenericController;
 
 /**
  * Represents the basics of any scene contained in the applications.
+ *
+ * @param <C> The controller class for this scene
  */
-public abstract class GenericScene {
+public abstract class GenericScene<C extends GenericController> {
     private Node root;
     private Pane rootPane;
     private Scene scene;
+    protected final C controller;
 
-    protected GenericScene() {
-        initialize(makeRoot());
+    protected GenericScene(C controller, String... cssFiles) {
+        this.controller = controller;
+        initialize(makeRoot(), cssFiles);
     }
 
     protected abstract Pane makeRoot();
@@ -43,7 +48,7 @@ public abstract class GenericScene {
         rootPane.setPrefHeight(newHeight / scaleFactor);
     }
 
-    protected void initialize(Node root) {
+    protected void initialize(Node root, String... cssFiles) {
         this.root = root;
         if (root instanceof Pane pane) {
             this.rootPane = pane;
@@ -53,12 +58,18 @@ public abstract class GenericScene {
             this.rootPane = newPane;
         }
         this.scene = new Scene(new Group(root), 1280, 720);
+        scene.getStylesheets().add("global.css");
+        for (String cssFile : cssFiles) {
+            scene.getStylesheets().add(cssFile);
+        }
         scene.setFill(Color.BLACK);
 
         scene.widthProperty().addListener((observableValue, oldValue, newValue) ->
                 sizeChangeListener());
         scene.heightProperty().addListener((observableValue, oldValue, newValue) ->
                 sizeChangeListener());
+
+        sizeChangeListener(); //Updates scene size to the right screen size upon creation
     }
 
     public Node getRoot() {

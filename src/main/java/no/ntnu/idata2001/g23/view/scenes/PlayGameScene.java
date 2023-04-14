@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.view.scenes;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -10,14 +11,14 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import no.ntnu.idata2001.g23.controllers.MainMenuController;
+import no.ntnu.idata2001.g23.controllers.PlayGameController;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
 
 /**
- * The main menu scene.
+ * The play game scene, where after the player selects "play game".
  */
-public class MainMenuScene extends GenericScene<MainMenuController> {
-    public MainMenuScene(MainMenuController controller) {
+public class PlayGameScene extends GenericScene<PlayGameController> {
+    public PlayGameScene(PlayGameController controller) {
         super(controller);
     }
 
@@ -33,26 +34,26 @@ public class MainMenuScene extends GenericScene<MainMenuController> {
                 BackgroundPosition.CENTER,
                 new BackgroundSize(1.0, 1.0, true, true, true, false)
         )));
-        content.getChildren().add(TxLoader.getImageView(
-                "tempTitle.png", 2000, 0, true));
+
+        Label playGameTitle = new Label("Play Game");
+        playGameTitle.getStyleClass().add("header");
+        content.getChildren().add(playGameTitle);
 
         content.getChildren().add(new Rectangle(0, 200));
 
-        Button playButton = new Button("Play Game");
-        playButton.setOnAction(ae -> controller.changeScene(PlayGameScene.class));
-        content.getChildren().add(playButton);
+        Button startNewStory = new Button("Start New Story");
+        startNewStory.setOnAction(ae -> controller.changeScene(NewGameScene.class));
+        content.getChildren().add(startNewStory);
 
-        Button settingsButton = new Button("Settings");
-        settingsButton.setOnAction(ae -> controller.changeScene(SettingsScene.class));
-        content.getChildren().add(settingsButton);
+        Button loadgame = new Button("Load Game");
+        content.getChildren().add(loadgame);
 
-        Button credits = new Button("Credits");
-        credits.setDisable(true);
-        content.getChildren().add(credits);
+        Button tutorial = new Button("Tutorial");
+        content.getChildren().add(tutorial);
 
-        Button quitButton = new Button("Quit Game");
-        quitButton.setOnAction(ae -> controller.closeApplication());
-        content.getChildren().add(quitButton);
+        Button backButton = new Button("Go Back");
+        backButton.setOnAction(ae -> controller.changeScene(MainMenuScene.class));
+        content.getChildren().add(backButton);
         return content;
     }
 }

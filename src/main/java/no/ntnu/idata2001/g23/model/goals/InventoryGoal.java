@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.model.goals;
 
-import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
 
 /**
