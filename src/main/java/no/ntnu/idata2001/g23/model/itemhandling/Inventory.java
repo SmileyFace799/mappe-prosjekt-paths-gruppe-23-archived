@@ -2,7 +2,6 @@ package no.ntnu.idata2001.g23.model.itemhandling;
 
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idata2001.g23.exceptions.unchecked.FullInventoryException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
@@ -69,7 +68,7 @@ public class Inventory {
      *
      * @param item The item to add to the inventory.
      */
-    public void addItem(Item item) {
+    public void addItem(Item item) throws FullInventoryException {
         if (item == null) {
             throw new NullValueException("\"item\" cannot be null");
         }

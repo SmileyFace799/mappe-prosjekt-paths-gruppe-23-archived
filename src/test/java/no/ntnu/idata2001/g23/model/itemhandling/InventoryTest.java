@@ -13,7 +13,7 @@ class InventoryTest {
     private Inventory validInventory;
 
     @BeforeEach
-    void before() {
+    void before() throws FullInventoryException {
         inventoryMiscItem = ItemFactory.makeItem("Test item");
         inventorySword = ItemFactory.makeItem("Test sword");
         validInventory = new Inventory(3);
@@ -57,7 +57,7 @@ class InventoryTest {
 
     @Test
     void testAddItemWithFullInventory() {
-        validInventory.addItem(otherItem);
+        assertDoesNotThrow(() -> validInventory.addItem(otherItem));
         assertThrows(FullInventoryException.class, () -> validInventory.addItem(otherItem));
     }
 
@@ -81,7 +81,7 @@ class InventoryTest {
     }
 
     @Test
-    void testInventoryHasSubsetOfItems() {
+    void testInventoryHasSubsetOfItems() throws FullInventoryException {
         Inventory subset1 = new Inventory(2);
         subset1.addItem(otherItem);
         subset1.addItem(inventorySword);

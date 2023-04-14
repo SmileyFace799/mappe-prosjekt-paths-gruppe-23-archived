@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.model.actions;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.items.Item;
 
 /**
@@ -23,9 +24,8 @@ public class InventoryAction implements Action {
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(Player player) throws FullInventoryException {
         player.getInventory().addItem(item);
-        //TODO: Handle inventory being full
     }
 
     @Override
