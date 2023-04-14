@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.model.story;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +14,13 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
  */
 public class Story {
     private final String title;
-    private final Map<String, Passage> passages;
+    private final Map<Link, Passage> passages;
     private final Passage openingPassage;
 
     /**
      * Makes a story.
      *
-     * @param title The title of the story. Must not be null or blank.
+     * @param title          The title of the story. Must not be null or blank.
      * @param openingPassage THe opening passage of the story. Must not be null.
      */
     public Story(String title, Passage openingPassage) {
@@ -63,7 +62,7 @@ public class Story {
             throw new DuplicateElementException("Passage \"" + passage.getTitle()
                     + "\" is already added to the story");
         }
-        passages.put(passage.getTitle(), passage);
+        passages.put(new Link(passage.getTitle(), passage.getTitle(), null), passage);
     }
 
     /**
@@ -75,16 +74,15 @@ public class Story {
         if (link == null) {
             throw new NullValueException("\"link\" cannot be null");
         }
-        String passageToRemoveTitle = link.getReference();
-        for (Passage passage : getPassages()) {
-            for (Link passageLink : passage.getLinks()) {
-                if (passageLink.getReference().equals(passageToRemoveTitle)) {
-                    throw new IllegalStateException(
-                            "Other passages in the story link to this passage, cannot remove it");
-                }
-            }
+        if (getPassages()
+                .stream()
+                .flatMap(passage -> passage.getLinks().stream())
+                .anyMatch(passageLink -> passageLink.equals(link))
+        ) {
+            throw new IllegalStateException(
+                    "Other passages in the story link to this passage, cannot remove it");
         }
-        passages.remove(passageToRemoveTitle);
+        passages.remove(link);
     }
 
     /**
@@ -97,12 +95,11 @@ public class Story {
         if (link == null) {
             throw new NullValueException("\"link\" cannot be null");
         }
-        String passageName = link.getReference();
-        if (!passages.containsKey(passageName)) {
-            throw new ElementNotFoundException("No passage associated with Link \""
-                    + link.getText() + "\" was found");
+        if (!passages.containsKey(link)) {
+            throw new ElementNotFoundException("No passage found for reference \""
+                    + link.getReference() + "\"");
         }
-        return passages.get(passageName);
+        return passages.get(link);
     }
 
     /**
@@ -112,15 +109,11 @@ public class Story {
      * @return A list of all dead links in the story.
      */
     public List<Link> getBrokenLinks() {
-        List<Link> brokenLinks = new ArrayList<>();
-        for (Passage passage : getPassages()) {
-            for (Link passageLink : passage.getLinks()) {
-                if (!passages.containsKey(passageLink.getReference())) {
-                    brokenLinks.add(passageLink);
-                }
-            }
-        }
-        return brokenLinks;
+        return getPassages()
+                .stream()
+                .flatMap(passage -> passage.getLinks().stream())
+                .filter(link -> !passages.containsKey(link))
+                .toList();
     }
 
     @Override

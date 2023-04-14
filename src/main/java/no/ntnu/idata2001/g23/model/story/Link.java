@@ -14,8 +14,8 @@ public class Link {
     private final String text;
     // Where the link leads to
     private final String reference;
-    // Actions that affects the players attributes
-    private List<Action> actions;
+    // Actions that affect the player
+    private final List<Action> actions;
 
     /**
      * Creates an instance of a link.
@@ -31,13 +31,10 @@ public class Link {
         if (reference == null || reference.isBlank()) {
             throw new BlankStringException("Reference cannot be null or blank");
         }
+
         this.text = text.trim();
         this.reference = reference.trim();
-        if (actions == null || actions.isEmpty()) {
-            this.actions = new ArrayList<>();
-        } else {
-            this.actions = actions;
-        }
+        this.actions = actions == null ? new ArrayList<>() : actions;
     }
 
     /**
@@ -58,8 +55,8 @@ public class Link {
         return reference;
     }
 
-    public void addAction(List<Action> actions) {
-        this.actions = actions;
+    public void addAction(Action action) {
+        this.actions.add(action);
     }
 
     /**
@@ -83,17 +80,23 @@ public class Link {
     /**
      * Test for content equality between two objects.
      *
-     * @param other The object to compare to this one.
-     * @return True if the argument object is a set of links with matching attributes.
+     * @param obj The object to compare to this one.
+     * @return True if the argument object is a link with matching attributes.
      */
     @Override
-    public boolean equals(Object other) {
-        if (other instanceof Link otherLink) {
-            return text.equals(otherLink.getText())
-                    && reference.equals(otherLink.getReference());
-        } else {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Link link = (Link) obj;
+        return getReference().equals(link.getReference());
     }
 
     /**
@@ -104,7 +107,6 @@ public class Link {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 37 * result + text.hashCode();
         result = 37 * result + reference.hashCode();
         return result;
     }
