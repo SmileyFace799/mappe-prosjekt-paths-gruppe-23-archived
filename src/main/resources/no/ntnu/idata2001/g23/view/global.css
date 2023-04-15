@@ -22,15 +22,14 @@
 
 .label {
     -fx-font-size: 72px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 0, 0, 0, 1);
+    -fx-text-fill: white;
+    /* -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 0, 0, 0, 1); */
 }
 
 .header {
+    -fx-font-weight: bold;
     -fx-padding: 60px;
     -fx-text-alignment: center;
-    -fx-text-fill: white;
     -fx-font-family: "Rockwell Nova Extra Bold";
     -fx-font-size: 144px;
 }

@@ -1,3 +1,22 @@
 .menu {
     -fx-alignment: center;
 }
+
+.prompt {
+    -fx-padding: 60px;
+    -fx-background-color: rgba(16, 16, 16, 0.5);
+    -fx-border-color: white;
+    -fx-border-radius: 15px;
+}
+
+.bottom-prompt {
+    -fx-alignment: center;
+}
+
+.bottom-prompt .button {
+    -fx-font-size: 108px;
+}
+
+.header {
+    -fx-padding: 0px;
+}

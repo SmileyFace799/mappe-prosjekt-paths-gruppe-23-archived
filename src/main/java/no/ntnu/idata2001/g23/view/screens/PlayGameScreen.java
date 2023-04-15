@@ -30,9 +30,13 @@ public class PlayGameScreen extends GenericScreen<PlayGameController> {
         content.getChildren().add(startNewStory);
 
         Button loadgame = new Button("Load Game");
+        //TODO: Make this button work
+        loadgame.setDisable(true);
         content.getChildren().add(loadgame);
 
         Button tutorial = new Button("Tutorial");
+        //TODO: Make this button work
+        tutorial.setDisable(true);
         content.getChildren().add(tutorial);
 
         Button backButton = new Button("Go Back");

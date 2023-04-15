@@ -9,12 +9,17 @@ import no.ntnu.idata2001.g23.model.story.Passage;
 /**
  * A middle manager between the view & the model that keeps track of game progress,
  * and contains methods for the view & its controllers to progress & interact with the game.
- * The view & its controllers should never interact
- * with the model through any class other than this one.
+ * The view & its controllers should never modify anything within
+ * the model without going through this class, as those changes will not be visually reflected.
  */
 public class GameplayManager {
     private static GameplayManager instance;
 
+    /**
+     * Singleton.
+     *
+     * @return Singleton instance
+     */
     public static GameplayManager getInstance() {
         if (instance == null) {
             instance = new GameplayManager();
@@ -40,6 +45,10 @@ public class GameplayManager {
 
     public Game getGame() {
         return game;
+    }
+
+    public Passage getCurrentPassage() {
+        return currentPassage;
     }
 
     /**
