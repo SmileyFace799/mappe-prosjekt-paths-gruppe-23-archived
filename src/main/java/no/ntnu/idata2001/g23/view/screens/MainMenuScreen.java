@@ -1,12 +1,6 @@
-package no.ntnu.idata2001.g23.view.scenes;
+package no.ntnu.idata2001.g23.view.screens;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -14,36 +8,27 @@ import no.ntnu.idata2001.g23.controllers.MainMenuController;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
 
 /**
- * The main menu scene.
+ * The main menu screen.
  */
-public class MainMenuScene extends GenericScene<MainMenuController> {
-    public MainMenuScene(MainMenuController controller) {
+public class MainMenuScreen extends GenericScreen<MainMenuController> {
+    public MainMenuScreen(MainMenuController controller) {
         super(controller);
     }
 
     @Override
     protected Pane makeRoot() {
         VBox content = new VBox(60);
-
-        content.setAlignment(Pos.CENTER);
-        content.setBackground(new Background(new BackgroundImage(
-                TxLoader.getImage("bg.png"),
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                new BackgroundSize(1.0, 1.0, true, true, true, false)
-        )));
         content.getChildren().add(TxLoader.getImageView(
                 "tempTitle.png", 2000, 0, true));
 
         content.getChildren().add(new Rectangle(0, 200));
 
         Button playButton = new Button("Play Game");
-        playButton.setOnAction(ae -> controller.changeScene(PlayGameScene.class));
+        playButton.setOnAction(ae -> controller.changeScreen(PlayGameScreen.class));
         content.getChildren().add(playButton);
 
         Button settingsButton = new Button("Settings");
-        settingsButton.setOnAction(ae -> controller.changeScene(SettingsScene.class));
+        settingsButton.setOnAction(ae -> controller.changeScreen(SettingsScreen.class));
         content.getChildren().add(settingsButton);
 
         Button credits = new Button("Credits");

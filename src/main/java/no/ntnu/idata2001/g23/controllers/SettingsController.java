@@ -1,6 +1,6 @@
 package no.ntnu.idata2001.g23.controllers;
 
-import no.ntnu.idata2001.g23.DungeonApp;
+import no.ntnu.idata2001.g23.view.DungeonApp;
 
 /**
  * A controller for the settings scene.

@@ -1,7 +1,7 @@
 package no.ntnu.idata2001.g23.controllers;
 
-import no.ntnu.idata2001.g23.DungeonApp;
-import no.ntnu.idata2001.g23.view.scenes.GenericScene;
+import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.screens.GenericScreen;
 
 /**
  * A generic controller for any scene in the application.
@@ -13,7 +13,15 @@ public class GenericController {
         this.application = application;
     }
 
-    public void changeScene(Class<? extends GenericScene<? extends GenericController>> sceneClass) {
-        application.changeScene(sceneClass);
+    /**
+     * Changes the application to a different screen.
+     *
+     * @param screenClass The class of the screen to change to.
+     * @see <a href="https://bugs.openjdk.org/browse/JDK-8089209">JavaFX bug when changing scenes while in fullscreen</a>
+     */
+    public void changeScreen(
+            Class<? extends GenericScreen<? extends GenericController>> screenClass
+    ) {
+        application.changeScreen(screenClass);
     }
 }
