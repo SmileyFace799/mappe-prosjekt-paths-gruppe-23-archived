@@ -31,11 +31,11 @@ public abstract class GenericScreen<C extends GenericController> {
     protected GenericScreen(C controller, String... cssFiles) {
         this.controller = controller;
         this.root = makeRoot();
+        root.getStyleClass().add("root");
         //Putting "root" in a group makes the scaling work properly.
         //This means "root" isn't actually the root node, but it's behavior is otherwise identical,
         //and it can be treated as if it was the actual root node
         this.scene = new Scene(new Group(root), 1280, 720);
-        root.getStyleClass().add("root");
 
         scene.getStylesheets().add(CSS_PATH + "global.css");
         for (String cssFile : cssFiles) {
@@ -57,8 +57,12 @@ public abstract class GenericScreen<C extends GenericController> {
      */
     protected abstract Pane makeRoot();
 
+    /**
+     * Updates the screen's root pane by calling {@link #makeRoot()} again.
+     */
     public void updateRoot() {
         this.root = makeRoot();
+        root.getStyleClass().add("root");
         scene.setRoot(new Group(root));
     }
 
