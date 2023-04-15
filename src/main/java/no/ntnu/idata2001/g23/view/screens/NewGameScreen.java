@@ -6,13 +6,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import no.ntnu.idata2001.g23.controllers.GenericController;
+import no.ntnu.idata2001.g23.controllers.NewGameController;
 
 /**
  * The new game screen, where the player creates & starts a new game.
  */
-public class NewGameScreen extends GenericScreen<GenericController> {
-    public NewGameScreen(GenericController controller) {
+public class NewGameScreen extends GenericScreen<NewGameController> {
+    public NewGameScreen(NewGameController controller) {
         super(controller);
     }
 
@@ -40,6 +40,7 @@ public class NewGameScreen extends GenericScreen<GenericController> {
         content.getChildren().add(playerName);
 
         Button startPlaying = new Button("Start playing");
+        startPlaying.setOnAction(ae -> controller.startNewGame(playerName.getText()));
         content.getChildren().add(startPlaying);
 
         Button backButton = new Button("Go Back");

@@ -30,7 +30,7 @@ public class DungeonApp extends Application {
             }
         });
 
-        ScreenManager.getInstance().makeScreens(this);
+        ScreenManager.getInstance().makeMenuScreens(this);
         changeScreen(MainMenuScreen.class);
         primaryStage.show();
     }

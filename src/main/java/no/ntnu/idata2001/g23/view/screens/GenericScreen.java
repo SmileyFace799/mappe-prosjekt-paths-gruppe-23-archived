@@ -2,7 +2,6 @@ package no.ntnu.idata2001.g23.view.screens;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import no.ntnu.idata2001.g23.controllers.GenericController;
@@ -18,21 +17,50 @@ public abstract class GenericScreen<C extends GenericController> {
     private static final String CSS_PATH = "no/ntnu/idata2001/g23/view/";
 
     protected final C controller;
-    private Scene scene;
+    private final Scene scene;
+    private Pane root;
 
     /**
-     * Constructs a screen.
+     * Constructs a screen and makes its scene.
+     * The scene's root will be the {@link Pane} returned by {@link #makeRoot()}.
      *
-     * @param controller The screen's controller.
+     * @param controller The screen's controller
      * @param cssFiles   Any additional {@code .css}-files to apply to the scene.<br/>
      *                   <b>Note: </b> {@code global.css} will always be applied to the scene
      */
     protected GenericScreen(C controller, String... cssFiles) {
         this.controller = controller;
-        initialize(makeRoot(), cssFiles);
+        this.root = makeRoot();
+        //Putting "root" in a group makes the scaling work properly.
+        //This means "root" isn't actually the root node, but it's behavior is otherwise identical,
+        //and it can be treated as if it was the actual root node
+        this.scene = new Scene(new Group(root), 1280, 720);
+        root.getStyleClass().add("root");
+
+        scene.getStylesheets().add(CSS_PATH + "global.css");
+        for (String cssFile : cssFiles) {
+            scene.getStylesheets().add(CSS_PATH + cssFile);
+        }
+
+        scene.widthProperty().addListener((observableValue, oldValue, newValue) ->
+                sizeChangeListener(root));
+        scene.heightProperty().addListener((observableValue, oldValue, newValue) ->
+                sizeChangeListener(root));
+
+        sizeChangeListener(root); //Updates scene size to the right screen size upon creation
     }
 
+    /**
+     * Makes the screen's root pane.
+     *
+     * @return The root pane made
+     */
     protected abstract Pane makeRoot();
+
+    public void updateRoot() {
+        this.root = makeRoot();
+        scene.setRoot(new Group(root));
+    }
 
     /**
      * A listener function that runs whenever this screen is visible & resized.
@@ -54,36 +82,6 @@ public abstract class GenericScreen<C extends GenericController> {
 
         root.setPrefWidth(newWidth / scaleFactor);
         root.setPrefHeight(newHeight / scaleFactor);
-    }
-
-    /**
-     * Initializes the screen and makes it's scene.
-     * Should always be called at the end of the constructor.
-     *
-     * @param root     The root node for the scene. If this is not a {@link Pane},
-     *                 it will be put in the center of an otherwise empty {@link BorderPane}.
-     *                 This is done so it can be conveniently resized
-     * @param cssFiles Any additional {@code .css}-files to apply to the scene.<br/>
-     *                 <b>Note: </b> {@code global.css} will always be applied to the scene
-     */
-    private void initialize(Pane root, String... cssFiles) {
-        root.getStyleClass().add("root");
-        //Putting "root" in a group makes the scaling work properly.
-        //This means "root" isn't actually the root node, but it's behavior is otherwise identical,
-        //and it can be treated as if it was the actual root node
-        this.scene = new Scene(new Group(root), 1280, 720);
-
-        scene.getStylesheets().add(CSS_PATH + "global.css");
-        for (String cssFile : cssFiles) {
-            scene.getStylesheets().add(CSS_PATH + cssFile);
-        }
-
-        scene.widthProperty().addListener((observableValue, oldValue, newValue) ->
-                sizeChangeListener(root));
-        scene.heightProperty().addListener((observableValue, oldValue, newValue) ->
-                sizeChangeListener(root));
-
-        sizeChangeListener(root); //Updates scene size to the right screen size upon creation
     }
 
     public Scene getScene() {

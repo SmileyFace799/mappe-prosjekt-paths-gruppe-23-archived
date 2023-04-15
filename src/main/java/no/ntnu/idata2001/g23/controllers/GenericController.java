@@ -6,7 +6,7 @@ import no.ntnu.idata2001.g23.view.screens.GenericScreen;
 /**
  * A generic controller for any scene in the application.
  */
-public class GenericController {
+public abstract class GenericController {
     protected final DungeonApp application;
 
     protected GenericController(DungeonApp application) {

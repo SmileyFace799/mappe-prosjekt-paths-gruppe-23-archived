@@ -8,7 +8,7 @@ import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.model.story.Story;
 
 /**
- * A game that can be player, with everything needed to play it.
+ * Connects a player with a story, and contains method for the player to navigate the story.
  */
 public class Game {
     Player player;
