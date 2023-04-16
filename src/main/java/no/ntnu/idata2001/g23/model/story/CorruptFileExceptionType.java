@@ -4,7 +4,7 @@ package no.ntnu.idata2001.g23.model.story;
  * Types of {@link CorruptFileException} that specifies the exact cause.
  */
 public enum CorruptFileExceptionType {
-    UNKNOWN("An unknown error occurred while attempting to the file"),
+    UNKNOWN("An unknown error occurred while attempting to read the file"),
     EMPTY_FILE("File is empty"),
     NO_TITLE("Story is missing a title"),
     NO_PASSAGES("Reached end of file without finding any passages for the story"),
