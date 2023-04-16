@@ -6,13 +6,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.PlayGameController;
+import no.ntnu.idata2001.g23.view.DungeonApp;
 
 /**
  * The play game screen, that shows after the player selects "play game".
  */
-public class PlayGameScreen extends GenericScreen<PlayGameController> {
-    public PlayGameScreen(PlayGameController controller) {
-        super(controller);
+public class PlayGameScreen extends GenericScreen {
+    private final PlayGameController controller;
+
+    public PlayGameScreen(DungeonApp application) {
+        super();
+        controller = new PlayGameController(application);
     }
 
     @Override

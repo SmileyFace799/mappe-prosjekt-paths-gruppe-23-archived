@@ -11,30 +11,36 @@ import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.story.Passage;
+import no.ntnu.idata2001.g23.view.DungeonApp;
 
 /**
  * The gameplay screen, where the game is played.
  */
-public class GameplayScreen extends GenericScreen<GameplayController>
-        implements GameUpdateListener {
+public class GameplayScreen extends GenericScreen implements GameUpdateListener {
+    private final GameplayController controller;
+
     /**
      * Makes the gameplay screen.
      *
-     * @param controller The gameplay controller
+     * @param application The application instance to give to the controller.
      */
-    public GameplayScreen(GameplayController controller) {
-        super(controller, "gameplay.css");
+    public GameplayScreen(DungeonApp application) {
+        super("gameplay.css");
+        controller = new GameplayController(this, application);
         GameplayManager.getInstance().addUpdateListener(this);
-        setBottomContent(null);
     }
 
     private HBox bottomContent;
 
-    private void setBottomContent(HBox content) {
+    /**
+     * Sets the bottom menu content.
+     *
+     * @param content The content to set the bottom menu to. If this is {@code null},
+     *                it will be set back to default
+     */
+    public void setBottomContent(HBox content) {
         if (content == null) {
             bottomContent = new HBox(100);
-            bottomContent.getStyleClass().add("prompt");
-            bottomContent.getStyleClass().add("bottom-prompt");
 
             Button fightButton = new Button("Fight");
             //TODO: Make this button work
@@ -52,12 +58,18 @@ public class GameplayScreen extends GenericScreen<GameplayController>
             bottomContent.getChildren().add(itemButton);
 
             Button menuButton = new Button("Menu");
-            menuButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
+            menuButton.setOnAction(ae -> controller.showBottomMenu());
             bottomContent.getChildren().add(menuButton);
         } else {
             bottomContent = content;
         }
-        updateRoot();
+        bottomContent.getStyleClass().add("prompt");
+        bottomContent.getStyleClass().add("bottom-prompt");
+    }
+
+    @Override
+    protected void setDefaultParams() {
+        setBottomContent(null);
     }
 
     @Override

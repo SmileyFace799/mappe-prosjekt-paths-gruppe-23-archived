@@ -7,13 +7,24 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.controllers.NewGameController;
+import no.ntnu.idata2001.g23.view.DungeonApp;
 
 /**
  * The new game screen, where the player creates & starts a new game.
  */
-public class NewGameScreen extends GenericScreen<NewGameController> {
-    public NewGameScreen(NewGameController controller) {
-        super(controller);
+public class NewGameScreen extends GenericScreen {
+    private final NewGameController controller;
+
+    public NewGameScreen(DungeonApp application) {
+        super();
+        controller = new NewGameController(this, application);
+    }
+
+    private String errorMessage;
+
+    @Override
+    protected void setDefaultParams() {
+        errorMessage = null;
     }
 
     @Override
@@ -39,6 +50,12 @@ public class NewGameScreen extends GenericScreen<NewGameController> {
         }));
         content.getChildren().add(playerName);
 
+        if (this.errorMessage != null) {
+            Label errorLabel = new Label(errorMessage);
+            errorLabel.getStyleClass().add("error-label");
+            content.getChildren().add(errorLabel);
+        }
+
         Button startPlaying = new Button("Start playing");
         startPlaying.setOnAction(ae -> controller.startNewGame(playerName.getText()));
         content.getChildren().add(startPlaying);
@@ -48,5 +65,10 @@ public class NewGameScreen extends GenericScreen<NewGameController> {
         content.getChildren().add(backButton);
 
         return content;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+        updateRoot();
     }
 }

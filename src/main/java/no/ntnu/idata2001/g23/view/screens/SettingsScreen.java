@@ -6,13 +6,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.SettingsController;
+import no.ntnu.idata2001.g23.view.DungeonApp;
 
 /**
  * The settings screen, where the user can customize various application & game settings.
  */
-public class SettingsScreen extends GenericScreen<SettingsController> {
-    public SettingsScreen(SettingsController controller) {
-        super(controller);
+public class SettingsScreen extends GenericScreen {
+    private final SettingsController controller;
+
+    public SettingsScreen(DungeonApp application) {
+        super();
+        this.controller = new SettingsController(application);
     }
 
     @Override

@@ -14,13 +14,12 @@ public abstract class GenericController {
     }
 
     /**
-     * Changes the application to a different screen.
+     * Convenience method for easy access to {@link DungeonApp#changeScreen(Class)}.
      *
-     * @param screenClass The class of the screen to change to.
-     * @see <a href="https://bugs.openjdk.org/browse/JDK-8089209">JavaFX bug when changing scenes while in fullscreen</a>
+     * @param screenClass The class of the screen to change to
      */
     public void changeScreen(
-            Class<? extends GenericScreen<? extends GenericController>> screenClass
+            Class<? extends GenericScreen> screenClass
     ) {
         application.changeScreen(screenClass);
     }

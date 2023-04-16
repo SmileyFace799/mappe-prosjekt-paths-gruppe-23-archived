@@ -5,14 +5,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.MainMenuController;
+import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
 
 /**
  * The main menu screen.
  */
-public class MainMenuScreen extends GenericScreen<MainMenuController> {
-    public MainMenuScreen(MainMenuController controller) {
-        super(controller);
+public class MainMenuScreen extends GenericScreen {
+    private final MainMenuController controller;
+
+    public MainMenuScreen(DungeonApp application) {
+        super();
+        controller = new MainMenuController(application);
     }
 
     @Override

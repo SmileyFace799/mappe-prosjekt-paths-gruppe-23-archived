@@ -2,12 +2,6 @@ package no.ntnu.idata2001.g23.view;
 
 import java.util.Collection;
 import java.util.Set;
-import no.ntnu.idata2001.g23.controllers.GameplayController;
-import no.ntnu.idata2001.g23.controllers.GenericController;
-import no.ntnu.idata2001.g23.controllers.MainMenuController;
-import no.ntnu.idata2001.g23.controllers.NewGameController;
-import no.ntnu.idata2001.g23.controllers.PlayGameController;
-import no.ntnu.idata2001.g23.controllers.SettingsController;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.GenericScreen;
@@ -21,7 +15,7 @@ import no.ntnu.idata2001.g23.view.screens.SettingsScreen;
  */
 public class ScreenManager {
     private static ScreenManager instance;
-    private Collection<GenericScreen<? extends GenericController>> screenCollection;
+    private Collection<GenericScreen> screenCollection;
 
     private ScreenManager() {
     }
@@ -45,11 +39,11 @@ public class ScreenManager {
      */
     public void makeMenuScreens(DungeonApp application) {
         screenCollection = Set.of(
-                new MainMenuScreen(new MainMenuController(application)),
-                new SettingsScreen(new SettingsController(application)),
-                new PlayGameScreen(new PlayGameController(application)),
-                new NewGameScreen(new NewGameController(application)),
-                new GameplayScreen(new GameplayController(application))
+                new MainMenuScreen(application),
+                new SettingsScreen(application),
+                new PlayGameScreen(application),
+                new NewGameScreen(application),
+                new GameplayScreen(application)
         );
     }
 
@@ -62,7 +56,7 @@ public class ScreenManager {
      * @return The screen of the type that belongs to the provided class
      * @throws ElementNotFoundException If the screen class passed has not been initialized yet
      */
-    public <S extends GenericScreen<? extends GenericController>> S getScreen(
+    public <S extends GenericScreen> S getScreen(
             Class<S> screenClass
     ) {
         return screenClass.cast(screenCollection

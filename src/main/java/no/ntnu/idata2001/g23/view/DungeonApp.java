@@ -5,7 +5,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import no.ntnu.idata2001.g23.controllers.GenericController;
 import no.ntnu.idata2001.g23.view.screens.GenericScreen;
 import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
 
@@ -37,17 +36,21 @@ public class DungeonApp extends Application {
 
     /**
      * Changes the application to a different screen.
+     * The new screen will be reset to its default state before changing.
      *
      * @param screenClass The class of the screen to change to.
      * @see <a href="https://bugs.openjdk.org/browse/JDK-8089209">JavaFX bug when changing scenes while in fullscreen</a>
      */
     public void changeScreen(
-            Class<? extends GenericScreen<? extends GenericController>> screenClass
+            Class<? extends GenericScreen> screenClass
     ) {
-        double width = primaryStage.getWidth();
-        double height = primaryStage.getHeight();
-        boolean fullscreen = primaryStage.isFullScreen();
-        primaryStage.setScene(ScreenManager.getInstance().getScreen(screenClass).getScene());
+        final double width = primaryStage.getWidth();
+        final double height = primaryStage.getHeight();
+        final boolean fullscreen = primaryStage.isFullScreen();
+        GenericScreen screen =
+                ScreenManager.getInstance().getScreen(screenClass);
+        screen.resetToDefault();
+        primaryStage.setScene(screen.getScene());
         primaryStage.setFullScreen(fullscreen);
         primaryStage.setWidth(width);
         primaryStage.setHeight(height);
