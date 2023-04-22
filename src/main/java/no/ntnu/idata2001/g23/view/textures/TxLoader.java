@@ -14,7 +14,7 @@ public class TxLoader {
     }
 
     /**
-     * Loads a image from a file path.
+     * Loads an image from a file path.
      *
      * @param filePath The image's file path.
      * @return The found image file as an image.
@@ -28,21 +28,17 @@ public class TxLoader {
         return new Image(is);
     }
 
-    public static ImageView getImageView(String filePath) {
-        return getImageView(filePath, 0, 0, false);
-    }
-
     /**
      * Loads a viewable image from a file path.
      *
      * @param filePath      The image's file path.
-     * @param width         The image's width.
-     * @param height        The image's height.
-     * @param preserveRatio If the image should preserve it's aspect ratio.
+     * @param width         The image's width. If this is 0, it is ignored.
+     * @param height        The image's height. If this is 0, it is ignored.
+     * @param preserveRatio If the image should preserve its aspect ratio.
      * @return The found image file as a viewable image.
      * @throws NegativeNumberException  If {@code width} & {@code height} is less than 0.
-     * @throws IllegalArgumentException If {@code preserveRatio == true}
-     *                                  & both {@code width} & {@code height} are not 0.
+     * @throws IllegalArgumentException If {@code preserveRatio == true},
+     *                                  but both {@code width} & {@code height} are not 0.
      */
     public static ImageView getImageView(
             String filePath, double width, double height, boolean preserveRatio
