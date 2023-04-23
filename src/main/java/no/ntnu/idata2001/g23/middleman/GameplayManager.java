@@ -3,14 +3,15 @@ package no.ntnu.idata2001.g23.middleman;
 import java.util.Collection;
 import java.util.HashSet;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.model.Game;
+import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 
 /**
  * A middle manager between the view & the model that keeps track of game progress,
  * and contains methods for the view & its controllers to progress & interact with the game.
- * The view & its controllers should never modify anything within
- * the model without going through this class, as those changes will not be visually reflected.
  */
 public class GameplayManager {
     private static GameplayManager instance;
@@ -39,8 +40,8 @@ public class GameplayManager {
         listeners.add(listener);
     }
 
-    private void notifyListeners() {
-        listeners.forEach(GameUpdateListener::onUpdate);
+    private void notifyListeners(GameUpdateEvent event) {
+        listeners.forEach(listener -> listener.onUpdate(event));
     }
 
     public Game getGame() {
@@ -77,8 +78,20 @@ public class GameplayManager {
         } else {
             this.currentPassage = game.begin();
         }
-        notifyListeners();
+        //TODO: Make this work, or remove it
+        notifyListeners(null);
     }
 
-
+    /**
+     * Updates the current passage to the passage associated with the provided link.
+     *
+     * @param link The link associated with the passage to move to
+     * @throws NullValueException If {@code link} is {@code null}
+     */
+    public void movePassage(Link link) {
+        if (link == null) {
+            throw new NullValueException("\"link\" cannot be null");
+        }
+        this.currentPassage = game.go(link);
+    }
 }

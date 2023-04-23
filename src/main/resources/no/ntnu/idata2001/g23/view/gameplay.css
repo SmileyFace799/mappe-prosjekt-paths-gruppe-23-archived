@@ -1,22 +1,106 @@
-.menu {
+/* Built-in classes */
+.scroll-pane {
+    -fx-hbar-policy: as-needed;
+    -fx-vbar-policy: as-needed;
+    -fx-pannable: true;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.list-view {
+    -fx-pref-width: 1000px;
+    -fx-pref-height: 1000px;
+}
+
+.list-cell {
+    -fx-background-color: #101010;
+    -fx-text-fill: white;
+}
+
+.list-cell:odd {
+    -fx-background-color: #181818;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #003f8b;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #005ED0;
+}
+
+.corner { /* The corner where two scroll bars meet */
+    -fx-background-color: #323232;
+}
+
+.scroll-bar {
+    -fx-pref-width: 50px;
+    -fx-pref-height: 50px;
+}
+
+.scroll-bar .decrement-button,
+.scroll-bar .increment-button {
+    -fx-background-color: #323232;
+    -fx-pref-width: 50px;
+    -fx-pref-height: 50px;
+}
+
+.scroll-bar .decrement-button .decrement-arrow,
+.scroll-bar .increment-button .increment-arrow {
+    -fx-background-color: white;
+    -fx-pref-width: 25px;
+    -fx-pref-height: 25px;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #101010;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #323232;
+}
+
+/* Custom classes */
+.overlay {
     -fx-alignment: center;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlay .prompt {
+    -fx-background-color: rgba(16, 16, 16, 0.75);
 }
 
 .prompt {
-    -fx-padding: 60px;
+    -fx-alignment: center;
     -fx-background-color: rgba(16, 16, 16, 0.5);
     -fx-border-color: white;
     -fx-border-radius: 15px;
+    -fx-padding: 60px;
 }
 
-.bottom-prompt {
-    -fx-alignment: center;
-}
-
-.bottom-prompt .button {
+.prompt .button {
     -fx-font-size: 108px;
 }
 
-.header {
+.top-prompt {
     -fx-padding: 0px;
+}
+
+.left-prompt {
+    -fx-alignment: top-left;
+}
+
+.left-prompt .button {
+    -fx-font-size: 72px;
+}
+
+.top-content {
+    -fx-alignment: top-left;
+    -fx-padding: 60px;
+}
+
+.emphasized-button {
+    -fx-font-weight: bold;
 }

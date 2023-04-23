@@ -5,15 +5,13 @@
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-background-size: contain;
+    -fx-font-size: 72px;
 }
 
 .button {
     -fx-text-fill: white;
     -fx-font-family: "Segoe UI Variable";
-    -fx-font-weight: bold;
-    -fx-font-size: 72px;
-    -fx-background-color: #333232;
-    -fx-effect: dropshadow( three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+    -fx-background-color: #323232;
 }
 
 .button:hover {
@@ -21,14 +19,11 @@
 }
 
 .label {
-    -fx-font-size: 72px;
     -fx-text-fill: white;
-    /* -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 0, 0, 0, 1); */
 }
 
 .header {
     -fx-font-weight: bold;
-    -fx-padding: 60px;
     -fx-text-alignment: center;
     -fx-font-family: "Rockwell Nova Extra Bold";
     -fx-font-size: 144px;

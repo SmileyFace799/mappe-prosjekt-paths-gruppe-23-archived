@@ -4,7 +4,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
-import no.ntnu.idata2001.g23.view.DungeonApp;
 
 /**
  * Represents a screen, which consists of a scene,
@@ -12,9 +11,11 @@ import no.ntnu.idata2001.g23.view.DungeonApp;
  */
 public abstract class GenericScreen {
     private static final String CSS_PATH = "no/ntnu/idata2001/g23/view/";
+    public static final int BASE_WIDTH = 3840;
+    public static final int BASE_HEIGHT = 2160;
 
     private final Scene scene;
-    private Pane root;
+    private final Pane root;
 
     /**
      * Constructs a screen and makes its scene.
@@ -26,13 +27,15 @@ public abstract class GenericScreen {
      *                   <b>Note: </b> {@code global.css} will always be applied to the scene
      */
     protected GenericScreen(String... cssFiles) {
-        setDefaultParams(); //Sets default screen parameters
-        this.root = makeRoot(); //Makes the root pane, in its default state
-        root.getStyleClass().add("root");
+        this.root = makeRoot(); //Makes the root pane
+
         //Putting "root" in a group makes the scaling work properly.
-        //This means "root" isn't actually the root node, but it's behavior is otherwise identical,
+        //This means "root" isn't actually the root node, but its behavior is otherwise identical,
         //and it can be treated as if it was the actual root node
         this.scene = new Scene(new Group(root), 1280, 720);
+
+        //"root" style class must be added manually, due to the reason above
+        root.getStyleClass().add("root");
 
         //Adds .css
         scene.getStylesheets().add(CSS_PATH + "global.css");
@@ -45,53 +48,35 @@ public abstract class GenericScreen {
                 sizeChangeListener());
         scene.heightProperty().addListener((observableValue, oldValue, newValue) ->
                 sizeChangeListener());
-
-        sizeChangeListener(); //Updates scene size to the right screen size upon creation
     }
 
     /**
-     * Makes the screen's root pane.
-     *
-     * @return The root pane made
+     * Makes the initial root pane. This is called once in the constructor,
+     * and should never be called again
      */
     protected abstract Pane makeRoot();
 
     /**
-     * Screen can optionally override this to set default parameters. Does nothing by default.
+     * If a screen can change its state,
+     * it can override this to reset itself back to its default state.
+     *
+     * <p>This is called right after the root is created,
+     * and when the application changes to this screen.</p>
      */
-    protected void setDefaultParams() {
+    public void setDefaultState() {
         //Does nothing by default, but screens can override this to set default parameter values
-    }
-
-    /**
-     * Resets the state of the screen back the default state, and updates it.
-     */
-    public void resetToDefault() {
-        setDefaultParams();
-        updateRoot();
-    }
-
-    /**
-     * Updates the screen's root pane by calling {@link #makeRoot()} again.
-     * This should be called if changes happen to the screen, and it needs to be re-rendered.
-     */
-    public void updateRoot() {
-        this.root = makeRoot();
-        root.getStyleClass().add("root");
-        scene.setRoot(new Group(root));
-        sizeChangeListener(); //Update the root size to fit the screen again
     }
 
     /**
      * A listener function that runs whenever this screen is visible & resized.
      */
-    private void sizeChangeListener() {
+    public void sizeChangeListener() {
         double newWidth = scene.getWidth();
         double newHeight = scene.getHeight();
 
         double scaleFactor = Math.min(
-                newWidth / DungeonApp.BASE_WIDTH,
-                newHeight / DungeonApp.BASE_HEIGHT
+                newWidth / BASE_WIDTH,
+                newHeight / BASE_HEIGHT
         );
 
 
@@ -106,5 +91,9 @@ public abstract class GenericScreen {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public Pane getRoot() {
+        return root;
     }
 }

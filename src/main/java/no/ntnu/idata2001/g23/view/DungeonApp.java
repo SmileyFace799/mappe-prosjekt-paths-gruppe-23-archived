@@ -12,8 +12,6 @@ import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
  * The top-level application class.
  */
 public class DungeonApp extends Application {
-    public static final int BASE_WIDTH = 3840;
-    public static final int BASE_HEIGHT = 2160;
     private Stage primaryStage;
 
     @Override
@@ -49,7 +47,8 @@ public class DungeonApp extends Application {
         final boolean fullscreen = primaryStage.isFullScreen();
         GenericScreen screen =
                 ScreenManager.getInstance().getScreen(screenClass);
-        screen.resetToDefault();
+        screen.setDefaultState();
+        screen.sizeChangeListener();
         primaryStage.setScene(screen.getScene());
         primaryStage.setFullScreen(fullscreen);
         primaryStage.setWidth(width);

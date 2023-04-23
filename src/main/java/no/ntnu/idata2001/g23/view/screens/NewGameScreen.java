@@ -20,11 +20,13 @@ public class NewGameScreen extends GenericScreen {
         controller = new NewGameController(this, application);
     }
 
-    private String errorMessage;
+    private TextField playerName;
+    private Label errorLabel;
 
     @Override
-    protected void setDefaultParams() {
-        errorMessage = null;
+    public void setDefaultState() {
+        playerName.setText("");
+        setErrorMessage(null);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class NewGameScreen extends GenericScreen {
         newGameTitle.getStyleClass().add("header");
         content.getChildren().add(newGameTitle);
 
-        TextField playerName = new TextField();
+        playerName = new TextField();
         playerName.setMaxWidth(500);
         playerName.setTextFormatter(new TextFormatter<>(change -> {
             if (change.isContentChange()) {
@@ -50,11 +52,9 @@ public class NewGameScreen extends GenericScreen {
         }));
         content.getChildren().add(playerName);
 
-        if (this.errorMessage != null) {
-            Label errorLabel = new Label(errorMessage);
-            errorLabel.getStyleClass().add("error-label");
-            content.getChildren().add(errorLabel);
-        }
+        errorLabel = new Label();
+        errorLabel.getStyleClass().add("error-label");
+        content.getChildren().add(errorLabel);
 
         Button startPlaying = new Button("Start playing");
         startPlaying.setOnAction(ae -> controller.startNewGame(playerName.getText()));
@@ -68,7 +68,7 @@ public class NewGameScreen extends GenericScreen {
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-        updateRoot();
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(errorMessage != null && !errorMessage.isBlank());
     }
 }
