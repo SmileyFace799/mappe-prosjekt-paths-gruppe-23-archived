@@ -23,7 +23,7 @@ public class MainMenuScreen extends GenericScreen {
     protected Pane makeRoot() {
         VBox content = new VBox(60);
         content.getChildren().add(TxLoader.getImageView(
-                "tempTitle.png", 2000, 0, true));
+                "title.png", 0, 500, true));
 
         content.getChildren().add(new Rectangle(0, 200));
 

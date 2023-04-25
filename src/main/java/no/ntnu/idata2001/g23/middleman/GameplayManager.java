@@ -4,14 +4,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 
 /**
  * A middle manager between the view & the model that keeps track of game progress,
- * and contains methods for the view & its controllers to progress & interact with the game.
+ * and contains methods for the controllers to interact with the game.
+ * Also makes use of observer pattern to notify the view about any changes.
  */
 public class GameplayManager {
     private static GameplayManager instance;
@@ -44,14 +47,6 @@ public class GameplayManager {
         listeners.forEach(listener -> listener.onUpdate(event));
     }
 
-    public Game getGame() {
-        return game;
-    }
-
-    public Passage getCurrentPassage() {
-        return currentPassage;
-    }
-
     /**
      * Starts a game from the beginning.
      *
@@ -78,8 +73,7 @@ public class GameplayManager {
         } else {
             this.currentPassage = game.begin();
         }
-        //TODO: Make this work, or remove it
-        notifyListeners(null);
+        notifyListeners(new NewGameEvent(game, currentPassage));
     }
 
     /**
@@ -93,5 +87,6 @@ public class GameplayManager {
             throw new NullValueException("\"link\" cannot be null");
         }
         this.currentPassage = game.go(link);
+        notifyListeners(new ChangePassageEvent(currentPassage));
     }
 }

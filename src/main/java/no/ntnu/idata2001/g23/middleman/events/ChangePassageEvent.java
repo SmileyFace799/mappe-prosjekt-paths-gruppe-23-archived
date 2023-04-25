@@ -5,4 +5,6 @@ import no.ntnu.idata2001.g23.model.story.Passage;
 /**
  * Indicates that the game's current passage was changed.
  */
-public record ChangePassageEvent(Passage newPassage) implements GameUpdateEvent {}
+public record ChangePassageEvent(
+        Passage currentPassage
+) implements GameUpdateEvent {}

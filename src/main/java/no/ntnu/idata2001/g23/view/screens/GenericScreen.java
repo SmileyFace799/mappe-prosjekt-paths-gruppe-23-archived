@@ -27,6 +27,7 @@ public abstract class GenericScreen {
      *                   <b>Note: </b> {@code global.css} will always be applied to the scene
      */
     protected GenericScreen(String... cssFiles) {
+        initializeNodes();
         this.root = makeRoot(); //Makes the root pane
 
         //Putting "root" in a group makes the scaling work properly.
@@ -51,8 +52,21 @@ public abstract class GenericScreen {
     }
 
     /**
-     * Makes the initial root pane. This is called once in the constructor,
-     * and should never be called again
+     * If a screen needs to initialize certain nodes before the root is made,
+     * it can override this to do exactly that.
+     *
+     * <p>This is called once in the constructor before {@link #makeRoot()},
+     * and should never be called again.</p>
+     */
+    protected void initializeNodes() {
+        //Does nothing by default, but screens can override this to initialize nodes if they need
+    }
+
+    /**
+     * Makes the initial root pane.
+     *
+     * <p>This is called once in the constructor after {@link #initializeNodes()},
+     * and should never be called again.</p>
      */
     protected abstract Pane makeRoot();
 
@@ -60,8 +74,8 @@ public abstract class GenericScreen {
      * If a screen can change its state,
      * it can override this to reset itself back to its default state.
      *
-     * <p>This is called right after the root is created,
-     * and when the application changes to this screen.</p>
+     * <p>This can be called multiple times,
+     * and is always called when the application changes to this screen.</p>
      */
     public void setDefaultState() {
         //Does nothing by default, but screens can override this to set default parameter values

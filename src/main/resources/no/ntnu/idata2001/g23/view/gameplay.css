@@ -10,6 +10,9 @@
 }
 
 .list-view {
+    -fx-background-color: black;
+    -fx-border-color: white;
+    -fx-border-size: 15px;
     -fx-pref-width: 1000px;
     -fx-pref-height: 1000px;
 }

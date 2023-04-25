@@ -1,36 +1,53 @@
 package no.ntnu.idata2001.g23.view.screens;
 
+import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.controllers.GameplayController;
+import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
+import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
+import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.story.Link;
+import no.ntnu.idata2001.g23.model.story.Passage;
+import no.ntnu.idata2001.g23.view.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
 
 /**
  * The gameplay screen, where the game is played.
  */
-public class GameplayScreen extends GenericScreen {
+public class GameplayScreen extends GenericScreen implements GameUpdateListener {
     private final GameplayController controller;
 
     private static final int HORIZONTAL_SPACING = 100;
     private static final int VERTICAL_SPACING = 30;
 
-    //Initially invisible nodes, for later use
-    private final VBox pauseModal;
-    private final VBox inventoryPrompt;
-    private final ListView<Item> inventoryContent;
-
-    //Immediately visible nodes
     private BorderPane contentPane;
+
+    private VBox pauseModal;
+
     private BorderPane topPrompt;
+    private Label passageTitle;
+    private Label passageText;
+
+    private ScrollPane movePrompt;
+    private VBox moveOptions;
+
+    private VBox inventoryPrompt;
+    private ListView<Item> inventoryContent;
+
+    private HBox actionPrompt;
 
     /**
      * Makes the gameplay screen.
@@ -40,8 +57,39 @@ public class GameplayScreen extends GenericScreen {
     public GameplayScreen(DungeonApp application) {
         super("gameplay.css");
         controller = new GameplayController(this, application);
+        GameplayManager.getInstance().addUpdateListener(this);
+    }
 
-        //PAUSE MODAL
+    @Override
+    public StackPane getRoot() {
+        return (StackPane) super.getRoot();
+    }
+
+    public BorderPane getContentPane() {
+        return contentPane;
+    }
+
+    public VBox getPauseModal() {
+        return pauseModal;
+    }
+
+    public BorderPane getTopPrompt() {
+        return topPrompt;
+    }
+
+    public ScrollPane getMovePrompt() {
+        return movePrompt;
+    }
+
+    public VBox getInventoryPrompt() {
+        return inventoryPrompt;
+    }
+
+    public ListView<Item> getInventoryContent() {
+        return inventoryContent;
+    }
+
+    private void initializePauseModal() {
         pauseModal = new VBox(VERTICAL_SPACING);
         pauseModal.getStyleClass().add(Css.PROMPT);
 
@@ -50,7 +98,7 @@ public class GameplayScreen extends GenericScreen {
         pauseModal.getChildren().add(menuText);
 
         Button resumeButton = new Button("Resume");
-        resumeButton.getStyleClass().add(GameplayScreen.Css.EMPHASIZED_BUTTON);
+        resumeButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
         resumeButton.setOnAction(ae -> controller.removeTopModal());
         pauseModal.getChildren().add(resumeButton);
 
@@ -62,8 +110,45 @@ public class GameplayScreen extends GenericScreen {
         Button mainMenuButton = new Button("Main menu");
         mainMenuButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
         pauseModal.getChildren().add(mainMenuButton);
+    }
 
-        //INVENTORY PROMPT
+    private void initializeTopPrompt() {
+        topPrompt = new BorderPane();
+        topPrompt.getStyleClass().addAll(Css.PROMPT, Css.TOP_PROMPT);
+
+        VBox passageContent = new VBox(VERTICAL_SPACING);
+        passageContent.getStyleClass().add(Css.TOP_CONTENT);
+        topPrompt.setCenter(passageContent);
+
+        passageTitle = new Label();
+        passageTitle.getStyleClass().add(Css.HEADER);
+        passageContent.getChildren().add(passageTitle);
+
+        passageText = new Label();
+        passageContent.getChildren().add(passageText);
+
+        Button menuButton = new Button();
+        menuButton.setGraphic(TxLoader.getIcon("menuIcon.png", 100));
+        menuButton.setOnAction(ae -> controller.showPauseModal());
+        topPrompt.setRight(menuButton);
+    }
+
+    private void initializeMovePrompt() {
+        movePrompt = new DebugScrollPane();
+        movePrompt.getStyleClass().addAll(Css.PROMPT, Css.LEFT_PROMPT);
+
+        VBox moveContent = new VBox(VERTICAL_SPACING);
+        movePrompt.setContent(moveContent);
+
+        Label moveText = new Label("Move:");
+        moveText.getStyleClass().add(Css.HEADER);
+        moveContent.getChildren().add(moveText);
+
+        moveOptions = new VBox(VERTICAL_SPACING);
+        moveContent.getChildren().add(moveOptions);
+    }
+
+    private void initializeInventoryPrompt() {
         inventoryPrompt = new VBox(VERTICAL_SPACING);
         inventoryPrompt.getStyleClass().addAll(Css.PROMPT, Css.LEFT_PROMPT);
 
@@ -72,6 +157,8 @@ public class GameplayScreen extends GenericScreen {
         inventoryPrompt.getChildren().add(inventoryHeader);
 
         inventoryContent = new ListView<>();
+        inventoryContent.setPlaceholder(new Label("(No items)"));
+        inventoryContent.setItems(FXCollections.observableArrayList());
         inventoryContent.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Item item, boolean empty) {
@@ -91,65 +178,74 @@ public class GameplayScreen extends GenericScreen {
         inventoryPrompt.getChildren().add(useButton);
     }
 
-    @Override
-    public StackPane getRoot() {
-        return (StackPane) super.getRoot();
-    }
+    private void initializeActionPrompt() {
+        actionPrompt = new HBox(HORIZONTAL_SPACING);
+        actionPrompt.getStyleClass().add(Css.PROMPT);
 
-    public VBox getPauseModal() {
-        return pauseModal;
-    }
+        Button moveButton = new Button("Move");
+        moveButton.getStyleClass().add(Css.HEADER);
+        moveButton.setOnAction(ae -> controller.showMovePrompt());
+        actionPrompt.getChildren().add(moveButton);
 
-    public VBox getInventoryPrompt() {
-        return inventoryPrompt;
-    }
+        Button fightButton = new Button("Fight");
+        fightButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
+        //TODO: Make this button work
+        fightButton.setDisable(true);
+        actionPrompt.getChildren().add(fightButton);
 
-    public ListView<Item> getInventoryContent() {
-        return inventoryContent;
-    }
-
-    public BorderPane getContentPane() {
-        return contentPane;
-    }
-
-    public BorderPane getTopPrompt() {
-        return topPrompt;
+        Button inventoryButton = new Button("Inventory");
+        inventoryButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
+        inventoryButton.setOnAction(ae -> controller.showInventoryPrompt());
+        actionPrompt.getChildren().add(inventoryButton);
     }
 
     @Override
-    public void setDefaultState() {
-        if (GameplayManager.getInstance().getGame() != null) {
-            controller.removeAllModal();
-            controller.showDefault();
-        } else { //This should never trigger, only exists as a fail-safe
-            VBox errorVbox = new VBox(20);
-            errorVbox.getStyleClass().add("menu");
-            errorVbox.getChildren().add(new Label(
-                    "Oops, there's no game loaded, spaghetti code moment"));
-            Button backButton = new Button("Main menu");
-            backButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
-            errorVbox.getChildren().add(backButton);
-            getRoot().getChildren().add(errorVbox);
-        }
+    protected void initializeNodes() {
+        initializeTopPrompt();
+        initializePauseModal();
+        initializeMovePrompt();
+        initializeInventoryPrompt();
+        initializeActionPrompt();
     }
 
     @Override
     protected Pane makeRoot() {
-        StackPane root = new StackPane();
-
         contentPane = new BorderPane();
-        root.getChildren().add(contentPane);
-
-        topPrompt = new BorderPane();
-        topPrompt.getStyleClass().addAll(Css.PROMPT, Css.TOP_PROMPT);
         contentPane.setTop(topPrompt);
+        contentPane.setLeft(movePrompt);
+        contentPane.setBottom(actionPrompt);
 
-        Button menuButton = new Button();
-        menuButton.setGraphic(TxLoader.getIcon("menuIcon.png", 100));
-        menuButton.setOnAction(ae -> controller.showPauseModal());
-        topPrompt.setRight(menuButton);
-
+        StackPane root = new StackPane();
+        root.getChildren().add(contentPane);
         return root;
+    }
+
+    @Override
+    public void setDefaultState() {
+        controller.removeAllModal();
+        controller.showMovePrompt();
+    }
+
+    private void passageUpdated(Passage newPassage) {
+        passageTitle.setText(newPassage.getTitle());
+        passageText.setText(newPassage.getContent());
+
+        moveOptions.getChildren().clear();
+        for (Link link : newPassage.getLinks()) {
+            Button linkButton = new Button(link.getText());
+            linkButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
+            linkButton.setOnAction(ae -> controller.movePassage(link));
+            moveOptions.getChildren().add(linkButton);
+        }
+    }
+
+    @Override
+    public void onUpdate(GameUpdateEvent event) {
+        if (event instanceof NewGameEvent newGameEvent) {
+            passageUpdated(newGameEvent.startPassage());
+        } else if (event instanceof ChangePassageEvent changePassageEvent) {
+            passageUpdated(changePassageEvent.currentPassage());
+        }
     }
 
     /**

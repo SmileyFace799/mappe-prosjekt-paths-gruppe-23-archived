@@ -10,12 +10,13 @@
 
 .button {
     -fx-text-fill: white;
-    -fx-font-family: "Segoe UI Variable";
-    -fx-background-color: #323232;
+    -fx-background-color: #AFAFAF;
+    -fx-border-color: #696969;
+    -fx-border-width: 5px;
 }
 
 .button:hover {
-    -fx-background-color: #003f8b;
+    -fx-background-color: #878787;
 }
 
 .label {
