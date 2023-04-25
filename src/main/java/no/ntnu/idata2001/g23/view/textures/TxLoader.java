@@ -4,14 +4,29 @@ import java.io.InputStream;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 
 /**
  * A factory class for loading textures.
  */
 public class TxLoader {
+    private static final Image defaultTexture = makeDefaultTexture();
+
     private TxLoader() {
         throw new IllegalStateException("Utility class");
+    }
+
+    private static Image makeDefaultTexture() {
+        WritableImage defaultTx = new WritableImage(2, 2);
+        PixelWriter writer = defaultTx.getPixelWriter();
+        writer.setColor(0, 0, Color.MAGENTA);
+        writer.setColor(1, 0, Color.BLACK);
+        writer.setColor(0, 1, Color.BLACK);
+        writer.setColor(1, 1, Color.MAGENTA);
+        return defaultTx;
     }
 
     /**
@@ -21,12 +36,16 @@ public class TxLoader {
      * @return The found image file as an image.
      */
     private static Image getImage(String filePath) {
+        Image image;
         InputStream is = TxLoader.class.getResourceAsStream(filePath);
         if (is == null) {
-            //TODO: Load a default texture here.
-            throw new RuntimeException("Couldn't find image \"" + filePath + "\"");
+            image = defaultTexture;
+            System.out.println(
+                    "WARNING: Couldn't find image \"" + filePath + "\", loading default texture");
+        } else {
+            image = new Image(is);
         }
-        return new Image(is);
+        return image;
     }
 
     /**
@@ -79,9 +98,11 @@ public class TxLoader {
      */
     public static ImageView getIcon(String filePath, double size) {
         ImageView icon = getImageView(filePath, size, size, false);
-        ColorAdjust colorAdjust = new ColorAdjust();
-        colorAdjust.setBrightness(1); //Makes the icon fully white
-        icon.setEffect(colorAdjust);
+        if (!defaultTexture.equals(icon.getImage())) {
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(1); //Makes the icon fully white
+            icon.setEffect(colorAdjust);
+        }
         return icon;
     }
 }
