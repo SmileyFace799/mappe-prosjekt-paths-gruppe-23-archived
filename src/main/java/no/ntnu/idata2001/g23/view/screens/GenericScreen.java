@@ -13,6 +13,8 @@ public abstract class GenericScreen {
     private static final String CSS_PATH = "no/ntnu/idata2001/g23/view/";
     public static final int BASE_WIDTH = 3840;
     public static final int BASE_HEIGHT = 2160;
+    protected static final int HORIZONTAL_SPACING = 60;
+    protected static final int VERTICAL_SPACING = 60;
 
     private final Scene scene;
     private final Pane root;

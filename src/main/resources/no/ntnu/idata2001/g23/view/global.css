@@ -32,8 +32,7 @@
 
 .text-field {
     -fx-background-color: #191919;
-    -fx-alignment: center;
     -fx-text-fill: white;
     -fx-prompt-text-fill: lightgray;
-    -fx-font-size: 36px;
+    -fx-font-size: 72px;
 }

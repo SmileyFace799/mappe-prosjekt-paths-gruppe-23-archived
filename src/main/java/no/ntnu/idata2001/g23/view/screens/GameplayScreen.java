@@ -29,9 +29,8 @@ import no.ntnu.idata2001.g23.view.textures.TxLoader;
  */
 public class GameplayScreen extends GenericScreen implements GameUpdateListener {
     private final GameplayController controller;
-
-    private static final int HORIZONTAL_SPACING = 100;
-    private static final int VERTICAL_SPACING = 30;
+    protected static final int HORIZONTAL_SPACING = 100;
+    protected static final int VERTICAL_SPACING = 30;
 
     private BorderPane contentPane;
 

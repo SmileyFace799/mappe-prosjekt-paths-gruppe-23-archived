@@ -156,15 +156,15 @@ public class StoryLoader {
     /**
      * Loads a {@link Story} from a {@code .paths}-file.
      *
-     * @param storyFileName The file name of the story to load <b>without the file extension</b>
+     * @param storyFilePath The file path of the story to load
      * @return The loaded story
      * @throws CorruptFileException If the story could not be loaded
      */
-    public static Story loadStory(String storyFileName) throws CorruptFileException {
+    public static Story loadStory(String storyFilePath) throws CorruptFileException {
         Story loadedStory;
         try (LineNumberReader fileReader = new LineNumberReader(
                 Files.newBufferedReader(
-                        Path.of(storyFileName + ".paths")
+                        Path.of(storyFilePath)
                 )
         )) {
             loadedStory = parseStory(fileReader);

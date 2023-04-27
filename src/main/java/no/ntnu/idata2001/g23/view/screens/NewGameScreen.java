@@ -1,11 +1,14 @@
 package no.ntnu.idata2001.g23.view.screens;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.NewGameController;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 
@@ -20,26 +23,29 @@ public class NewGameScreen extends GenericScreen {
         controller = new NewGameController(this, application);
     }
 
-    private TextField playerName;
-    private Label errorLabel;
+    private TextField playerNameInput;
+    private VBox errorBox;
+    private TextField storyPathInput;
+
+    public TextField getPlayerNameInput() {
+        return playerNameInput;
+    }
+
+    public TextField getStoryPathInput() {
+        return storyPathInput;
+    }
 
     @Override
     public void setDefaultState() {
-        playerName.setText("");
+        playerNameInput.setText("");
         setErrorMessage(null);
     }
 
     @Override
-    protected Pane makeRoot() {
-        VBox content = new VBox(60);
-
-        Label newGameTitle = new Label("New game");
-        newGameTitle.getStyleClass().add("header");
-        content.getChildren().add(newGameTitle);
-
-        playerName = new TextField();
-        playerName.setMaxWidth(500);
-        playerName.setTextFormatter(new TextFormatter<>(change -> {
+    protected void initializeNodes() {
+        playerNameInput = new TextField();
+        playerNameInput.setMaxWidth(650);
+        playerNameInput.setTextFormatter(new TextFormatter<>(change -> {
             if (change.isContentChange()) {
                 String newText = change.getControlNewText();
                 int maxLength = 10;
@@ -50,14 +56,51 @@ public class NewGameScreen extends GenericScreen {
             }
             return change;
         }));
-        content.getChildren().add(playerName);
 
-        errorLabel = new Label();
-        errorLabel.getStyleClass().add("error-label");
-        content.getChildren().add(errorLabel);
+        errorBox = new VBox();
+        errorBox.setAlignment(Pos.CENTER);
+
+        storyPathInput = new TextField();
+        storyPathInput.setAlignment(Pos.TOP_LEFT);
+    }
+
+    @Override
+    protected Pane makeRoot() {
+        VBox content = new VBox(VERTICAL_SPACING);
+
+        Label newGameTitle = new Label("New game");
+        newGameTitle.getStyleClass().add("header");
+        content.getChildren().add(newGameTitle);
+
+        HBox nameBox = new HBox(HORIZONTAL_SPACING);
+        nameBox.setAlignment(Pos.CENTER);
+        content.getChildren().add(nameBox);
+
+        nameBox.getChildren().add(new Label("Name:"));
+
+        nameBox.getChildren().add(playerNameInput);
+
+        HBox storyBox = new HBox(HORIZONTAL_SPACING);
+        storyBox.setAlignment(Pos.CENTER);
+        content.getChildren().add(storyBox);
+
+        storyBox.getChildren().add(new Label("Story:"));
+
+        HBox chooseStory = new HBox();
+        storyBox.getChildren().add(chooseStory);
+
+        chooseStory.getChildren().add(storyPathInput);
+
+        Button browseStory = new Button("Browse...");
+        browseStory.setOnAction(ae -> controller.browseStory());
+        chooseStory.getChildren().add(browseStory);
+
+        content.getChildren().add(errorBox);
+
+        content.getChildren().add(new Rectangle(0, 150));
 
         Button startPlaying = new Button("Start playing");
-        startPlaying.setOnAction(ae -> controller.startNewGame(playerName.getText()));
+        startPlaying.setOnAction(ae -> controller.startNewGame());
         content.getChildren().add(startPlaying);
 
         Button backButton = new Button("Go Back");
@@ -67,8 +110,18 @@ public class NewGameScreen extends GenericScreen {
         return content;
     }
 
+    /**
+     * Shows an error message to the user when the story can't be started.
+     *
+     * @param errorMessage THe error message to show.
+     *                     If this is {@code null}, the error message will be cleared
+     */
     public void setErrorMessage(String errorMessage) {
-        errorLabel.setText(errorMessage);
-        errorLabel.setVisible(errorMessage != null && !errorMessage.isBlank());
+        errorBox.getChildren().clear();
+        if (errorMessage != null && !errorMessage.isBlank()) {
+            Label errorLabel = new Label(errorMessage);
+            errorLabel.getStyleClass().add("error-label");
+            errorBox.getChildren().add(errorLabel);
+        }
     }
 }
