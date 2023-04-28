@@ -11,21 +11,21 @@ import no.ntnu.idata2001.g23.model.story.Story;
  * Connects a player with a story, and contains method for the player to navigate the story.
  */
 public class Game {
-    Player player;
-    Story story;
-    List<Goal> goals;
+    private final Player player;
+    private final Story story;
+    private final List<Goal> goals;
 
     /**
      * Makes a new game.
      *
      * @param player The game's player.
      * @param story The game's story.
-     * @param goals The goals of the game.
+     * @param difficulty The game's difficulty.
      */
-    public Game(Player player, Story story, List<Goal> goals) {
+    public Game(Player player, Story story, String difficulty) {
         this.player = player;
         this.story = story;
-        this.goals = goals;
+        this.goals = story.getGoals(difficulty);
     }
 
     public Player getPlayer() {
@@ -34,10 +34,6 @@ public class Game {
 
     public Story getStory() {
         return story;
-    }
-
-    public List<Goal> getGoals() {
-        return goals;
     }
 
     public Passage begin() {

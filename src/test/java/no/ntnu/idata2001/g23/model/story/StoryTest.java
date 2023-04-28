@@ -6,7 +6,10 @@ import java.util.List;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.EmptyArrayException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.model.goals.Goal;
+import no.ntnu.idata2001.g23.model.goals.ScoreGoal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +20,7 @@ class StoryTest {
     private Link nextLink;
     private Passage nextPassage;
     private Story validStory;
+    private List<Goal> validGoalList;
 
     @BeforeEach
     void before() {
@@ -25,6 +29,7 @@ class StoryTest {
         openingPassage = new Passage("Opening passage", "Test content");
         openingPassage.addLink(nextLink);
         validStory = new Story("Test story", openingPassage);
+        validGoalList = List.of(new ScoreGoal(100));
     }
 
     @Test
@@ -119,5 +124,27 @@ class StoryTest {
                 "Broken link", "A non-existant passage", null);
         validStory.getOpeningPassage().addLink(brokenLink);
         assertEquals(List.of(brokenLink), validStory.getBrokenLinks());
+    }
+
+    @Test
+    void testSettingGoalsWithNoDifficulty() {
+        assertThrows(BlankStringException.class, () ->
+                validStory.setGoals(null, validGoalList));
+        assertThrows(BlankStringException.class, () ->
+                validStory.setGoals("  ", validGoalList));
+    }
+
+    @Test
+    void testSettingGoalsWithNoGoals() {
+        assertThrows(EmptyArrayException.class, () ->
+                validStory.setGoals("Difficulty", null));
+        List<Goal> emptyGoalList = List.of();
+        assertThrows(EmptyArrayException.class, () ->
+                validStory.setGoals("Difficulty", emptyGoalList));
+    }
+
+    @Test
+    void testValidSettingOfGoals() {
+        assertDoesNotThrow(() -> validStory.setGoals("Difficulty", validGoalList));
     }
 }

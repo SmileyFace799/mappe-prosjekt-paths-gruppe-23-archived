@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.controllers;
 
 import java.io.File;
-import java.util.List;
 import javafx.stage.FileChooser;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.Game;
@@ -30,6 +29,7 @@ public class NewGameController extends GenericController {
         storyChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Story files", "*.paths")
         );
+        storyChooser.setInitialDirectory(new File("./"));
     }
 
     private final NewGameScreen screen;
@@ -46,12 +46,11 @@ public class NewGameController extends GenericController {
         } else if (storyPath == null || storyPath.isBlank()) {
             screen.setErrorMessage("Please choose a story");
         } else {
-
             try {
                 GameplayManager.getInstance().startGame(new Game(
                         new Player.PlayerBuilder(playerName, 30).build(),
                         StoryLoader.loadStory(storyPath),
-                        List.of()
+                        "Easy"
                 ));
                 changeScreen(GameplayScreen.class);
             } catch (CorruptFileException cfe) {

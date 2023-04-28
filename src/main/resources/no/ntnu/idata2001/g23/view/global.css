@@ -6,6 +6,7 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: contain;
     -fx-font-size: 72px;
+    -fx-font-weight: bold;
 }
 
 .button {
@@ -23,6 +24,11 @@
     -fx-text-fill: white;
 }
 
+.text {
+    -fx-stroke: black;
+    -fx-stroke-width: 3px;
+}
+
 .header {
     -fx-font-weight: bold;
     -fx-text-alignment: center;
@@ -30,9 +36,18 @@
     -fx-font-size: 144px;
 }
 
+.header.label .text {
+    -fx-stroke-width: 5px;
+}
+
 .text-field {
     -fx-background-color: #191919;
     -fx-text-fill: white;
     -fx-prompt-text-fill: lightgray;
     -fx-font-size: 72px;
+    -fx-font-weight: none;
+}
+
+.text-field .text {
+    -fx-stroke-width: 0px;
 }

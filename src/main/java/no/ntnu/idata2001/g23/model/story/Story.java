@@ -7,15 +7,19 @@ import java.util.Map;
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.EmptyArrayException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.model.goals.Goal;
 
 /**
- * A story containing passages for the player to navigate through.
+ * A story containing passages for the player to navigate through,
+ * and goals for the player to achieve.
  */
 public class Story {
     private final String title;
     private final Map<Link, Passage> passages;
     private final Passage openingPassage;
+    private final Map<String, List<Goal>> diffucultyGoalMap;
 
     /**
      * Makes a story.
@@ -31,9 +35,10 @@ public class Story {
             throw new NullValueException("Passage \"openingPassage\" cannot be null");
         }
         this.title = title;
-        passages = new HashMap<>();
         this.openingPassage = openingPassage;
+        this.passages = new HashMap<>();
         addPassage(openingPassage);
+        this.diffucultyGoalMap = new HashMap<>();
 
     }
 
@@ -47,6 +52,20 @@ public class Story {
 
     public Collection<Passage> getPassages() {
         return passages.values();
+    }
+
+    /**
+     * Gets the goals for a specified difficulty.
+     *
+     * @param difficulty The difficulty to get the goals for
+     * @return The goals for the specified difficulty
+     * @throws ElementNotFoundException If the specified difficulty does not exist
+     */
+    public List<Goal> getGoals(String difficulty) {
+        if (!diffucultyGoalMap.containsKey(difficulty)) {
+            throw new ElementNotFoundException("Story has no \"" + difficulty + "\" difficulty");
+        }
+        return diffucultyGoalMap.get(difficulty);
     }
 
     /**
@@ -116,6 +135,24 @@ public class Story {
                 .toList();
     }
 
+    /**
+     * Sets the goals for a specified difficulty.
+     *
+     * @param difficulty The difficulty to set the goals for
+     * @param goals The goals to set
+     * @throws BlankStringException If difficulty is {@code null} or blank
+     * @throws EmptyArrayException If goals is {@code null} or empty
+     */
+    public void setGoals(String difficulty, List<Goal> goals) {
+        if (difficulty == null || difficulty.isBlank()) {
+            throw new BlankStringException("String \"difficulty\" cannot be blank");
+        }
+        if (goals == null || goals.isEmpty()) {
+            throw new EmptyArrayException("\"goals\" cannot be null or empty");
+        }
+        diffucultyGoalMap.put(difficulty, goals);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -127,10 +164,12 @@ public class Story {
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         Story story = (Story) obj;
         return title.equals(story.title)
-                && openingPassage.equals(story.openingPassage)
-                && passages.equals(story.passages);
+                && getOpeningPassage().equals(story.getOpeningPassage())
+                && passages.equals(story.passages)
+                && diffucultyGoalMap.equals(story.diffucultyGoalMap);
     }
 
     @Override
@@ -139,6 +178,7 @@ public class Story {
         hash = 31 * hash + title.hashCode();
         hash = 31 * hash + openingPassage.hashCode();
         hash = 31 * hash + passages.hashCode();
+        hash = 31 * hash + diffucultyGoalMap.hashCode();
         return hash;
     }
 }

@@ -87,6 +87,7 @@ public class NewGameScreen extends GenericScreen {
         storyBox.getChildren().add(new Label("Story:"));
 
         HBox chooseStory = new HBox();
+        chooseStory.setAlignment(Pos.CENTER);
         storyBox.getChildren().add(chooseStory);
 
         chooseStory.getChildren().add(storyPathInput);

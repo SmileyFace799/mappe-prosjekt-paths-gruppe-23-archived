@@ -1,5 +1,17 @@
 Haunted House
 
+#Easy
+Gold: 1000
+Health: 50
+
+#Normal
+Gold: 2500
+Health: 100
+
+#Hard
+Gold: 5000
+Health: 150
+
 ::Beginnings
 You are in a small, dimly lit room. There is a door in front of you.
 There is also an entrance behind you.

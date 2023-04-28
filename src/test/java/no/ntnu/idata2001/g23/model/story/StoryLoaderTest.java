@@ -6,13 +6,9 @@ import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
+import no.ntnu.idata2001.g23.model.goals.GoldGoal;
+import no.ntnu.idata2001.g23.model.goals.HealthGoal;
 import no.ntnu.idata2001.g23.model.itemhandling.ItemFactory;
-import no.ntnu.idata2001.g23.model.story.CorruptFileException;
-import no.ntnu.idata2001.g23.model.story.CorruptFileExceptionType;
-import no.ntnu.idata2001.g23.model.story.Link;
-import no.ntnu.idata2001.g23.model.story.Passage;
-import no.ntnu.idata2001.g23.model.story.Story;
-import no.ntnu.idata2001.g23.model.story.StoryLoader;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,6 +26,10 @@ class StoryLoaderTest {
     void testLoadingOfValidFile() {
         String validTestStory = """
                 Haunted House
+                
+                #Normal
+                Gold: 2500
+                Health: 100
                                 
                 ::Beginnings
                 You are in a small, dimly lit room. There is a door in front of you.
@@ -62,6 +62,9 @@ class StoryLoaderTest {
                 new GoldAction(500)
         )));
         Story actualStory = new Story("Haunted House", openingPassage);
+
+        actualStory.setGoals("Normal",
+                List.of(new GoldGoal(2500), new HealthGoal(100)));
 
         Passage anotherPassage = new Passage("Another room",
                 "The door opens to another room. You have reached the end of the game, "
@@ -118,7 +121,7 @@ class StoryLoaderTest {
                 
                 Invalid passage
                 More content
-                """, CorruptFileExceptionType.INVALID_PASSAGE);
+                """, CorruptFileExceptionType.INVALID_GOAL_OR_PASSAGE);
     }
 
     @Test

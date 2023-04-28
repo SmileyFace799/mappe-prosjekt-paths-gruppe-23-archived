@@ -1,5 +1,6 @@
 package no.ntnu.idata2001.g23.model.goals;
 
+import java.util.Objects;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.model.entities.Player;
 
@@ -24,5 +25,27 @@ public class GoldGoal implements Goal {
     @Override
     public boolean isFulfilled(Player player) {
         return player.getGold() >= minimumGold;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        GoldGoal goldGoal = (GoldGoal) obj;
+        return Objects.equals(minimumGold, goldGoal.minimumGold);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + Integer.hashCode(minimumGold);
+        return hash;
     }
 }
