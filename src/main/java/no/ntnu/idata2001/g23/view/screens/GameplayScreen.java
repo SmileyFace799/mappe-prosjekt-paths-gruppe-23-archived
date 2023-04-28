@@ -18,8 +18,6 @@ import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.items.Item;
-import no.ntnu.idata2001.g23.model.story.Link;
-import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
@@ -76,8 +74,20 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         return topPrompt;
     }
 
+    public Label getPassageTitle() {
+        return passageTitle;
+    }
+
+    public Label getPassageText() {
+        return passageText;
+    }
+
     public ScrollPane getMovePrompt() {
         return movePrompt;
+    }
+
+    public VBox getMoveOptions() {
+        return moveOptions;
     }
 
     public VBox getInventoryPrompt() {
@@ -225,25 +235,13 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         controller.showMovePrompt();
     }
 
-    private void passageUpdated(Passage newPassage) {
-        passageTitle.setText(newPassage.getTitle());
-        passageText.setText(newPassage.getContent());
-
-        moveOptions.getChildren().clear();
-        for (Link link : newPassage.getLinks()) {
-            Button linkButton = new Button(link.getText());
-            linkButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
-            linkButton.setOnAction(ae -> controller.movePassage(link));
-            moveOptions.getChildren().add(linkButton);
-        }
-    }
-
     @Override
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent newGameEvent) {
-            passageUpdated(newGameEvent.startPassage());
+            controller.updatePassageText(newGameEvent.startPassage());
+            controller.updateInventoryList(newGameEvent.game().getPlayer().getInventory());
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
-            passageUpdated(changePassageEvent.currentPassage());
+            controller.updatePassageText(changePassageEvent.currentPassage());
         }
     }
 

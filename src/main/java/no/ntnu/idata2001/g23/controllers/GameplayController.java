@@ -1,10 +1,16 @@
 package no.ntnu.idata2001.g23.controllers;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
+import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
+import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.story.Link;
+import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 
@@ -79,5 +85,35 @@ public class GameplayController extends GenericController {
 
     public void movePassage(Link link) {
         gameplayManager.movePassage(link);
+    }
+
+    /**
+     * Update the inventory list view.
+     *
+     * @param inventory The inventory of items to show
+     */
+    public void updateInventoryList(Inventory inventory) {
+        ListView<Item> inventoryContent = screen.getInventoryContent();
+        inventoryContent.getItems().clear();
+        inventoryContent.getItems().addAll(inventory.getContents());
+    }
+
+    /**
+     * Updates the passage text shown on screen.
+     *
+     * @param newPassage The new passage with the updated text
+     */
+    public void updatePassageText(Passage newPassage) {
+        screen.getPassageTitle().setText(newPassage.getTitle());
+        screen.getPassageText().setText(newPassage.getContent());
+
+        VBox moveOptions = screen.getMoveOptions();
+        moveOptions.getChildren().clear();
+        for (Link link : newPassage.getLinks()) {
+            Button linkButton = new Button(link.getText());
+            linkButton.getStyleClass().add(GameplayScreen.Css.EMPHASIZED_BUTTON);
+            linkButton.setOnAction(ae -> movePassage(link));
+            moveOptions.getChildren().add(linkButton);
+        }
     }
 }

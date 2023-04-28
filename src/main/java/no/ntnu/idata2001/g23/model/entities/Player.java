@@ -2,6 +2,8 @@ package no.ntnu.idata2001.g23.model.entities;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
+import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
+import no.ntnu.idata2001.g23.model.items.Item;
 
 /**
  * Represents a player with different attributes which can be affected in a story.
@@ -95,11 +97,12 @@ public class Player extends GenericEntity {
         private int health;
         private int score;
         private int gold;
+        private Item[] items;
 
         /**
          * Makes a builder for the player.
          *
-         * @param name The player's name
+         * @param name      The player's name
          * @param maxHealth The player's max health
          */
         public PlayerBuilder(String name, int maxHealth) {
@@ -110,6 +113,7 @@ public class Player extends GenericEntity {
             health = maxHealth;
             score = 0;
             gold = 0;
+            items = new Item[0];
         }
 
         public PlayerBuilder setHealth(int health) {
@@ -127,14 +131,24 @@ public class Player extends GenericEntity {
             return this;
         }
 
+        public PlayerBuilder setStartingItems(Item... items) {
+            this.items = items;
+            return this;
+        }
+
         /**
          * Builds the player.
          *
          * @return The player object that was made
+         * @throws FullInventoryException If the player is built with more starting items
+         *                                than the inventory size allows
          */
-        public Player build() {
+        public Player build() throws FullInventoryException {
             Player player = new Player(name, maxHealth, score, gold);
             player.setHealth(health);
+            for (Item item : items) {
+                player.getInventory().addItem(item);
+            }
 
             return player;
         }

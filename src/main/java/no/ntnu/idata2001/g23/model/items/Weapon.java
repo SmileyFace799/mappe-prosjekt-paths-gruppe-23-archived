@@ -1,13 +1,12 @@
-package no.ntnu.idata2001.g23.model.items.weapons;
+package no.ntnu.idata2001.g23.model.items;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
-import no.ntnu.idata2001.g23.model.items.Item;
 
 /**
  * Any item that can be equipped as a weapon to damage enemies.
  */
-public abstract class Weapon extends Item {
+public class Weapon extends Item {
     protected final int baseDamage;
     protected final double baseCritChance;
 
@@ -21,9 +20,9 @@ public abstract class Weapon extends Item {
      * @param name           The weapon's name.
      * @param description    The weapon's description.
      */
-    protected Weapon(int baseDamage, double baseCritChance, int value,
+    public Weapon(int baseDamage, double baseCritChance, int value,
                      String name, String description) {
-        super(value, name, description, 1);
+        super(value, name, description);
         if (baseDamage < 0) {
             throw new NegativeNumberException("int \"damage\" cannot be negative");
         }
@@ -39,13 +38,13 @@ public abstract class Weapon extends Item {
         return baseDamage;
     }
 
-    @Override
-    public final int getMaxStackSize() {
-        return 1;
-    }
-
     public double getBaseCritChance() {
         return baseCritChance;
+    }
+
+    @Override
+    public String getCategory() {
+        return "Weapon";
     }
 
     @Override
@@ -56,8 +55,7 @@ public abstract class Weapon extends Item {
                 + "\nDescription: " + description
                 + "\nCategory: " + getCategory()
                 + "\nBase damage: " + baseDamage
-                + "\nBase critical strike chance: " + baseCritChance
-                + "\nStackable: " + isStackable();
+                + "\nBase critical strike chance: " + baseCritChance;
     }
 
     @Override

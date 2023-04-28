@@ -11,14 +11,9 @@ public class MiscItem extends Item {
      *                    If the value is 0, it will not be sellable.
      * @param name The item's name.
      * @param description The item's description.
-     * @param stackAmount The item's initial stack amount.
      */
-    public MiscItem(int value, String name, String description, int stackAmount) {
-        super(value, name, description, stackAmount);
-    }
-
     public MiscItem(int value, String name, String description) {
-        this(value, name, description, 1);
+        super(value, name, description);
     }
 
     @Override
@@ -27,20 +22,12 @@ public class MiscItem extends Item {
     }
 
     @Override
-    public int getMaxStackSize() {
-        return 16;
-    }
-
-    @Override
     public String toString() {
         return "Value: " + value
                 + "\nSellable: " + isSellable()
                 + "\nName: " + name
                 + "\nDescription: " + description
-                + "\nCategory: " + getCategory()
-                + "\nCurrent stack size: " + stackSize
-                + "\nMax stack size: " + getMaxStackSize()
-                + "\nStackable: " + isStackable();
+                + "\nCategory: " + getCategory();
     }
 
     @Override
@@ -57,8 +44,7 @@ public class MiscItem extends Item {
         MiscItem miscItem = (MiscItem) obj;
         return value == miscItem.getValue()
                 && name.equals(miscItem.getName())
-                && description.equals(miscItem.getDescription())
-                && stackSize == miscItem.getCurrentStackSize();
+                && description.equals(miscItem.getDescription());
     }
 
     @Override
@@ -67,7 +53,6 @@ public class MiscItem extends Item {
         hash = 31 * hash + value;
         hash = 31 * hash + name.hashCode();
         hash = 31 * hash + description.hashCode();
-        hash = 31 * hash + stackSize;
         return hash;
     }
 }

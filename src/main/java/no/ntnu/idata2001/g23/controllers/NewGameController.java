@@ -1,12 +1,11 @@
 package no.ntnu.idata2001.g23.controllers;
 
 import java.io.File;
-import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.model.Game;
-import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.GameLoader;
+import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.story.CorruptFileException;
-import no.ntnu.idata2001.g23.model.story.StoryLoader;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.NewGameScreen;
@@ -24,16 +23,13 @@ public class NewGameController extends GenericController {
     public NewGameController(NewGameScreen screen, DungeonApp application) {
         super(application);
         this.screen = screen;
-        this.storyChooser = new FileChooser();
+        this.storyChooser = new DirectoryChooser();
         storyChooser.setTitle("Select a story");
-        storyChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Story files", "*.paths")
-        );
         storyChooser.setInitialDirectory(new File("./"));
     }
 
     private final NewGameScreen screen;
-    private final FileChooser storyChooser;
+    private final DirectoryChooser storyChooser;
 
     /**
      * Makes a new game with the selected player details, story & goals.
@@ -47,14 +43,12 @@ public class NewGameController extends GenericController {
             screen.setErrorMessage("Please choose a story");
         } else {
             try {
-                GameplayManager.getInstance().startGame(new Game(
-                        new Player.PlayerBuilder(playerName, 30).build(),
-                        StoryLoader.loadStory(storyPath),
-                        "Easy"
-                ));
+                GameplayManager.getInstance().startGame(GameLoader.loadGame(playerName, storyPath));
                 changeScreen(GameplayScreen.class);
             } catch (CorruptFileException cfe) {
                 screen.setErrorMessage("Story file is corrupt: " + cfe.getMessage());
+            } catch (FullInventoryException fie) {
+                screen.setErrorMessage(fie.getMessage());
             }
         }
     }
@@ -63,7 +57,7 @@ public class NewGameController extends GenericController {
      * Opens the storyChooser, allowing the user to select a story.
      */
     public void browseStory() {
-        File chosenFile = storyChooser.showOpenDialog(screen.getScene().getWindow());
+        File chosenFile = storyChooser.showDialog(screen.getScene().getWindow());
         if (chosenFile != null) {
             screen.getStoryPathInput().setText(chosenFile.getPath());
         }

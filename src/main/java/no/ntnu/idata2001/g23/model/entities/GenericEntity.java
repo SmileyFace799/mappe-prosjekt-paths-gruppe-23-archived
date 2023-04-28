@@ -4,7 +4,7 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
-import no.ntnu.idata2001.g23.model.items.weapons.Weapon;
+import no.ntnu.idata2001.g23.model.items.Weapon;
 
 /**
  * A generic entity.

@@ -6,6 +6,13 @@ package no.ntnu.idata2001.g23.model.story;
 public enum CorruptFileExceptionType {
     UNKNOWN("An unknown error occurred while attempting to read the file"),
     EMPTY_FILE("File is empty"),
+
+    //Info exceptions
+    UNKNOWN_INFO("An unknown error occurred while attempting to read the info file"),
+    INFO_INVALID_PATH("An invalid path was found"),
+    NO_STORY("No story path was found"),
+
+    //Story exceptions
     NO_TITLE("Story is missing a title"),
     INVALID_GOAL_OR_PASSAGE("Expected to find a goal or passage,"
             + "found non-empty line that isn't a goal or passage"),
@@ -26,7 +33,17 @@ public enum CorruptFileExceptionType {
     ACTION_INVALID_FORMAT("Couldn't find the \":\"-separator "
             + "that separates the action type & value"),
     ACTION_INVALID_TYPE("Cannot recognize action type"),
-    ACTION_INVALID_VALUE("Value cannot be assigned to action");
+    ACTION_INVALID_VALUE("Value cannot be assigned to action"),
+
+    //Item exceptions
+    INVALID_ITEM("Expected to find an item, found non-empty line that isn't an item"),
+    ITEM_NO_NAME("Found item with no name"),
+    ITEM_NO_TYPE("Found item with no type"),
+    ITEM_INVALID_TYPE("Found item with invalid type"),
+    ITEM_INVALID_FORMAT("Couldn't find the \":\"-separator "
+            + "that separates the item parameter name & value"),
+    ITEM_MISSING_PARAMETERS("Item is missing required parameters"),
+    ;
 
     private final String message;
 
