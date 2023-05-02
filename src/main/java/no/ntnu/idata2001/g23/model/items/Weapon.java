@@ -49,10 +49,10 @@ public class Weapon extends Item {
 
     @Override
     public String toString() {
-        return "Value: " + value
+        return "Value: " + getValue()
                 + "\nSellable: " + isSellable()
-                + "\nName: " + name
-                + "\nDescription: " + description
+                + "\nName: " + getName()
+                + "\nDescription: " + getDescription()
                 + "\nCategory: " + getCategory()
                 + "\nBase damage: " + baseDamage
                 + "\nBase critical strike chance: " + baseCritChance;
@@ -70,9 +70,9 @@ public class Weapon extends Item {
             return false;
         }
         Weapon weapon = (Weapon) obj;
-        return value == weapon.getValue()
-                && name.equals(weapon.getName())
-                && description.equals(weapon.getDescription())
+        return getValue() == weapon.getValue()
+                && getName().equals(weapon.getName())
+                && getDescription().equals(weapon.getDescription())
                 && baseDamage == weapon.getBaseDamage()
                 && baseCritChance == weapon.getBaseCritChance();
     }
@@ -80,9 +80,9 @@ public class Weapon extends Item {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + value;
-        hash = 31 * hash + name.hashCode();
-        hash = 31 * hash + description.hashCode();
+        hash = 31 * hash + getValue();
+        hash = 31 * hash + getName().hashCode();
+        hash = 31 * hash + getDescription().hashCode();
         hash = 31 * hash + baseDamage;
         hash = 31 * hash + Double.hashCode(baseCritChance);
         return hash;

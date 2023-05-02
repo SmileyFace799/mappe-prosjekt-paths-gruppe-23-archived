@@ -6,16 +6,31 @@ import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
+import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
+import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
 import no.ntnu.idata2001.g23.model.goals.GoldGoal;
 import no.ntnu.idata2001.g23.model.goals.HealthGoal;
-import no.ntnu.idata2001.g23.model.itemhandling.ItemFactory;
+import no.ntnu.idata2001.g23.model.itemhandling.ItemProvider;
+import no.ntnu.idata2001.g23.model.items.MiscItem;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StoryLoaderTest {
-    void checkStory(String story, CorruptFileExceptionType type) {
+    private ItemProvider itemProvider;
+    private StoryLoader validStoryLoader;
+
+    @BeforeEach
+    void before() {
+        itemProvider = new ItemProvider();
+        itemProvider.addProvidableItem("Test item", () ->
+                new MiscItem(500, "Test Item", "Test description"));
+        this.validStoryLoader = new StoryLoader(itemProvider);
+    }
+
+    void checkStory(String story, CorruptFileException.Type type) {
         CorruptFileException exception = assertThrows(CorruptFileException.class, () ->
-                StoryLoader.parseStory(new LineNumberReader(new StringReader(story))));
+                validStoryLoader.parseStory(new LineNumberReader(new StringReader(story))));
         assertEquals(type, exception.getType());
     }
 
@@ -49,7 +64,7 @@ class StoryLoaderTest {
                 You are now soft-locked :D
                 """;
         Story loadedStory = assertDoesNotThrow(() ->
-                StoryLoader.parseStory(new LineNumberReader(new StringReader(validTestStory))));
+                validStoryLoader.parseStory(new LineNumberReader(new StringReader(validTestStory))));
 
         Passage openingPassage = new Passage("Beginnings", "You are in a small, "
                 + "dimly lit room. There is a door in front of you."
@@ -58,7 +73,7 @@ class StoryLoaderTest {
                 "Try to open the door", "Another room", null
         ));
         openingPassage.addLink(new Link("Go behind you", "Test room", List.of(
-                new InventoryAction(ItemFactory.makeItem("Test item")),
+                new InventoryAction(itemProvider.provideItem("Test item")),
                 new GoldAction(500)
         )));
         Story actualStory = new Story("Haunted House", openingPassage);
@@ -89,18 +104,18 @@ class StoryLoaderTest {
      */
     @Test
     void testParsingEmptyFile() {
-        checkStory("", CorruptFileExceptionType.EMPTY_FILE);
+        checkStory("", CorruptFileException.Type.EMPTY_FILE);
     }
 
     @Test
     void testParsingStoryWithoutTitle() {
         checkStory("""
                                 
-                """, CorruptFileExceptionType.NO_TITLE
+                """, CorruptFileException.Type.NO_TITLE
         );
         checkStory("""
                 ::Some passage
-                """, CorruptFileExceptionType.NO_TITLE)
+                """, CorruptFileException.Type.NO_TITLE)
         ;
     }
 
@@ -108,7 +123,7 @@ class StoryLoaderTest {
     void testParsingFileWithoutPassages() {
         checkStory("""
                 Story title
-                """, CorruptFileExceptionType.NO_PASSAGES);
+                """, CorruptFileException.Type.NO_PASSAGES);
     }
 
     @Test
@@ -121,7 +136,7 @@ class StoryLoaderTest {
                 
                 Invalid passage
                 More content
-                """, CorruptFileExceptionType.INVALID_GOAL_OR_PASSAGE);
+                """, CorruptFileException.Type.INVALID_GOAL_OR_PASSAGE);
     }
 
     @Test
@@ -131,7 +146,7 @@ class StoryLoaderTest {
                 
                 ::
                 Story content
-                """, CorruptFileExceptionType.PASSAGE_NO_NAME);
+                """, CorruptFileException.Type.PASSAGE_NO_NAME);
     }
 
     @Test
@@ -141,7 +156,7 @@ class StoryLoaderTest {
                 
                 ::Passage name
                 
-                """, CorruptFileExceptionType.PASSAGE_NO_CONTENT);
+                """, CorruptFileException.Type.PASSAGE_NO_CONTENT);
     }
 
     @Test
@@ -152,7 +167,7 @@ class StoryLoaderTest {
                 ::Passage name
                 Passage Content
                 (Link reference)
-                """, CorruptFileExceptionType.LINK_NO_TEXT);
+                """, CorruptFileException.Type.LINK_NO_TEXT);
     }
 
     @Test
@@ -163,7 +178,7 @@ class StoryLoaderTest {
                 ::Passage name
                 Passage content
                 [Link text]
-                """, CorruptFileExceptionType.LINK_NO_REFERENCE);
+                """, CorruptFileException.Type.LINK_NO_REFERENCE);
     }
 
     @Test
@@ -174,7 +189,7 @@ class StoryLoaderTest {
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) }Invalid action{
-                """, CorruptFileExceptionType.LINK_INVALID_ACTION);
+                """, CorruptFileException.Type.LINK_INVALID_ACTION);
     }
 
     @Test
@@ -185,7 +200,7 @@ class StoryLoaderTest {
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Invalid action format}
-                """, CorruptFileExceptionType.ACTION_INVALID_FORMAT);
+                """, CorruptFileException.Type.ACTION_INVALID_FORMAT);
     }
 
     @Test
@@ -196,7 +211,7 @@ class StoryLoaderTest {
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Invalid type: Some value}
-                """, CorruptFileExceptionType.ACTION_INVALID_TYPE);
+                """, CorruptFileException.Type.ACTION_INVALID_TYPE);
     }
 
     @Test
@@ -207,27 +222,27 @@ class StoryLoaderTest {
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Gold: Invalid value}
-                """, CorruptFileExceptionType.ACTION_INVALID_VALUE);
+                """, CorruptFileException.Type.ACTION_INVALID_VALUE);
         checkStory("""
                 Story title
                 
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Health: Invalid value}
-                """, CorruptFileExceptionType.ACTION_INVALID_VALUE);
+                """, CorruptFileException.Type.ACTION_INVALID_VALUE);
         checkStory("""
                 Story title
                 
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Inventory: Invalid value}
-                """, CorruptFileExceptionType.ACTION_INVALID_VALUE);
+                """, CorruptFileException.Type.ACTION_INVALID_VALUE);
         checkStory("""
                 Story title
                 
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Score: Invalid value}
-                """, CorruptFileExceptionType.ACTION_INVALID_VALUE);
+                """, CorruptFileException.Type.ACTION_INVALID_VALUE);
     }
 }

@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.model;
+package no.ntnu.idata2001.g23.model.fileparsing;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -8,14 +8,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
+import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
-import no.ntnu.idata2001.g23.model.itemhandling.ItemLoader;
 import no.ntnu.idata2001.g23.model.itemhandling.ItemProvider;
-import no.ntnu.idata2001.g23.model.story.CorruptFileException;
-import no.ntnu.idata2001.g23.model.story.CorruptFileExceptionType;
 import no.ntnu.idata2001.g23.model.story.Story;
-import no.ntnu.idata2001.g23.model.story.StoryLoader;
 
 /**
  * Loads a game from a directory containing a full game.
@@ -51,10 +48,10 @@ public class GameLoader {
                 filesToRead.add(gamePath.resolve(nextLine));
             }
         } catch (IOException ioe) {
-            throw new CorruptFileException(CorruptFileExceptionType.UNKNOWN_INFO,
+            throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_INFO,
                     fileReader.getLineNumber());
         } catch (InvalidPathException ipe) {
-            throw new CorruptFileException(CorruptFileExceptionType.INFO_INVALID_PATH,
+            throw new CorruptFileException(CorruptFileException.Type.INFO_INVALID_PATH,
                     fileReader.getLineNumber(), nextLine);
         }
         return filesToRead;
@@ -78,26 +75,31 @@ public class GameLoader {
                 Files.newBufferedReader(gamePath.resolve("story.info")))
         ) {
             Collection<Path> filesToRead = parseInfo(gamePath, fileReader);
+
+            //Parse items, create itemProvider
             Path itemsPath = getPath(".items", filesToRead);
             ItemProvider itemProvider = itemsPath != null
                     ? ItemLoader.loadItems(itemsPath.toString())
                     : null;
 
+            //parse & create story, using itemProvider
             Path storyPath = getPath(".paths", filesToRead);
             if (storyPath == null) {
-                throw new CorruptFileException(CorruptFileExceptionType.NO_STORY);
+                throw new CorruptFileException(CorruptFileException.Type.NO_STORY);
             }
-            Story story = StoryLoader.loadStory(storyPath.toString());
+            Story story = new StoryLoader(itemProvider).loadStory(storyPath.toString());
 
+            //Create game, using story
             game = new Game.GameBuilder(new Player.PlayerBuilder(playerName, 30).build(),
-                    story, "Easy").setItemProvider(itemProvider).build();
-            for (String itemName : new String[]{"Big Sword UwU"}) {
+                    story, "Easy").build();
+
+            for (String itemName : new String[]{"Big Sword UwU", "Usable Test", "Usable Test"}) {
                 game.getPlayer()
                         .getInventory()
-                        .addItem(game.getItemProvider().provideItem(itemName));
+                        .addItem(itemProvider.provideItem(itemName));
             }
         } catch (IOException ioe) {
-            throw new CorruptFileException(CorruptFileExceptionType.UNKNOWN_INFO);
+            throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_INFO);
         }
         return game;
     }

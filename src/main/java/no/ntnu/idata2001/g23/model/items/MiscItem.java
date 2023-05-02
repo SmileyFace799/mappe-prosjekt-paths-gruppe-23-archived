@@ -23,10 +23,10 @@ public class MiscItem extends Item {
 
     @Override
     public String toString() {
-        return "Value: " + value
+        return "Value: " + getValue()
                 + "\nSellable: " + isSellable()
-                + "\nName: " + name
-                + "\nDescription: " + description
+                + "\nName: " + getName()
+                + "\nDescription: " + getDescription()
                 + "\nCategory: " + getCategory();
     }
 
@@ -42,17 +42,17 @@ public class MiscItem extends Item {
             return false;
         }
         MiscItem miscItem = (MiscItem) obj;
-        return value == miscItem.getValue()
-                && name.equals(miscItem.getName())
-                && description.equals(miscItem.getDescription());
+        return getValue() == miscItem.getValue()
+                && getName().equals(miscItem.getName())
+                && getDescription().equals(miscItem.getDescription());
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + value;
-        hash = 31 * hash + name.hashCode();
-        hash = 31 * hash + description.hashCode();
+        hash = 31 * hash + getValue();
+        hash = 31 * hash + getName().hashCode();
+        hash = 31 * hash + getDescription().hashCode();
         return hash;
     }
 }

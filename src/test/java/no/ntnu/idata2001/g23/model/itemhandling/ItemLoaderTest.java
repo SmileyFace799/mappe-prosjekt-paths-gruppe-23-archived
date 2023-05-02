@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.model.itemhandling;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
+import no.ntnu.idata2001.g23.model.fileparsing.ItemLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

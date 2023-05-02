@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.model.story;
+package no.ntnu.idata2001.g23.model.fileparsing;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -10,64 +10,39 @@ import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.model.actions.Action;
-import no.ntnu.idata2001.g23.model.actions.GoldAction;
-import no.ntnu.idata2001.g23.model.actions.HealthAction;
-import no.ntnu.idata2001.g23.model.actions.InventoryAction;
-import no.ntnu.idata2001.g23.model.actions.ScoreAction;
 import no.ntnu.idata2001.g23.model.goals.Goal;
 import no.ntnu.idata2001.g23.model.goals.GoldGoal;
 import no.ntnu.idata2001.g23.model.goals.HealthGoal;
 import no.ntnu.idata2001.g23.model.goals.InventoryGoal;
 import no.ntnu.idata2001.g23.model.goals.ScoreGoal;
 import no.ntnu.idata2001.g23.model.itemhandling.ItemFactory;
+import no.ntnu.idata2001.g23.model.itemhandling.ItemProvider;
+import no.ntnu.idata2001.g23.model.story.Link;
+import no.ntnu.idata2001.g23.model.story.Passage;
+import no.ntnu.idata2001.g23.model.story.Story;
 
 /**
- * A utility class for loading stories from files.
+ * A class for loading stories from files.
  */
 public class StoryLoader {
-    private StoryLoader() {
-        throw new IllegalStateException("Utility class");
+    private final ItemProvider itemProvider;
+
+    public StoryLoader(ItemProvider itemProvider) {
+        this.itemProvider = itemProvider;
     }
 
-    private static Action parseAction(String rawActionData, int lineNumber)
-            throws CorruptFileException {
-        String[] splitActionData = rawActionData.split(":", 2);
-        if (splitActionData.length < 2) {
-            throw new CorruptFileException(CorruptFileExceptionType.ACTION_INVALID_FORMAT,
-                    lineNumber, rawActionData);
-        }
-        Action returnAction;
-        String actionType = splitActionData[0].trim();
-        String actionValue = splitActionData[1].trim();
-        try {
-            switch (actionType) {
-                case "Gold" -> returnAction = new GoldAction(Integer.parseInt(actionValue));
-                case "Health" -> returnAction = new HealthAction(Integer.parseInt(actionValue));
-                case "Inventory" -> returnAction =
-                        new InventoryAction(ItemFactory.makeItem(actionValue));
-                case "Score" -> returnAction = new ScoreAction(Integer.parseInt(actionValue));
-                default -> throw new CorruptFileException(
-                        CorruptFileExceptionType.ACTION_INVALID_TYPE, lineNumber, actionType);
-            }
-        } catch (NumberFormatException | ElementNotFoundException e) {
-            throw new CorruptFileException(CorruptFileExceptionType.ACTION_INVALID_VALUE,
-                    lineNumber, actionValue);
-        }
-        return returnAction;
-    }
-
-    private static Link parseLink(String rawLinkData, int lineNumber)
+    private Link parseLink(String rawLinkData, int lineNumber)
             throws CorruptFileException {
         String[] splitLinkData = rawLinkData.split("]", 2);
         if (!rawLinkData.startsWith("[") || splitLinkData.length < 2) {
-            throw new CorruptFileException(CorruptFileExceptionType.LINK_NO_TEXT, lineNumber);
+            throw new CorruptFileException(CorruptFileException.Type.LINK_NO_TEXT, lineNumber);
         }
         final String linkText = splitLinkData[0].substring(1);
         rawLinkData = splitLinkData[1].trim();
 
         splitLinkData = rawLinkData.split("\\)", 2);
         if (!rawLinkData.startsWith("(") || splitLinkData.length < 2) {
-            throw new CorruptFileException(CorruptFileExceptionType.LINK_NO_REFERENCE, lineNumber);
+            throw new CorruptFileException(CorruptFileException.Type.LINK_NO_REFERENCE, lineNumber);
         }
         String linkReference = splitLinkData[0].substring(1);
         rawLinkData = splitLinkData[1].trim();
@@ -76,19 +51,20 @@ public class StoryLoader {
         while (!rawLinkData.isBlank()) {
             splitLinkData = rawLinkData.split("}", 2);
             if (!rawLinkData.startsWith("{") || splitLinkData.length < 2) {
-                throw new CorruptFileException(CorruptFileExceptionType.LINK_INVALID_ACTION,
+                throw new CorruptFileException(CorruptFileException.Type.LINK_INVALID_ACTION,
                         lineNumber, rawLinkData);
             }
-            linkActions.add(parseAction(splitLinkData[0].substring(1), lineNumber));
+            linkActions.add(ActionParser.parseAction(
+                    splitLinkData[0].substring(1), lineNumber, itemProvider));
             rawLinkData = splitLinkData[1].trim();
         }
         return new Link(linkText, linkReference, linkActions);
     }
 
-    private static Passage parsePassage(String passageTitle, LineNumberReader fileReader)
+    private Passage parsePassage(String passageTitle, LineNumberReader fileReader)
             throws IOException, CorruptFileException {
         if (passageTitle.isBlank()) {
-            throw new CorruptFileException(CorruptFileExceptionType.PASSAGE_NO_NAME,
+            throw new CorruptFileException(CorruptFileException.Type.PASSAGE_NO_NAME,
                     fileReader.getLineNumber());
         }
         StringBuilder passageContent = new StringBuilder();
@@ -107,7 +83,7 @@ public class StoryLoader {
             }
         }
         if (passageContent.isEmpty()) {
-            throw new CorruptFileException(CorruptFileExceptionType.PASSAGE_NO_CONTENT,
+            throw new CorruptFileException(CorruptFileException.Type.PASSAGE_NO_CONTENT,
                     fileReader.getLineNumber());
         }
         Passage returnPassage = new Passage(passageTitle, passageContent.toString());
@@ -117,7 +93,7 @@ public class StoryLoader {
         return returnPassage;
     }
 
-    private static List<Goal> parseGoals(LineNumberReader fileReader)
+    private List<Goal> parseGoals(LineNumberReader fileReader)
             throws IOException, CorruptFileException {
         List<Goal> goals = new ArrayList<>();
         String nextLine;
@@ -125,7 +101,7 @@ public class StoryLoader {
         while ((nextLine = fileReader.readLine()) != null && !nextLine.isBlank()) {
             String[] splitGoalData = nextLine.split(":", 2);
             if (splitGoalData.length < 2) {
-                throw new CorruptFileException(CorruptFileExceptionType.GOAL_INVALID_FORMAT,
+                throw new CorruptFileException(CorruptFileException.Type.GOAL_INVALID_FORMAT,
                         fileReader.getLineNumber(), nextLine);
             }
             Goal goal;
@@ -139,17 +115,17 @@ public class StoryLoader {
                             new InventoryGoal(ItemFactory.makeItem(goalValue));
                     case "Score" -> goal = new ScoreGoal(Integer.parseInt(goalValue));
                     default -> throw new CorruptFileException(
-                            CorruptFileExceptionType.GOAL_INVALID_TYPE,
+                            CorruptFileException.Type.GOAL_INVALID_TYPE,
                             fileReader.getLineNumber(), goalType);
                 }
             } catch (NumberFormatException | ElementNotFoundException e) {
-                throw new CorruptFileException(CorruptFileExceptionType.GOAL_INVALID_VALUE,
+                throw new CorruptFileException(CorruptFileException.Type.GOAL_INVALID_VALUE,
                         fileReader.getLineNumber(), goalValue);
             }
             goals.add(goal);
         }
         if (goals.isEmpty()) {
-            throw new CorruptFileException(CorruptFileExceptionType.DIFFICULTY_NO_GOALS,
+            throw new CorruptFileException(CorruptFileException.Type.DIFFICULTY_NO_GOALS,
                     fileReader.getLineNumber());
         }
         return goals;
@@ -162,16 +138,16 @@ public class StoryLoader {
      * @return The parsed story
      * @throws CorruptFileException If the story could not be parsed
      */
-    public static Story parseStory(LineNumberReader fileReader) throws CorruptFileException {
+    public Story parseStory(LineNumberReader fileReader) throws CorruptFileException {
         Story loadedStory;
         try {
             String storyTitle = fileReader.readLine();
             if (storyTitle == null) {
-                throw new CorruptFileException(CorruptFileExceptionType.EMPTY_FILE);
+                throw new CorruptFileException(CorruptFileException.Type.EMPTY_FILE);
             } else if (storyTitle.isBlank()
                     || storyTitle.startsWith("::")
                     || storyTitle.startsWith("#")) {
-                throw new CorruptFileException(CorruptFileExceptionType.NO_TITLE,
+                throw new CorruptFileException(CorruptFileException.Type.NO_TITLE,
                         fileReader.getLineNumber());
             }
             List<Passage> passages = new ArrayList<>();
@@ -184,28 +160,28 @@ public class StoryLoader {
 
                 } else if (nextLine.startsWith("#")) {
                     if (nextLine.length() == 1) {
-                        throw new CorruptFileException(CorruptFileExceptionType.DIFFICULTY_NO_NAME,
+                        throw new CorruptFileException(CorruptFileException.Type.DIFFICULTY_NO_NAME,
                                 fileReader.getLineNumber(), nextLine);
                     }
                     goals.put(nextLine.substring(1), parseGoals(fileReader));
                 } else if (!nextLine.isBlank()) {
-                    throw new CorruptFileException(CorruptFileExceptionType.INVALID_GOAL_OR_PASSAGE,
+                    throw new CorruptFileException(CorruptFileException.Type.INVALID_GOAL_OR_PASSAGE,
                             fileReader.getLineNumber(), nextLine);
                 }
             }
             if (passages.isEmpty()) {
-                throw new CorruptFileException(CorruptFileExceptionType.NO_PASSAGES,
+                throw new CorruptFileException(CorruptFileException.Type.NO_PASSAGES,
                         fileReader.getLineNumber());
             }
             if (goals.isEmpty()) {
-                throw new CorruptFileException(CorruptFileExceptionType.NO_GOALS,
+                throw new CorruptFileException(CorruptFileException.Type.NO_GOALS,
                         fileReader.getLineNumber());
             }
             loadedStory = new Story(storyTitle, passages.remove(0));
             passages.forEach(loadedStory::addPassage);
             goals.forEach(loadedStory::setGoals);
         } catch (IOException ioe) {
-            throw new CorruptFileException(CorruptFileExceptionType.UNKNOWN,
+            throw new CorruptFileException(CorruptFileException.Type.UNKNOWN,
                     fileReader.getLineNumber());
         }
         return loadedStory;
@@ -218,7 +194,7 @@ public class StoryLoader {
      * @return The loaded story
      * @throws CorruptFileException If the story could not be loaded
      */
-    public static Story loadStory(String storyFilePath) throws CorruptFileException {
+    public Story loadStory(String storyFilePath) throws CorruptFileException {
         Story loadedStory;
         try (LineNumberReader fileReader = new LineNumberReader(
                 Files.newBufferedReader(
@@ -227,7 +203,7 @@ public class StoryLoader {
         )) {
             loadedStory = parseStory(fileReader);
         } catch (IOException ioe) {
-            throw new CorruptFileException(CorruptFileExceptionType.UNKNOWN);
+            throw new CorruptFileException(CorruptFileException.Type.UNKNOWN);
         }
         return loadedStory;
     }

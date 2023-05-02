@@ -1,9 +1,11 @@
 package no.ntnu.idata2001.g23.model.entities;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
+import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.items.UsableItem;
 
 /**
  * Represents a player with different attributes which can be affected in a story.
@@ -83,6 +85,22 @@ public class Player extends GenericEntity {
      */
     public int getGold() {
         return gold;
+    }
+
+    /**
+     * Uses an item in the player's inventory. Using the item also consumes it.
+     *
+     * @param item The item to use. Must exist in the player's inventory
+     * @throws ElementNotFoundException If the specified item is not in the player's inventory
+     * @see UsableItem
+     */
+    public void useItem(UsableItem item) {
+        if (getInventory().hasItem(item)) {
+            item.use(this);
+            getInventory().removeItem(item);
+        } else {
+            throw new ElementNotFoundException("\"item\" is not in the player's inventory");
+        }
     }
 
     /**

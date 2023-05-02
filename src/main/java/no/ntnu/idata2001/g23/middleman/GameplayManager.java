@@ -6,8 +6,10 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.Game;
+import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 
@@ -88,5 +90,15 @@ public class GameplayManager {
         }
         this.currentPassage = game.go(link);
         notifyListeners(new ChangePassageEvent(currentPassage));
+    }
+
+    /**
+     * Uses an item in the player's inventory.
+     *
+     * @param item The item to use
+     */
+    public void useItem(UsableItem item) {
+        game.getPlayer().useItem(item);
+        notifyListeners(new InventoryUpdateEvent(game.getPlayer().getInventory()));
     }
 }

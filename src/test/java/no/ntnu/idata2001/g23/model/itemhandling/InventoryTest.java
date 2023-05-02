@@ -68,14 +68,14 @@ class InventoryTest {
     }
 
     @Test
-    void testRemovingOfItemWithInvalidIndex() {
-        assertThrows(NumberOutOfRangeException.class, () -> validInventory.removeItem(-1));
-        assertThrows(NumberOutOfRangeException.class, () -> validInventory.removeItem(4));
+    void testRemovingOfInvalidItem() {
+        assertThrows(ElementNotFoundException.class, () -> validInventory.removeItem(null));
+        assertThrows(ElementNotFoundException.class, () -> validInventory.removeItem(otherItem));
     }
 
     @Test
     void testValidRemovingOfItem() {
-        assertDoesNotThrow(() -> validInventory.removeItem(0));
+        assertDoesNotThrow(() -> validInventory.removeItem(inventoryMiscItem));
         assertFalse(validInventory.hasItem(inventoryMiscItem));
         assertNull(validInventory.getItem(1));
     }

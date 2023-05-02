@@ -16,8 +16,11 @@ import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.items.UsableItem;
+import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
@@ -27,7 +30,7 @@ import no.ntnu.idata2001.g23.view.textures.TxLoader;
  */
 public class GameplayScreen extends GenericScreen implements GameUpdateListener {
     private final GameplayController controller;
-    protected static final int HORIZONTAL_SPACING = 100;
+    protected static final int HORIZONTAL_SPACING = 50;
     protected static final int VERTICAL_SPACING = 30;
 
     private BorderPane contentPane;
@@ -38,13 +41,23 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     private Label passageTitle;
     private Label passageText;
 
+    private VBox actionPrompt;
+
     private ScrollPane movePrompt;
     private VBox moveOptions;
 
     private VBox inventoryPrompt;
     private ListView<Item> inventoryContent;
 
-    private HBox actionPrompt;
+    private ScrollPane historyPrompt;
+    private VBox historyContent;
+
+    private HBox statPrompt;
+    private Label nameLabel;
+    private Label hpLabel;
+    private Label goldLabel;
+    private Label scoreLabel;
+
 
     /**
      * Makes the gameplay screen.
@@ -70,16 +83,16 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         return pauseModal;
     }
 
-    public BorderPane getTopPrompt() {
-        return topPrompt;
-    }
-
     public Label getPassageTitle() {
         return passageTitle;
     }
 
     public Label getPassageText() {
         return passageText;
+    }
+
+    public VBox getActionPrompt() {
+        return actionPrompt;
     }
 
     public ScrollPane getMovePrompt() {
@@ -98,6 +111,26 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         return inventoryContent;
     }
 
+    public VBox getHistoryContent() {
+        return historyContent;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
+    }
+
+    public Label getHpLabel() {
+        return hpLabel;
+    }
+
+    public Label getGoldLabel() {
+        return goldLabel;
+    }
+
+    public Label getScoreLabel() {
+        return scoreLabel;
+    }
+
     private void initializePauseModal() {
         pauseModal = new VBox(VERTICAL_SPACING);
         pauseModal.getStyleClass().add(Css.PROMPT);
@@ -107,7 +140,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         pauseModal.getChildren().add(menuText);
 
         Button resumeButton = new Button("Resume");
-        resumeButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
+        resumeButton.getStyleClass().add(Css.EMPHASIZED_TEXT);
         resumeButton.setOnAction(ae -> controller.removeTopModal());
         pauseModal.getChildren().add(resumeButton);
 
@@ -123,7 +156,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
 
     private void initializeTopPrompt() {
         topPrompt = new BorderPane();
-        topPrompt.getStyleClass().addAll(Css.PROMPT, Css.TOP_PROMPT);
+        topPrompt.getStyleClass().addAll(Css.TOP_PROMPT);
 
         VBox passageContent = new VBox(VERTICAL_SPACING);
         passageContent.getStyleClass().add(Css.TOP_CONTENT);
@@ -142,16 +175,49 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         topPrompt.setRight(menuButton);
     }
 
+    private void initializeActionPrompt() {
+        actionPrompt = new VBox(VERTICAL_SPACING);
+        actionPrompt.getStyleClass().add(Css.LEFT_PROMPT);
+
+        Label actionHeader = new Label("Actions");
+        actionHeader.getStyleClass().add(Css.HEADER);
+        actionPrompt.getChildren().add(actionHeader);
+
+        Button moveButton = new Button("Move");
+        moveButton.setOnAction(ae -> controller.showMovePrompt());
+        actionPrompt.getChildren().add(moveButton);
+
+        Button fightButton = new Button("Fight");
+        fightButton.getStyleClass().add(Css.EMPHASIZED_TEXT);
+        //TODO: Make this button work
+        fightButton.setDisable(true);
+        actionPrompt.getChildren().add(fightButton);
+
+        Button inventoryButton = new Button("Inventory");
+        inventoryButton.getStyleClass().add(Css.EMPHASIZED_TEXT);
+        inventoryButton.setOnAction(ae -> controller.showInventoryPrompt());
+        actionPrompt.getChildren().add(inventoryButton);
+    }
+
     private void initializeMovePrompt() {
         movePrompt = new DebugScrollPane();
-        movePrompt.getStyleClass().addAll(Css.PROMPT, Css.LEFT_PROMPT);
+        movePrompt.getStyleClass().addAll(Css.LEFT_PROMPT);
 
         VBox moveContent = new VBox(VERTICAL_SPACING);
         movePrompt.setContent(moveContent);
 
-        Label moveText = new Label("Move:");
-        moveText.getStyleClass().add(Css.HEADER);
-        moveContent.getChildren().add(moveText);
+        HBox titleBox = new HBox(HORIZONTAL_SPACING);
+        titleBox.setStyle("-fx-alignment: center-left;");
+        moveContent.getChildren().add(titleBox);
+
+        Button backButton = new Button();
+        backButton.setGraphic(TxLoader.getIcon("backIcon.png", 100));
+        backButton.setOnAction(ae -> controller.showActionPrompt());
+        titleBox.getChildren().add(backButton);
+
+        Label moveHeader = new Label("Move");
+        moveHeader.getStyleClass().add(Css.HEADER);
+        titleBox.getChildren().add(moveHeader);
 
         moveOptions = new VBox(VERTICAL_SPACING);
         moveContent.getChildren().add(moveOptions);
@@ -159,11 +225,20 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
 
     private void initializeInventoryPrompt() {
         inventoryPrompt = new VBox(VERTICAL_SPACING);
-        inventoryPrompt.getStyleClass().addAll(Css.PROMPT, Css.LEFT_PROMPT);
+        inventoryPrompt.getStyleClass().addAll(Css.LEFT_PROMPT);
+
+        HBox titleBox = new HBox(HORIZONTAL_SPACING);
+        titleBox.setStyle("-fx-alignment: center-left");
+        inventoryPrompt.getChildren().add(titleBox);
+
+        Button backButton = new Button();
+        backButton.setGraphic(TxLoader.getIcon("backIcon.png", 100));
+        backButton.setOnAction(ae -> controller.showActionPrompt());
+        titleBox.getChildren().add(backButton);
 
         Label inventoryHeader = new Label("Inventory");
         inventoryHeader.getStyleClass().add(Css.HEADER);
-        inventoryPrompt.getChildren().add(inventoryHeader);
+        titleBox.getChildren().add(inventoryHeader);
 
         inventoryContent = new ListView<>();
         inventoryContent.setPlaceholder(new Label("(No items)"));
@@ -176,53 +251,81 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
                     setText(null);
                 } else {
                     setText(item.getName());
+                    if (item instanceof UsableItem) {
+                        setDisable(false);
+                        setStyle("-fx-font-style: italic;");
+                    } else {
+                        setDisable(true);
+                        setStyle("-fx-font-style: none;");
+                    }
                 }
             }
         });
         inventoryPrompt.getChildren().add(inventoryContent);
 
         Button useButton = new Button("Use selected item");
-        //TODO: Make this button work
-        useButton.setDisable(true);
+        useButton.setOnAction(ae -> controller.useSelectedItem());
         inventoryPrompt.getChildren().add(useButton);
     }
 
-    private void initializeActionPrompt() {
-        actionPrompt = new HBox(HORIZONTAL_SPACING);
-        actionPrompt.getStyleClass().add(Css.PROMPT);
+    private void initializeHistoryPrompt() {
+        historyPrompt = new DebugScrollPane();
+        historyPrompt.getStyleClass().add(Css.RIGHT_PROMPT);
 
-        Button moveButton = new Button("Move");
-        moveButton.getStyleClass().add(Css.HEADER);
-        moveButton.setOnAction(ae -> controller.showMovePrompt());
-        actionPrompt.getChildren().add(moveButton);
+        historyContent = new VBox(VERTICAL_SPACING);
+        historyContent.setPrefWidth(500);
+        historyPrompt.setContent(historyContent);
+    }
 
-        Button fightButton = new Button("Fight");
-        fightButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
-        //TODO: Make this button work
-        fightButton.setDisable(true);
-        actionPrompt.getChildren().add(fightButton);
+    private void initializeStatPrompt() {
+        statPrompt = new HBox(HORIZONTAL_SPACING * 4D);
+        statPrompt.getStyleClass().addAll(Css.PROMPT, Css.HEADER);
 
-        Button inventoryButton = new Button("Inventory");
-        inventoryButton.getStyleClass().add(Css.EMPHASIZED_BUTTON);
-        inventoryButton.setOnAction(ae -> controller.showInventoryPrompt());
-        actionPrompt.getChildren().add(inventoryButton);
+        nameLabel = new Label();
+        statPrompt.getChildren().add(nameLabel);
+
+        HBox hpBox = new HBox();
+        statPrompt.getChildren().add(hpBox);
+
+        hpBox.getChildren().add(new Label("HP: "));
+
+        hpLabel = new Label();
+        hpBox.getChildren().add(hpLabel);
+
+        HBox goldBox = new HBox();
+        statPrompt.getChildren().add(goldBox);
+
+        goldBox.getChildren().add(new Label("Gold: "));
+
+        goldLabel = new Label();
+        goldBox.getChildren().add(goldLabel);
+
+        HBox scoreBox = new HBox();
+        statPrompt.getChildren().add(scoreBox);
+
+        scoreBox.getChildren().add(new Label("Score: "));
+
+        scoreLabel = new Label();
+        scoreBox.getChildren().add(scoreLabel);
     }
 
     @Override
     protected void initializeNodes() {
-        initializeTopPrompt();
         initializePauseModal();
+        initializeTopPrompt();
+        initializeActionPrompt();
         initializeMovePrompt();
         initializeInventoryPrompt();
-        initializeActionPrompt();
+        initializeHistoryPrompt();
+        initializeStatPrompt();
     }
 
     @Override
     protected Pane makeRoot() {
         contentPane = new BorderPane();
         contentPane.setTop(topPrompt);
-        contentPane.setLeft(movePrompt);
-        contentPane.setBottom(actionPrompt);
+        contentPane.setRight(historyPrompt);
+        contentPane.setBottom(statPrompt);
 
         StackPane root = new StackPane();
         root.getChildren().add(contentPane);
@@ -232,16 +335,22 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     @Override
     public void setDefaultState() {
         controller.removeAllModal();
-        controller.showMovePrompt();
+        controller.showActionPrompt();
+        controller.clearActionHistory();
     }
 
     @Override
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent newGameEvent) {
-            controller.updatePassageText(newGameEvent.startPassage());
+            controller.updateCurrentPassage(newGameEvent.startPassage());
             controller.updateInventoryList(newGameEvent.game().getPlayer().getInventory());
+            controller.updatePlayerStats(newGameEvent.game().getPlayer());
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
-            controller.updatePassageText(changePassageEvent.currentPassage());
+            Passage currentPassage = changePassageEvent.currentPassage();
+            controller.updateCurrentPassage(currentPassage);
+            controller.logAction("Moved to " + currentPassage.getTitle());
+        } else if (event instanceof InventoryUpdateEvent inventoryUpdateEvent) {
+            controller.updateInventoryList(inventoryUpdateEvent.inventory());
         }
     }
 
@@ -258,10 +367,11 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         public static final String PROMPT = "prompt";
         public static final String TOP_PROMPT = "top-prompt";
         public static final String LEFT_PROMPT = "left-prompt";
+        public static final String RIGHT_PROMPT = "right-prompt";
 
         public static final String TOP_CONTENT = "top-content";
 
         public static final String HEADER = "header";
-        public static final String EMPHASIZED_BUTTON = "emphasized-button";
+        public static final String EMPHASIZED_TEXT = "emphasized-text";
     }
 }

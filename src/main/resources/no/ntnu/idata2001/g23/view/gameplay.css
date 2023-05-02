@@ -75,16 +75,12 @@
     -fx-background-color: rgba(16, 16, 16, 0.75);
 }
 
-.prompt {
+.prompt, .top-prompt, .left-prompt, .right-prompt, .bottom-prompt {
     -fx-alignment: center;
     -fx-background-color: rgba(16, 16, 16, 0.5);
     -fx-border-color: white;
     -fx-border-radius: 15px;
     -fx-padding: 60px;
-}
-
-.prompt .button {
-    -fx-font-size: 108px;
 }
 
 .top-prompt {
@@ -95,8 +91,8 @@
     -fx-alignment: top-left;
 }
 
-.left-prompt .button {
-    -fx-font-size: 72px;
+.right-prompt {
+    -fx-alignment: top-right;
 }
 
 .top-content {
@@ -104,6 +100,6 @@
     -fx-padding: 60px;
 }
 
-.emphasized-button {
+.emphasized-text {
     -fx-font-weight: bold;
 }

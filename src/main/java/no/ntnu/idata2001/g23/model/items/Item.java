@@ -7,9 +7,9 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
  * Any item that can be stored in some inventory.
  */
 public abstract class Item {
-    protected final int value;
-    protected final String name;
-    protected final String description;
+    private final int value;
+    private final String name;
+    private final String description;
 
     /**
      * Makes a basic item.
@@ -50,6 +50,7 @@ public abstract class Item {
         return description;
     }
 
+    //TODO: Possibly remove this, obsolete?
     public abstract String getCategory();
 
     @Override

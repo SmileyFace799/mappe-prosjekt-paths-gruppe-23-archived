@@ -44,14 +44,10 @@ public class ItemProvider {
      *
      * @param identifier The unique identifier for the item to provide
      * @return The provided item
-     * @throws BlankStringException If identifier is {@code null} or blank
      * @throws ElementNotFoundException If the identifier is not associated with any item
      */
     public Item provideItem(String identifier) {
-        if (identifier == null || identifier.isBlank()) {
-            throw new BlankStringException("String \"identifier\" cannot be blank");
-        }
-        if (!itemSupplierMap.containsKey(identifier)) {
+        if (identifier == null || identifier.isBlank() || !itemSupplierMap.containsKey(identifier)) {
             throw new ElementNotFoundException("No item associated with the specified identifier");
         }
         return itemSupplierMap.get(identifier).get();

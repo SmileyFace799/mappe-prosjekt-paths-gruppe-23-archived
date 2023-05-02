@@ -1,14 +1,19 @@
 package no.ntnu.idata2001.g23.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
+import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
@@ -20,6 +25,7 @@ import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 public class GameplayController extends GenericController {
     private final GameplayManager gameplayManager;
     private final GameplayScreen screen;
+    private final List<String> actionHistory;
 
     /**
      * Controller for the gameplay screen.
@@ -31,6 +37,7 @@ public class GameplayController extends GenericController {
         super(application);
         this.screen = screen;
         this.gameplayManager = GameplayManager.getInstance();
+        this.actionHistory = new ArrayList<>();
     }
 
     private void addModal(Node node) {
@@ -63,28 +70,79 @@ public class GameplayController extends GenericController {
     }
 
     /**
-     * Shows the game's menu at in the bottom prompt.
+     * Shows the game's pause menu as a modal window.
      */
     public void showPauseModal() {
         addModal(screen.getPauseModal());
     }
 
     /**
-     * Sets the screen to show its default contents.
+     *
+     */
+    public void showActionPrompt() {
+        screen.getContentPane().setLeft(screen.getActionPrompt());
+    }
+
+    /**
+     * Sets the player's move options on the left side of the screen.
      */
     public void showMovePrompt() {
         screen.getContentPane().setLeft(screen.getMovePrompt());
     }
 
     /**
-     * Shows yhe player's inventory on the left side of the screen.
+     * Shows the player's inventory on the left side of the screen.
      */
     public void showInventoryPrompt() {
         screen.getContentPane().setLeft(screen.getInventoryPrompt());
     }
 
-    public void movePassage(Link link) {
-        gameplayManager.movePassage(link);
+    /**
+     * Uses the selected item if it is usable.
+     */
+    public void useSelectedItem() {
+        if (screen.getInventoryContent().getSelectionModel().getSelectedItem()
+                instanceof UsableItem usableItem) {
+            gameplayManager.useItem(usableItem);
+            showActionPrompt();
+        }
+    }
+
+    public void clearActionHistory() {
+        actionHistory.clear();
+        screen.getHistoryContent().getChildren().clear();
+    }
+
+    public void logAction(String logMessage) {
+        if (actionHistory.size() >= 15) {
+            actionHistory.remove(0);
+        }
+        actionHistory.add(logMessage);
+        VBox historyContent = screen.getHistoryContent();
+        historyContent.getChildren().clear();
+        actionHistory.forEach(message -> historyContent.getChildren().add(new Label(message)));
+    }
+
+    /**
+     * Updates the passage info shown on screen.
+     *
+     * @param newPassage The new passage with the updated text
+     */
+    public void updateCurrentPassage(Passage newPassage) {
+        screen.getPassageTitle().setText(newPassage.getTitle());
+        screen.getPassageText().setText(newPassage.getContent());
+
+        VBox moveOptions = screen.getMoveOptions();
+        moveOptions.getChildren().clear();
+        for (Link link : newPassage.getLinks()) {
+            Button linkButton = new Button(link.getText());
+            linkButton.getStyleClass().add(GameplayScreen.Css.EMPHASIZED_TEXT);
+            linkButton.setOnAction(ae -> {
+                gameplayManager.movePassage(link);
+                showActionPrompt();
+            });
+            moveOptions.getChildren().add(linkButton);
+        }
     }
 
     /**
@@ -99,21 +157,14 @@ public class GameplayController extends GenericController {
     }
 
     /**
-     * Updates the passage text shown on screen.
+     * Update the player stats shown on screen.
      *
-     * @param newPassage The new passage with the updated text
+     * @param player The player with the updated stats to show
      */
-    public void updatePassageText(Passage newPassage) {
-        screen.getPassageTitle().setText(newPassage.getTitle());
-        screen.getPassageText().setText(newPassage.getContent());
-
-        VBox moveOptions = screen.getMoveOptions();
-        moveOptions.getChildren().clear();
-        for (Link link : newPassage.getLinks()) {
-            Button linkButton = new Button(link.getText());
-            linkButton.getStyleClass().add(GameplayScreen.Css.EMPHASIZED_BUTTON);
-            linkButton.setOnAction(ae -> movePassage(link));
-            moveOptions.getChildren().add(linkButton);
-        }
+    public void updatePlayerStats(Player player) {
+        screen.getNameLabel().setText(player.getName());
+        screen.getHpLabel().setText(player.getHealth() + "/" + player.getMaxHealth());
+        screen.getGoldLabel().setText(Integer.toString(player.getGold()));
+        screen.getScoreLabel().setText(Integer.toString(player.getScore()));
     }
 }

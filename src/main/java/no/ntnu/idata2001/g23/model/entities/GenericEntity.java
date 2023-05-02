@@ -29,6 +29,10 @@ public abstract class GenericEntity {
         return health;
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
     /**
      * Sets an entity's health.
      * If the set entity health exceeds the entity's max health,

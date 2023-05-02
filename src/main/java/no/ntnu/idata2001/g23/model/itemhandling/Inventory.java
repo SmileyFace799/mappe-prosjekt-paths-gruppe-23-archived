@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.model.itemhandling;
 
 import java.util.ArrayList;
 import java.util.List;
+import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
@@ -80,18 +81,15 @@ public class Inventory {
 
     /**
      * Removes an item from the inventory.
-     * If there is no item at the specified index, this does nothing.
      *
-     * @param index The index to remove an item at.
+     * @param item The item to remove
+     * @throws ElementNotFoundException If the item to remove is not present in the inventory
      */
-    public void removeItem(int index) {
-        if (index < 0 || index > inventorySize) {
-            throw new NumberOutOfRangeException(
-                    "int \"index\" must be greater than 0, but less than the inventory size");
+    public void removeItem(Item item) {
+        if (item == null || !contents.contains(item)) {
+            throw new ElementNotFoundException("\"item\" is not present in the inventory");
         }
-        if (index < contents.size()) {
-            contents.remove(index);
-        }
+        contents.remove(item);
     }
 
     /**
