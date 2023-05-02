@@ -95,11 +95,11 @@
     -fx-alignment: top-right;
 }
 
+.right-prompt .label {
+    -fx-text-alignment: right;
+}
+
 .top-content {
     -fx-alignment: top-left;
     -fx-padding: 60px;
-}
-
-.emphasized-text {
-    -fx-font-weight: bold;
 }

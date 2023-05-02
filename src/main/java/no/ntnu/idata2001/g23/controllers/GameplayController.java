@@ -136,7 +136,6 @@ public class GameplayController extends GenericController {
         moveOptions.getChildren().clear();
         for (Link link : newPassage.getLinks()) {
             Button linkButton = new Button(link.getText());
-            linkButton.getStyleClass().add(GameplayScreen.Css.EMPHASIZED_TEXT);
             linkButton.setOnAction(ae -> {
                 gameplayManager.movePassage(link);
                 showActionPrompt();

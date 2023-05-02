@@ -1,3 +1,5 @@
+/* Built-in classes */
+
 .root {
     -fx-alignment: center;
     -fx-background-color: #99E550;
@@ -30,17 +32,6 @@
     -fx-stroke-width: 3px;
 }
 
-.header {
-    -fx-font-weight: bold;
-    -fx-text-alignment: center;
-    -fx-font-family: "Rockwell Nova Extra Bold";
-    -fx-font-size: 144px;
-}
-
-.header.label .text {
-    -fx-stroke-width: 5px;
-}
-
 .text-field {
     -fx-background-color: #191919;
     -fx-text-fill: white;
@@ -51,4 +42,16 @@
 
 .text-field .text {
     -fx-stroke-width: 0px;
+}
+
+/* Custom classes */
+.header {
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+    -fx-font-family: "Rockwell Nova Extra Bold";
+    -fx-font-size: 144px;
+}
+
+.header.label .text {
+    -fx-stroke-width: 5px;
 }

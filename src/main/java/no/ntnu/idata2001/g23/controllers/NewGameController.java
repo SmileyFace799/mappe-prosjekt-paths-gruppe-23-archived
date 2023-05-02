@@ -1,6 +1,8 @@
 package no.ntnu.idata2001.g23.controllers;
 
 import java.io.File;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.fileparsing.GameLoader;
@@ -38,17 +40,17 @@ public class NewGameController extends GenericController {
         String playerName = screen.getPlayerNameInput().getText();
         String storyPath = screen.getStoryPathInput().getText();
         if (playerName == null || playerName.isBlank()) {
-            screen.setErrorMessage("Please enter a player name");
+            setErrorMessage("Please enter a player name");
         } else if (storyPath == null || storyPath.isBlank()) {
-            screen.setErrorMessage("Please choose a story");
+            setErrorMessage("Please choose a story");
         } else {
             try {
                 GameplayManager.getInstance().startGame(GameLoader.loadGame(playerName, storyPath));
                 changeScreen(GameplayScreen.class);
             } catch (CorruptFileException cfe) {
-                screen.setErrorMessage("Story file is corrupt: " + cfe.getMessage());
+                setErrorMessage("Story file is corrupt: " + cfe.getMessage());
             } catch (FullInventoryException fie) {
-                screen.setErrorMessage(fie.getMessage());
+                setErrorMessage(fie.getMessage());
             }
         }
     }
@@ -60,6 +62,22 @@ public class NewGameController extends GenericController {
         File chosenFile = storyChooser.showDialog(screen.getScene().getWindow());
         if (chosenFile != null) {
             screen.getStoryPathInput().setText(chosenFile.getPath());
+        }
+    }
+
+    /**
+     * Shows an error message to the user when the story can't be started.
+     *
+     * @param errorMessage THe error message to show.
+     *                     If this is {@code null}, the error message will be cleared
+     */
+    public void setErrorMessage(String errorMessage) {
+        VBox errorBox = screen.getErrorBox();
+        errorBox.getChildren().clear();
+        if (errorMessage != null && !errorMessage.isBlank()) {
+            Label errorLabel = new Label(errorMessage);
+            errorLabel.getStyleClass().add("error-label");
+            errorBox.getChildren().add(errorLabel);
         }
     }
 }

@@ -23,6 +23,7 @@ import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.GlobalCss;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
 
 /**
@@ -136,11 +137,10 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         pauseModal.getStyleClass().add(Css.PROMPT);
 
         Label menuText = new Label("Game Paused");
-        menuText.getStyleClass().add(Css.HEADER);
+        menuText.getStyleClass().add(GlobalCss.HEADER);
         pauseModal.getChildren().add(menuText);
 
         Button resumeButton = new Button("Resume");
-        resumeButton.getStyleClass().add(Css.EMPHASIZED_TEXT);
         resumeButton.setOnAction(ae -> controller.removeTopModal());
         pauseModal.getChildren().add(resumeButton);
 
@@ -163,7 +163,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         topPrompt.setCenter(passageContent);
 
         passageTitle = new Label();
-        passageTitle.getStyleClass().add(Css.HEADER);
+        passageTitle.getStyleClass().add(GlobalCss.HEADER);
         passageContent.getChildren().add(passageTitle);
 
         passageText = new Label();
@@ -180,7 +180,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         actionPrompt.getStyleClass().add(Css.LEFT_PROMPT);
 
         Label actionHeader = new Label("Actions");
-        actionHeader.getStyleClass().add(Css.HEADER);
+        actionHeader.getStyleClass().add(GlobalCss.HEADER);
         actionPrompt.getChildren().add(actionHeader);
 
         Button moveButton = new Button("Move");
@@ -188,13 +188,11 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         actionPrompt.getChildren().add(moveButton);
 
         Button fightButton = new Button("Fight");
-        fightButton.getStyleClass().add(Css.EMPHASIZED_TEXT);
         //TODO: Make this button work
         fightButton.setDisable(true);
         actionPrompt.getChildren().add(fightButton);
 
         Button inventoryButton = new Button("Inventory");
-        inventoryButton.getStyleClass().add(Css.EMPHASIZED_TEXT);
         inventoryButton.setOnAction(ae -> controller.showInventoryPrompt());
         actionPrompt.getChildren().add(inventoryButton);
     }
@@ -216,7 +214,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         titleBox.getChildren().add(backButton);
 
         Label moveHeader = new Label("Move");
-        moveHeader.getStyleClass().add(Css.HEADER);
+        moveHeader.getStyleClass().add(GlobalCss.HEADER);
         titleBox.getChildren().add(moveHeader);
 
         moveOptions = new VBox(VERTICAL_SPACING);
@@ -237,7 +235,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         titleBox.getChildren().add(backButton);
 
         Label inventoryHeader = new Label("Inventory");
-        inventoryHeader.getStyleClass().add(Css.HEADER);
+        inventoryHeader.getStyleClass().add(GlobalCss.HEADER);
         titleBox.getChildren().add(inventoryHeader);
 
         inventoryContent = new ListView<>();
@@ -272,14 +270,21 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         historyPrompt = new DebugScrollPane();
         historyPrompt.getStyleClass().add(Css.RIGHT_PROMPT);
 
+        VBox historyContentContainer = new VBox(VERTICAL_SPACING);
+        historyPrompt.setContent(historyContentContainer);
+
+        Label historyHeader = new Label("History");
+        historyHeader.getStyleClass().add(GlobalCss.HEADER);
+        historyContentContainer.getChildren().add(historyHeader);
+
         historyContent = new VBox(VERTICAL_SPACING);
-        historyContent.setPrefWidth(500);
-        historyPrompt.setContent(historyContent);
+        historyContent.setPrefWidth(750);
+        historyContentContainer.getChildren().add(historyContent);
     }
 
     private void initializeStatPrompt() {
         statPrompt = new HBox(HORIZONTAL_SPACING * 4D);
-        statPrompt.getStyleClass().addAll(Css.PROMPT, Css.HEADER);
+        statPrompt.getStyleClass().addAll(Css.PROMPT, GlobalCss.HEADER);
 
         nameLabel = new Label();
         statPrompt.getChildren().add(nameLabel);
@@ -356,6 +361,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
 
     /**
      * Contains custom {@code .css} style classes used by the gameplay screen.
+     * This class is public so {@link GameplayController} can access it.
      */
     public static class Css {
         private Css() {
@@ -370,8 +376,5 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         public static final String RIGHT_PROMPT = "right-prompt";
 
         public static final String TOP_CONTENT = "top-content";
-
-        public static final String HEADER = "header";
-        public static final String EMPHASIZED_TEXT = "emphasized-text";
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.SettingsController;
 import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.GlobalCss;
 
 /**
  * The settings screen, where the user can customize various application & game settings.
@@ -24,7 +25,7 @@ public class SettingsScreen extends GenericScreen {
         VBox content = new VBox(60);
 
         Label settingsTitle = new Label("Settings");
-        settingsTitle.getStyleClass().add("header");
+        settingsTitle.getStyleClass().add(GlobalCss.HEADER);
         content.getChildren().add(settingsTitle);
 
         content.getChildren().add(new Rectangle(0, 200));

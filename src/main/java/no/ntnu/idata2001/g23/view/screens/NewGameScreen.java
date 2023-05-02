@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.NewGameController;
 import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.GlobalCss;
 
 /**
  * The new game screen, where the player creates & starts a new game.
@@ -31,14 +32,12 @@ public class NewGameScreen extends GenericScreen {
         return playerNameInput;
     }
 
-    public TextField getStoryPathInput() {
-        return storyPathInput;
+    public VBox getErrorBox() {
+        return errorBox;
     }
 
-    @Override
-    public void setDefaultState() {
-        playerNameInput.setText("");
-        setErrorMessage(null);
+    public TextField getStoryPathInput() {
+        return storyPathInput;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class NewGameScreen extends GenericScreen {
         VBox content = new VBox(VERTICAL_SPACING);
 
         Label newGameTitle = new Label("New game");
-        newGameTitle.getStyleClass().add("header");
+        newGameTitle.getStyleClass().add(GlobalCss.HEADER);
         content.getChildren().add(newGameTitle);
 
         HBox nameBox = new HBox(HORIZONTAL_SPACING);
@@ -111,18 +110,9 @@ public class NewGameScreen extends GenericScreen {
         return content;
     }
 
-    /**
-     * Shows an error message to the user when the story can't be started.
-     *
-     * @param errorMessage THe error message to show.
-     *                     If this is {@code null}, the error message will be cleared
-     */
-    public void setErrorMessage(String errorMessage) {
-        errorBox.getChildren().clear();
-        if (errorMessage != null && !errorMessage.isBlank()) {
-            Label errorLabel = new Label(errorMessage);
-            errorLabel.getStyleClass().add("error-label");
-            errorBox.getChildren().add(errorLabel);
-        }
+    @Override
+    public void setDefaultState() {
+        playerNameInput.setText("");
+        controller.setErrorMessage(null);
     }
 }
