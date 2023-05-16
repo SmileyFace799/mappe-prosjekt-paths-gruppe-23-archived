@@ -2,7 +2,7 @@ package no.ntnu.idata2001.g23.model.items;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.actions.Action;
-import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.Entity;
 
 public class UsableItem extends Item {
     private final Action onUse;
@@ -28,8 +28,8 @@ public class UsableItem extends Item {
         return "Usable item";
     }
 
-    public void use(Player player) {
-        onUse.execute(player);
+    public void use(Entity entity) {
+        onUse.execute(entity);
     }
 
     @Override

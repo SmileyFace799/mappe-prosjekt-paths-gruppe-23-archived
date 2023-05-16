@@ -16,7 +16,7 @@ public class TxLoader {
     private static final Image defaultTexture = makeDefaultTexture();
 
     private TxLoader() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Do not instantiate this class pls :)");
     }
 
     private static Image makeDefaultTexture() {

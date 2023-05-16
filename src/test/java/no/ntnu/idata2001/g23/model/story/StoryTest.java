@@ -125,26 +125,4 @@ class StoryTest {
         validStory.getOpeningPassage().addLink(brokenLink);
         assertEquals(List.of(brokenLink), validStory.getBrokenLinks());
     }
-
-    @Test
-    void testSettingGoalsWithNoDifficulty() {
-        assertThrows(BlankStringException.class, () ->
-                validStory.setGoals(null, validGoalList));
-        assertThrows(BlankStringException.class, () ->
-                validStory.setGoals("  ", validGoalList));
-    }
-
-    @Test
-    void testSettingGoalsWithNoGoals() {
-        assertThrows(EmptyArrayException.class, () ->
-                validStory.setGoals("Difficulty", null));
-        List<Goal> emptyGoalList = List.of();
-        assertThrows(EmptyArrayException.class, () ->
-                validStory.setGoals("Difficulty", emptyGoalList));
-    }
-
-    @Test
-    void testValidSettingOfGoals() {
-        assertDoesNotThrow(() -> validStory.setGoals("Difficulty", validGoalList));
-    }
 }

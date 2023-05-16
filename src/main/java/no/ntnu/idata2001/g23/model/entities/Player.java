@@ -1,20 +1,14 @@
 package no.ntnu.idata2001.g23.model.entities;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
+import java.util.List;
 import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.items.Item;
-import no.ntnu.idata2001.g23.model.items.UsableItem;
+import no.ntnu.idata2001.g23.model.items.Weapon;
 
 /**
  * Represents a player with different attributes which can be affected in a story.
  */
-public class Player extends GenericEntity {
-    private final String name; //required
-    private int score; //optional
-    private int gold; //optional
-
+public class Player extends Entity {
     /**
      * Creates a player. This should only be called by {@link PlayerBuilder}.
      *
@@ -24,83 +18,7 @@ public class Player extends GenericEntity {
      * @param gold      How much gold the player has
      */
     private Player(String name, int maxHealth, int score, int gold) {
-        super(maxHealth, 16);
-        if (name == null || name.isBlank()) {
-            throw new BlankStringException("Name cannot be null or blank");
-        }
-        this.name = name;
-        this.score = score;
-        this.gold = gold;
-    }
-
-    public String toString() {
-        return String.format("%s (Health: %d, Score: %d, Gold: %d)", name, health, score, gold);
-    }
-
-    // no setters, only getters - to provide immutability
-
-    /**
-     * Returns the players name.
-     *
-     * @return The players name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Adds points to the players score.
-     *
-     * @param points increases players score.
-     */
-    public void addScore(int points) {
-        this.score += points;
-    }
-
-    /**
-     * Shows the players current score.
-     *
-     * @return players score
-     */
-    public int getScore() {
-        return score;
-    }
-
-    /**
-     * Increases players gold.
-     *
-     * @param gold increases players gold.
-     */
-    public void changeGold(int gold) {
-        if (this.gold + gold < 0) {
-            throw new NegativeNumberException("Resulting amount of gold cannot be less than 0");
-        }
-        this.gold += gold;
-    }
-
-    /**
-     * Shows amount of gold the player has.
-     *
-     * @return amount of gold
-     */
-    public int getGold() {
-        return gold;
-    }
-
-    /**
-     * Uses an item in the player's inventory. Using the item also consumes it.
-     *
-     * @param item The item to use. Must exist in the player's inventory
-     * @throws ElementNotFoundException If the specified item is not in the player's inventory
-     * @see UsableItem
-     */
-    public void useItem(UsableItem item) {
-        if (getInventory().hasItem(item)) {
-            item.use(this);
-            getInventory().removeItem(item);
-        } else {
-            throw new ElementNotFoundException("\"item\" is not in the player's inventory");
-        }
+        super(name, maxHealth, score, gold);
     }
 
     /**
@@ -115,7 +33,8 @@ public class Player extends GenericEntity {
         private int health;
         private int score;
         private int gold;
-        private Item[] items;
+        private List<Item> items;
+        private Weapon weapon;
 
         /**
          * Makes a builder for the player.
@@ -127,11 +46,12 @@ public class Player extends GenericEntity {
             this.name = name;
             this.maxHealth = maxHealth;
 
-            //Set default optional values here
+            //Default optional values
             health = maxHealth;
             score = 0;
             gold = 0;
-            items = new Item[0];
+            items = List.of();
+            weapon = null;
         }
 
         public PlayerBuilder setHealth(int health) {
@@ -149,8 +69,13 @@ public class Player extends GenericEntity {
             return this;
         }
 
-        public PlayerBuilder setStartingItems(Item... items) {
+        public PlayerBuilder setStartingItems(List<Item> items) {
             this.items = items;
+            return this;
+        }
+
+        public PlayerBuilder setEquippedWeapon(Weapon weapon) {
+            this.weapon = weapon;
             return this;
         }
 
@@ -161,13 +86,14 @@ public class Player extends GenericEntity {
          * @throws FullInventoryException If the player is built with more starting items
          *                                than the inventory size allows
          */
-        public Player build() throws FullInventoryException {
+        public Player build() {
             Player player = new Player(name, maxHealth, score, gold);
             player.setHealth(health);
             for (Item item : items) {
                 player.getInventory().addItem(item);
             }
-
+            player.getInventory().addItem(weapon);
+            player.equipWeapon(weapon);
             return player;
         }
     }

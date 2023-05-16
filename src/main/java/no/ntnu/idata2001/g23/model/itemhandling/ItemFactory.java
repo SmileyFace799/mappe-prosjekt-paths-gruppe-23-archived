@@ -10,7 +10,7 @@ import no.ntnu.idata2001.g23.model.items.Weapon;
  */
 public class ItemFactory {
     private ItemFactory() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Do not instantiate this class pls :)");
     }
 
     /**

@@ -11,7 +11,7 @@ import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.view.DungeonApp;
-import no.ntnu.idata2001.g23.view.GlobalCss;
+import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
  * The play game screen, that shows after the player selects "play game".
@@ -59,7 +59,7 @@ public class PlayGameScreen extends GenericScreen implements GameUpdateListener 
         tutorial.setDisable(true);
         content.getChildren().add(tutorial);
 
-        Button backButton = new Button("Go Back");
+        Button backButton = new Button("Back");
         backButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
         content.getChildren().add(backButton);
         return content;

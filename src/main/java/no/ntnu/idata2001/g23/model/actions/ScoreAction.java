@@ -1,6 +1,6 @@
 package no.ntnu.idata2001.g23.model.actions;
 
-import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.Entity;
 
 /**
  * Alters the players score.
@@ -13,8 +13,8 @@ public class ScoreAction implements Action {
     }
 
     @Override
-    public void execute(Player player) {
-        player.addScore(points);
+    public void execute(Entity entity) {
+        entity.changeScore(points);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.view;
+package no.ntnu.idata2001.g23.view.misc;
 
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Skin;

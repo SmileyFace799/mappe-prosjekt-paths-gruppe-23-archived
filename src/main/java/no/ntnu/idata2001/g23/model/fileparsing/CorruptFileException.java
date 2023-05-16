@@ -61,26 +61,23 @@ public class CorruptFileException extends Exception {
         return type;
     }
 
+    /**
+     * TODO: Add javadoc :).
+     */
     public enum Type {
-        UNKNOWN("An unknown error occurred while attempting to read the file"),
         EMPTY_FILE("File is empty"),
 
         //Info exceptions
         UNKNOWN_INFO("An unknown error occurred while attempting to read the info file"),
-        INFO_INVALID_PATH("An invalid path was found"),
-        NO_STORY("No story path was found"),
+        INFO_INVALID_PATH("An invalid path was found in the info file"),
+        NO_STORY("No paths were found for the story"),
+        NO_GOALS("No goals were found for the story"),
 
         //Story exceptions
+        UNKNOWN_STORY("An unknown error occurred while attempting to read the story file"),
         NO_TITLE("Story is missing a title"),
-        INVALID_GOAL_OR_PASSAGE("Expected to find a goal or passage, "
-                + "found non-empty line that isn't a goal or passage"),
-        NO_GOALS("Reached end of file without finding any goals for the story"),
-        DIFFICULTY_NO_NAME("Found difficulty with no name"),
-        DIFFICULTY_NO_GOALS("Found difficulty with no goals"),
-        GOAL_INVALID_FORMAT("Couldn't find the \":\"-separator "
-                + "that separates the goal type & value"),
-        GOAL_INVALID_TYPE("Cannot recognize goal type"),
-        GOAL_INVALID_VALUE("Value cannot be assigned to goal"),
+        INVALID_PASSAGE("Expected to find a passage, "
+                + "found non-empty line that isn't a passage"),
         NO_PASSAGES("Reached end of file without finding any passages for the story"),
         PASSAGE_NO_NAME("Found passage with no name"),
         PASSAGE_NO_CONTENT("Found passage with no content"),
@@ -94,14 +91,38 @@ public class CorruptFileException extends Exception {
         ACTION_INVALID_VALUE("Value cannot be assigned to action"),
 
         //Item exceptions
+        UNKNOWN_ITEMS("An unknown error occurred while attempting to read the items file"),
         INVALID_ITEM("Expected to find an item, found non-empty line that isn't an item"),
         ITEM_NO_NAME("Found item with no name"),
         ITEM_NO_TYPE("Found item with no type"),
         ITEM_INVALID_TYPE("Found item with invalid type"),
         ITEM_INVALID_PARAMETER_VALUE("A parameter value for an item is invalid"),
-        ITEM_INVALID_FORMAT("Couldn't find the \":\"-separator "
-                + "that separates the item parameter name & value"),
-        ITEM_MISSING_PARAMETERS("Item is missing required parameters"),
+
+        //Goal exceptions
+        UNKNOWN_GOALS("An unknown error occurred while attempting to read the goals file"),
+        DIFFICULTY_NO_GOALS("Found difficulty with no goals"),
+        GOAL_INVALID_FORMAT("Couldn't find the \":\"-separator "
+                + "that separates the goal type & value"),
+        GOAL_INVALID_TYPE("Cannot recognize goal type"),
+        GOAL_INVALID_VALUE("Value cannot be assigned to goal"),
+
+        //Player exceptions
+        UNKNOWN_PLAYER("An unknown error occurred while attempting to read the player file"),
+        DIFFICULTY_NO_PLAYER("Found difficulty with no player"),
+
+        //Enemy exceptions
+        UNKNOWN_ENEMIES("An unknown error occurred while attempting to read the enemies file"),
+        INVALID_ENEMY("Expected to find an enemy, "
+                + "found non-empty line that isn't an enemy"),
+        ENEMY_NO_NAME("Found enemy with no name"),
+        ENEMY_INVALID_TYPE("Found enemy with invalid type"),
+        ENEMY_INVALID_PARAMETER_VALUE("A parameter value for an enemy is invalid"),
+
+        //Map parsing exceptions
+        PARAMETER_INVALID_FORMAT("Couldn't find the \":\"-separator "
+                + "that separates the parameter name & value"),
+        REQUIRED_PARAMETER_MISSING(
+                "List of parameters is missing one or more required parameters"),
         ;
 
         private final String message;

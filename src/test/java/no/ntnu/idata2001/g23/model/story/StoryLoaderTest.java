@@ -8,22 +8,21 @@ import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
 import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
-import no.ntnu.idata2001.g23.model.goals.GoldGoal;
-import no.ntnu.idata2001.g23.model.goals.HealthGoal;
-import no.ntnu.idata2001.g23.model.itemhandling.ItemProvider;
+import no.ntnu.idata2001.g23.model.misc.Provider;
+import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.MiscItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StoryLoaderTest {
-    private ItemProvider itemProvider;
+    private Provider<Item> itemProvider;
     private StoryLoader validStoryLoader;
 
     @BeforeEach
     void before() {
-        itemProvider = new ItemProvider();
-        itemProvider.addProvidableItem("Test item", () ->
+        itemProvider = new Provider<>();
+        itemProvider.addProvidable("Test item", () ->
                 new MiscItem(500, "Test Item", "Test description"));
         this.validStoryLoader = new StoryLoader(itemProvider);
     }
@@ -41,11 +40,7 @@ class StoryLoaderTest {
     void testLoadingOfValidFile() {
         String validTestStory = """
                 Haunted House
-                
-                #Normal
-                Gold: 2500
-                Health: 100
-                                
+                     
                 ::Beginnings
                 You are in a small, dimly lit room. There is a door in front of you.
                 There is also an entrance behind you.
@@ -54,11 +49,11 @@ class StoryLoaderTest {
                                 
                 ::Another room
                 The door opens to another room. You have reached the end of the game, there is no other option than going back.
-                [Go back] (Beginnings)
+                [Back] (Beginnings)
                                 
                 ::Test room
                 Wowie, you found the debug area!
-                [Go back] (Beginnings) {Health: -5}
+                [Back] (Beginnings) {Health: -5}
                                 
                 ::Link-less room
                 You are now soft-locked :D
@@ -73,23 +68,20 @@ class StoryLoaderTest {
                 "Try to open the door", "Another room", null
         ));
         openingPassage.addLink(new Link("Go behind you", "Test room", List.of(
-                new InventoryAction(itemProvider.provideItem("Test item")),
+                new InventoryAction(itemProvider.provide("Test item")),
                 new GoldAction(500)
         )));
         Story actualStory = new Story("Haunted House", openingPassage);
 
-        actualStory.setGoals("Normal",
-                List.of(new GoldGoal(2500), new HealthGoal(100)));
-
         Passage anotherPassage = new Passage("Another room",
                 "The door opens to another room. You have reached the end of the game, "
                         + "there is no other option than going back.");
-        anotherPassage.addLink(new Link("Go back", "Beginnings", null));
+        anotherPassage.addLink(new Link("Back", "Beginnings", null));
         actualStory.addPassage(anotherPassage);
 
         Passage yetAnotherPassage = new Passage("Test room",
                 "Wowie, you found the debug area!");
-        yetAnotherPassage.addLink(new Link("Go back", "Beginnings",
+        yetAnotherPassage.addLink(new Link("Back", "Beginnings",
                 List.of(new HealthAction(-5))));
         actualStory.addPassage(yetAnotherPassage);
 
@@ -136,7 +128,7 @@ class StoryLoaderTest {
                 
                 Invalid passage
                 More content
-                """, CorruptFileException.Type.INVALID_GOAL_OR_PASSAGE);
+                """, CorruptFileException.Type.INVALID_PASSAGE);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package no.ntnu.idata2001.g23.model.actions;
 
-import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.Entity;
 
 /**
  * Changes the player's health.
@@ -13,8 +13,8 @@ public class HealthAction implements Action {
     }
 
     @Override
-    public void execute(Player player) {
-        player.changeHealth(health);
+    public void execute(Entity entity) {
+        entity.changeHealth(health);
     }
 
     @Override

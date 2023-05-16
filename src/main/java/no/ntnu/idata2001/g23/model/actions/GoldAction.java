@@ -1,6 +1,6 @@
 package no.ntnu.idata2001.g23.model.actions;
 
-import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.Entity;
 
 /**
  * Changes the amount of gold the player has.
@@ -13,8 +13,8 @@ public class GoldAction implements Action {
     }
 
     @Override
-    public void execute(Player player) {
-        player.changeGold(gold);
+    public void execute(Entity entity) {
+        entity.changeGold(gold);
     }
 
     @Override

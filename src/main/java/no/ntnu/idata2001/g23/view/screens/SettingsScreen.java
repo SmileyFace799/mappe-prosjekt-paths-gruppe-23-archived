@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.SettingsController;
 import no.ntnu.idata2001.g23.view.DungeonApp;
-import no.ntnu.idata2001.g23.view.GlobalCss;
+import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
  * The settings screen, where the user can customize various application & game settings.
@@ -30,7 +30,7 @@ public class SettingsScreen extends GenericScreen {
 
         content.getChildren().add(new Rectangle(0, 200));
 
-        Button backButton = new Button("Go Back");
+        Button backButton = new Button("Back");
         backButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
         content.getChildren().add(backButton);
         return content;

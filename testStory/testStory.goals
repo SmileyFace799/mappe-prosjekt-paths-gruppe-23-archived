@@ -1,0 +1,11 @@
+#Easy
+Gold: 1000
+Health: 50
+
+#Normal
+Gold: 2500
+Health: 100
+
+#Hard
+Gold: 5000
+Health: 150

@@ -2,13 +2,19 @@ package no.ntnu.idata2001.g23.middleman;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
+import no.ntnu.idata2001.g23.middleman.events.AttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.Game;
+import no.ntnu.idata2001.g23.model.actions.Action;
+import no.ntnu.idata2001.g23.model.entities.Enemy;
+import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
@@ -100,5 +106,15 @@ public class GameplayManager {
     public void useItem(UsableItem item) {
         game.getPlayer().useItem(item);
         notifyListeners(new InventoryUpdateEvent(game.getPlayer().getInventory()));
+    }
+
+    public void attack(Enemy attacker, Collection<Entity> possibleTargets) {
+        Map<Action, List<Entity>> actionMap = attacker.act(possibleTargets);
+        for (Map.Entry<Action, List<Entity>> actionEntry : actionMap.entrySet()) {
+            Action action = actionEntry.getKey();
+            List<Entity> targets = actionEntry.getValue();
+            targets.forEach(action::execute);
+            notifyListeners(new AttackEvent(attacker, action, targets));
+        }
     }
 }

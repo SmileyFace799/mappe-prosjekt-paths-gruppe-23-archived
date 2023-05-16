@@ -1,17 +1,5 @@
 Haunted House
 
-#Easy
-Gold: 1000
-Health: 50
-
-#Normal
-Gold: 2500
-Health: 100
-
-#Hard
-Gold: 5000
-Health: 150
-
 ::Beginnings
 You are in a small, dimly lit room. There is a door in front of you.
 There is also an entrance behind you.
@@ -25,8 +13,8 @@ There is also an entrance behind you.
 
 ::Another room
 The door opens to another room. You have reached the end of the game, there is no other option than going back.
-[Go back] (Beginnings)
+[Back] (Beginnings)
 
 ::Test room
 Wowie, you found the debug area!
-[Go back] (Beginnings) {Health: -5}
+[Back] (Beginnings) {Health: -5}

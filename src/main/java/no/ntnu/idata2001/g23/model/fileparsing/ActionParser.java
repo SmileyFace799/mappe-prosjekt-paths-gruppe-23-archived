@@ -6,14 +6,15 @@ import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
 import no.ntnu.idata2001.g23.model.actions.ScoreAction;
-import no.ntnu.idata2001.g23.model.itemhandling.ItemProvider;
+import no.ntnu.idata2001.g23.model.misc.Provider;
+import no.ntnu.idata2001.g23.model.items.Item;
 
 /**
  * Utility class for parsing actions.
  */
 public class ActionParser {
     private ActionParser() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Do not instantiate this class pls :)");
     }
 
     /**
@@ -24,11 +25,11 @@ public class ActionParser {
      *                     in the larger set of data it is present in.
      *                     Used to generate a more detailed error message
      *                     if the action data can't be parsed
-     * @param itemProvider The {@link ItemProvider} to use when
+     * @param provider The {@link Provider} to use when
      *                     generating the item for an {@link InventoryAction}
      * @return The parsed action
      */
-    public static Action parseAction(String actionData, int lineNumber, ItemProvider itemProvider)
+    public static Action parseAction(String actionData, int lineNumber, Provider<Item> provider)
             throws CorruptFileException {
         String[] splitActionData = actionData.split(":", 2);
         if (splitActionData.length < 2) {
@@ -43,7 +44,7 @@ public class ActionParser {
                 case "Gold" -> returnAction = new GoldAction(Integer.parseInt(actionValue));
                 case "Health" -> returnAction = new HealthAction(Integer.parseInt(actionValue));
                 case "Inventory" -> returnAction =
-                        new InventoryAction(itemProvider.provideItem(actionValue));
+                        new InventoryAction(provider.provide(actionValue));
                 case "Score" -> returnAction = new ScoreAction(Integer.parseInt(actionValue));
                 default -> throw new CorruptFileException(
                         CorruptFileException.Type.ACTION_INVALID_TYPE, lineNumber, actionType);

@@ -21,9 +21,9 @@ import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.story.Passage;
-import no.ntnu.idata2001.g23.view.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.DungeonApp;
-import no.ntnu.idata2001.g23.view.GlobalCss;
+import no.ntnu.idata2001.g23.view.misc.DebugScrollPane;
+import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 import no.ntnu.idata2001.g23.view.textures.TxLoader;
 
 /**
@@ -365,7 +365,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
      */
     public static class Css {
         private Css() {
-            throw new IllegalStateException("Utility class");
+            throw new IllegalStateException("Do not instantiate this class pls :)");
         }
 
         public static final String OVERLAY = "overlay";

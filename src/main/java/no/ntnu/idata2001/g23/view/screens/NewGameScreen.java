@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.NewGameController;
 import no.ntnu.idata2001.g23.view.DungeonApp;
-import no.ntnu.idata2001.g23.view.GlobalCss;
+import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
  * The new game screen, where the player creates & starts a new game.
@@ -103,7 +103,7 @@ public class NewGameScreen extends GenericScreen {
         startPlaying.setOnAction(ae -> controller.startNewGame());
         content.getChildren().add(startPlaying);
 
-        Button backButton = new Button("Go Back");
+        Button backButton = new Button("Back");
         backButton.setOnAction(ae -> controller.changeScreen(PlayGameScreen.class));
         content.getChildren().add(backButton);
 
