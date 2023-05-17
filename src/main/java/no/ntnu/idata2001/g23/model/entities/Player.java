@@ -92,8 +92,10 @@ public class Player extends Entity {
             for (Item item : items) {
                 player.getInventory().addItem(item);
             }
-            player.getInventory().addItem(weapon);
-            player.equipWeapon(weapon);
+            if (weapon != null) {
+                player.getInventory().addItem(weapon);
+                player.equipWeapon(weapon);
+            }
             return player;
         }
     }

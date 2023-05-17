@@ -150,8 +150,10 @@ public class Enemy extends Entity implements Actor {
             for (Item item : items) {
                 enemy.getInventory().addItem(item);
             }
-            enemy.getInventory().addItem(weapon);
-            enemy.equipWeapon(weapon);
+            if (weapon != null) {
+                enemy.getInventory().addItem(weapon);
+                enemy.equipWeapon(weapon);
+            }
             return enemy;
         }
     }
