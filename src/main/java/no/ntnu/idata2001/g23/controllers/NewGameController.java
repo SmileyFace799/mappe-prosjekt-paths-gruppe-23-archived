@@ -1,13 +1,25 @@
 package no.ntnu.idata2001.g23.controllers;
 
 import java.io.File;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import java.nio.file.Path;
+import java.util.List;
+import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.model.fileparsing.GameLoader;
-import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
+import no.ntnu.idata2001.g23.model.Game;
+import no.ntnu.idata2001.g23.model.entities.Enemy;
+import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
+import no.ntnu.idata2001.g23.model.fileparsing.DifficultyLoader;
+import no.ntnu.idata2001.g23.model.fileparsing.EnemyLoader;
+import no.ntnu.idata2001.g23.model.fileparsing.GameFileCollection;
+import no.ntnu.idata2001.g23.model.fileparsing.GoalLoader;
+import no.ntnu.idata2001.g23.model.fileparsing.ItemLoader;
+import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
+import no.ntnu.idata2001.g23.model.goals.Goal;
+import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.misc.Provider;
+import no.ntnu.idata2001.g23.model.story.Story;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.NewGameScreen;
@@ -16,68 +28,140 @@ import no.ntnu.idata2001.g23.view.screens.NewGameScreen;
  * A controller for the new game scene.
  */
 public class NewGameController extends GenericController {
+    private final NewGameScreen screen;
+    private final DirectoryChooser gameChooser;
+    private GameFileCollection gameFiles;
+
     /**
-     * Makes the controller, and initializes a storyChooser.
+     * Makes the controller, and initializes a gameChooser.
      *
-     * @param screen The screen this controller belongs to
+     * @param screen      The screen this controller belongs to
      * @param application The main application
      */
     public NewGameController(NewGameScreen screen, DungeonApp application) {
         super(application);
         this.screen = screen;
-        this.storyChooser = new DirectoryChooser();
-        storyChooser.setTitle("Select a story");
-        storyChooser.setInitialDirectory(new File("./"));
+        this.gameChooser = new DirectoryChooser();
+        gameChooser.setTitle("Select a game");
+        gameChooser.setInitialDirectory(new File("./"));
     }
 
-    private final NewGameScreen screen;
-    private final DirectoryChooser storyChooser;
-
     /**
-     * Makes a new game with the selected player details, story & goals.
+     * Opens the gameChooser, allowing the user to select a game.
      */
-    public void startNewGame() {
+    public void browseGame() {
+        File chosenFile = gameChooser.showDialog(screen.getScene().getWindow());
+        if (chosenFile != null) {
+            screen.getGamePathInput().setText(chosenFile.getPath());
+        }
+    }
+
+    public void showGameSelection() {
+        setGameSelectErrorMessage(null);
+        screen.getContentPane().setCenter(screen.getGameSelect());
+    }
+
+    public void showDifficultySelection() {
         String playerName = screen.getPlayerNameInput().getText();
-        String storyPath = screen.getStoryPathInput().getText();
+        String gamePath = screen.getGamePathInput().getText();
         if (playerName == null || playerName.isBlank()) {
-            setErrorMessage("Please enter a player name");
-        } else if (storyPath == null || storyPath.isBlank()) {
-            setErrorMessage("Please choose a story");
+            setGameSelectErrorMessage("Please enter a player name");
+        } else if (gamePath == null || gamePath.isBlank()) {
+            setGameSelectErrorMessage("Please choose a game");
         } else {
             try {
-                GameplayManager.getInstance().startGame(GameLoader.loadGame(playerName, storyPath));
+                screen.getDifficultyView().getItems().clear();
+                gameFiles = new GameFileCollection(gamePath);
+                screen.getDifficultyView().getItems().addAll(DifficultyLoader
+                        .loadDifficulties(gameFiles.getPathRequired(".difficulties",
+                                CorruptFileException.Type.NO_DIFFICULTIES)));
+                setDifficultySelectErrorMessage(null);
+                screen.getContentPane().setCenter(screen.getDifficultySelect());
+            } catch (CorruptFileException cfe) {
+                setGameSelectErrorMessage("Game files are corrupt: " + cfe.getMessage());
+            }
+        }
+    }
+
+    private Game makeNewGame(String difficulty) throws CorruptFileException {
+        //Parse items, create itemProvider
+        Path itemsPath = gameFiles.getPath(".items");
+        Provider<Item> itemProvider = itemsPath != null
+                ? ItemLoader.loadItems(itemsPath)
+                : null;
+
+        //Parse enemies, create enemyProvider, using itemProvider
+        Path enemiesPath = gameFiles.getPath(".enemies");
+        Provider<Enemy> enemyProvider = enemiesPath != null
+                ? new EnemyLoader(itemProvider).loadEnemies(enemiesPath)
+                : null;
+
+        System.out.println(enemyProvider.provide("Test Enemy").getName());
+
+        //parse & create story, using itemProvider
+        Path storyPath = gameFiles.getPathRequired(".paths",
+                CorruptFileException.Type.NO_STORY);
+        Story story = new StoryLoader(itemProvider).loadStory(storyPath);
+
+        //parse & create goals, using itemProvider
+        Path goalsPath = gameFiles.getPathRequired(".goals",
+                CorruptFileException.Type.NO_GOALS);
+        List<Goal> goals = new GoalLoader(itemProvider, difficulty).loadGoals(goalsPath);
+
+        //Create game, using story & goals
+        Game game = new Game(new Player.PlayerBuilder(screen.getPlayerNameInput().getText(), 30)
+                .build(),
+                story, goals);
+
+        for (String itemName : new String[]{"Big Sword UwU", "Usable Test", "Usable Test"}) {
+            game.getPlayer()
+                    .getInventory()
+                    .addItem(itemProvider.provide(itemName));
+        }
+        return game;
+    }
+
+    /**
+     * Makes a new game with the selected game, player details & difficulty selection.
+     */
+    public void startNewGame() {
+        String difficulty = screen.getDifficultyView().getSelectionModel().getSelectedItem();
+        if (difficulty == null) {
+            setDifficultySelectErrorMessage("Please select a difficulty");
+        } else {
+            try {
+                GameplayManager.getInstance().startGame(makeNewGame(difficulty));
                 changeScreen(GameplayScreen.class);
             } catch (CorruptFileException cfe) {
-                setErrorMessage("Story file is corrupt: " + cfe.getMessage());
-            } catch (FullInventoryException fie) {
-                setErrorMessage(fie.getMessage());
+                setDifficultySelectErrorMessage("Game files are corrupt: " + cfe.getMessage());
             }
         }
     }
 
     /**
-     * Opens the storyChooser, allowing the user to select a story.
-     */
-    public void browseStory() {
-        File chosenFile = storyChooser.showDialog(screen.getScene().getWindow());
-        if (chosenFile != null) {
-            screen.getStoryPathInput().setText(chosenFile.getPath());
-        }
-    }
-
-    /**
-     * Shows an error message to the user when the story can't be started.
+     * Shows an error message to the user when the game can't be started.
+     * This message is shown on the game selection screen
      *
      * @param errorMessage THe error message to show.
      *                     If this is {@code null}, the error message will be cleared
      */
-    public void setErrorMessage(String errorMessage) {
-        VBox errorBox = screen.getErrorBox();
-        errorBox.getChildren().clear();
-        if (errorMessage != null && !errorMessage.isBlank()) {
-            Label errorLabel = new Label(errorMessage);
-            errorLabel.getStyleClass().add("error-label");
-            errorBox.getChildren().add(errorLabel);
-        }
+    public void setGameSelectErrorMessage(String errorMessage) {
+        screen.getGameSelectErrorText().setText(errorMessage);
+    }
+
+    /**
+     * Shows an error message to the user when the game can't be started.
+     * This message is shown on the difficulty selection screen
+     *
+     * @param errorMessage THe error message to show.
+     *                     If this is {@code null}, the error message will be cleared
+     */
+    public void setDifficultySelectErrorMessage(String errorMessage) {
+        screen.getDifficultySelectErrorText().setText(errorMessage);
+    }
+
+    public void changeVisibleSelection(Pane selectionPane) {
+        setGameSelectErrorMessage(null);
+        screen.getContentPane().setCenter(selectionPane);
     }
 }

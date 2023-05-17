@@ -70,8 +70,13 @@ public class CorruptFileException extends Exception {
         //Info exceptions
         UNKNOWN_INFO("An unknown error occurred while attempting to read the info file"),
         INFO_INVALID_PATH("An invalid path was found in the info file"),
-        NO_STORY("No paths were found for the story"),
-        NO_GOALS("No goals were found for the story"),
+        NO_DIFFICULTIES("No difficulties were found for the game"),
+        NO_STORY("No story was found for the game"),
+        NO_GOALS("No goals were found for the game"),
+
+        //Difficulty exceptions
+        UNKNOWN_DIFFICULTIES(
+                "An unknown error occurred while attempting to read the difficulties file"),
 
         //Story exceptions
         UNKNOWN_STORY("An unknown error occurred while attempting to read the story file"),

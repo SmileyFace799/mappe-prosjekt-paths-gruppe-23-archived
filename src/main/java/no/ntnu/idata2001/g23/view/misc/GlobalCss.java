@@ -9,4 +9,5 @@ public class GlobalCss {
     }
 
     public static final String HEADER = "header";
+    public static final String ERROR_LABEL = "error-label";
 }

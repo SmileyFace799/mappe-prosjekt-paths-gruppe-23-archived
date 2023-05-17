@@ -7,10 +7,10 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Supplier;
 import no.ntnu.idata2001.g23.model.actions.Action;
-import no.ntnu.idata2001.g23.model.misc.Provider;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
+import no.ntnu.idata2001.g23.model.misc.Provider;
 
 /**
  * Loads items from a {@code .items}-file.
@@ -85,7 +85,8 @@ public class ItemLoader {
      * @return An {@link Provider} that can provide all the parsed items
      * @throws CorruptFileException If the items could not be parsed
      */
-    public static Provider<Item> parseItems(LineNumberReader fileReader) throws CorruptFileException {
+    public static Provider<Item> parseItems(LineNumberReader fileReader)
+            throws CorruptFileException {
         Provider<Item> provider = new Provider<>();
         try {
             String nextLine;

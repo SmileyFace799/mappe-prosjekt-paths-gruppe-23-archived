@@ -72,7 +72,7 @@ public class GoalLoader {
                 nextLine = fileReader.readLine();
                 if (nextLine == null) {
                     throw new CorruptFileException(CorruptFileException.Type.DIFFICULTY_NO_GOALS,
-                            fileReader.getLineNumber());
+                            fileReader.getLineNumber(), difficulty);
                 }
             }
             //Goes through one difficulty of goals
