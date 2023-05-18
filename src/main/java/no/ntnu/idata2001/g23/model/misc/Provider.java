@@ -1,7 +1,9 @@
 package no.ntnu.idata2001.g23.model.misc;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -51,7 +53,7 @@ public class Provider<T> {
     }
 
     /**
-     * Provide an object given it's identifier.
+     * Provides an object given it's identifier.
      *
      * @param identifier The unique identifier for the object to provide
      * @return The provided object
@@ -63,5 +65,24 @@ public class Provider<T> {
                     "No object associated with the specified identifier");
         }
         return supplierMap.get(identifier).get();
+    }
+
+    /**
+     * Provides multiple objects given their identifiers.
+     *
+     * @param identifiers Every unique identifier for the objects to provide
+     * @return A list of every provided object
+     * @throws IllegalArgumentException If any identifier is not associated with any object
+     */
+    public List<T> provideAll(List<String> identifiers) {
+        List<T> objectList = new ArrayList<>();
+        for (String identifier : identifiers) {
+            try {
+                objectList.add(provide(identifier));
+            } catch (IllegalArgumentException iae) {
+                throw new IllegalArgumentException("\"" + identifier + "\": " + iae.getMessage());
+            }
+        }
+        return objectList;
     }
 }

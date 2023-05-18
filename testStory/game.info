@@ -3,3 +3,4 @@ testStory.paths
 testStory.goals
 testStory.enemies
 testStory.difficulties
+testStory.player

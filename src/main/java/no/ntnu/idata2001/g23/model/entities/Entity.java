@@ -160,4 +160,39 @@ public abstract class Entity {
         }
         equippedWeapon = weapon;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Entity entity = (Entity) obj;
+        return name.equals(entity.name)
+                && maxHealth == entity.maxHealth
+                && health == entity.health
+                && score == entity.score
+                && gold == entity.gold
+                && inventory.equals(entity.inventory)
+                && equippedWeapon.equals(entity.equippedWeapon);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + name.hashCode();
+        hash = 31 * hash + Integer.hashCode(maxHealth);
+        hash = 31 * hash + Integer.hashCode(health);
+        hash = 31 * hash + Integer.hashCode(score);
+        hash = 31 * hash + Integer.hashCode(gold);
+        hash = 31 * hash + inventory.hashCode();
+        hash = 31 * hash + equippedWeapon.hashCode();
+        return hash;
+    }
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MapParserTest {
+class CollectionParserUtilTest {
     /**
      * Asserts that a {@link CorruptFileException} is thrown,
      * and asserts that the exception thrown is of the specified type.
@@ -16,7 +16,7 @@ class MapParserTest {
      */
     private void assertCfeType(
             String mapString, CorruptFileException.Type type, String... requiredKeys) {
-        CorruptFileException exception = assertThrows(CorruptFileException.class, () -> MapParser
+        CorruptFileException exception = assertThrows(CorruptFileException.class, () -> CollectionParserUtil
                 .parseMap(new LineNumberReader(new StringReader(mapString)), requiredKeys));
         assertEquals(type, exception.getType());
     }
@@ -29,7 +29,7 @@ class MapParserTest {
                 kE Y3: vA L uE 3
                 """;
 
-        Map<String, String> loadedMap = assertDoesNotThrow(() -> MapParser
+        Map<String, String> loadedMap = assertDoesNotThrow(() -> CollectionParserUtil
                 .parseMap(new LineNumberReader(new StringReader(validMapString)),
                         "keY 3", "K3Y tW0"));
 

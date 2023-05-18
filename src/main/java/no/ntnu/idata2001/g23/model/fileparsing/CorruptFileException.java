@@ -5,17 +5,11 @@ package no.ntnu.idata2001.g23.model.fileparsing;
  * Has a specific {@link Type Type} that describes exactly what went wrong.
  */
 public class CorruptFileException extends Exception {
-    private final CorruptFileException.Type type;
-
+    //This oddly specific string was used enough where SonarLint started wanted it as a constant
+    private static final String MISSING_COLON_SEPARATOR_STRING =
+            "Couldn't find the \":\"-separator ";
     private static final String MORE_INFO = "\n\nADDITIONAL INFORMATION:";
-
-    private static String getLineText(int lineNumber) {
-        return "\nLine: " + lineNumber;
-    }
-
-    private static String getInvalidParamText(String paramValue) {
-        return "\nInvalid parameter: \"" + paramValue + "\"";
-    }
+    private final CorruptFileException.Type type;
 
     /**
      * Makes a corrupt file exception.
@@ -30,7 +24,7 @@ public class CorruptFileException extends Exception {
     /**
      * Makes a corrupt file exception.
      *
-     * @param type The specific type of this exception
+     * @param type       The specific type of this exception
      * @param lineNumber The line number where this exception occurred
      */
     public CorruptFileException(CorruptFileException.Type type, int lineNumber) {
@@ -43,8 +37,8 @@ public class CorruptFileException extends Exception {
     /**
      * Makes a corrupt file exception.
      *
-     * @param type The specific type of this exception
-     * @param lineNumber The line number where this exception occurred
+     * @param type              The specific type of this exception
+     * @param lineNumber        The line number where this exception occurred
      * @param invalidParamValue The invalid parameter that caused the exception
      */
     public CorruptFileException(CorruptFileException.Type type,
@@ -55,6 +49,14 @@ public class CorruptFileException extends Exception {
                 + getLineText(lineNumber)
                 + getInvalidParamText(invalidParamValue));
         this.type = type;
+    }
+
+    private static String getLineText(int lineNumber) {
+        return "\nLine: " + lineNumber;
+    }
+
+    private static String getInvalidParamText(String paramValue) {
+        return "\nInvalid parameter: \"" + paramValue + "\"";
     }
 
     public CorruptFileException.Type getType() {
@@ -74,6 +76,7 @@ public class CorruptFileException extends Exception {
         INFO_MISSING_DIFFICULTIES(
                 "A \".difficulties\"-file is required & missing from the game"),
         INFO_MISSING_STORY("A \".paths\"-file is required & missing from the game"),
+        INFO_MISSING_PLAYER("A \".player\"-file is required & missing from the game"),
         INFO_MISSING_GOALS("A \".goals\"-file is required & missing from the game"),
 
         //Difficulty exceptions
@@ -93,7 +96,7 @@ public class CorruptFileException extends Exception {
         LINK_NO_REFERENCE("Cannot find link reference"),
         LINK_INVALID_ACTION("Expected to find action, "
                 + "found text not enclosed in matching curly brackets"),
-        ACTION_INVALID_FORMAT("Couldn't find the \":\"-separator "
+        ACTION_INVALID_FORMAT(MISSING_COLON_SEPARATOR_STRING
                 + "that separates the action type & value"),
         ACTION_INVALID_TYPE("Cannot recognize action type"),
         ACTION_INVALID_VALUE("Value cannot be assigned to action"),
@@ -106,17 +109,18 @@ public class CorruptFileException extends Exception {
         ITEM_INVALID_TYPE("Found item with invalid type"),
         ITEM_INVALID_PARAMETER_VALUE("A parameter value for an item is invalid"),
 
-        //Goal exceptions
-        UNKNOWN_GOALS("An unknown error occurred while attempting to read the goals file"),
-        NO_GOALS("Found difficulty with no goals"),
-        GOAL_INVALID_FORMAT("Couldn't find the \":\"-separator "
-                + "that separates the goal type & value"),
-        GOAL_INVALID_TYPE("Cannot recognize goal type"),
-        GOAL_INVALID_VALUE("Value cannot be assigned to goal"),
-
         //Player exceptions
         UNKNOWN_PLAYER("An unknown error occurred while attempting to read the player file"),
         NO_PLAYER("Found difficulty with no player"),
+        PLAYER_INVALID_VALUE("A parameter value for the player is invalid"),
+
+        //Goal exceptions
+        UNKNOWN_GOALS("An unknown error occurred while attempting to read the goals file"),
+        NO_GOALS("Found difficulty with no goals"),
+        GOAL_INVALID_FORMAT(MISSING_COLON_SEPARATOR_STRING
+                + "that separates the goal type & value"),
+        GOAL_INVALID_TYPE("Cannot recognize goal type"),
+        GOAL_INVALID_VALUE("Value cannot be assigned to goal"),
 
         //Enemy exceptions
         UNKNOWN_ENEMIES("An unknown error occurred while attempting to read the enemies file"),
@@ -127,12 +131,11 @@ public class CorruptFileException extends Exception {
         ENEMY_INVALID_PARAMETER_VALUE("A parameter value for an enemy is invalid"),
 
         //Map parsing exceptions
-        ENTRY_INVALID_FORMAT("Couldn't find the \":\"-separator "
+        ENTRY_INVALID_FORMAT(MISSING_COLON_SEPARATOR_STRING
                 + "that separates the parameter name & value"),
         REQUIRED_KEY_MISSING(
                 "List of parameters is missing one or more required parameters"),
         ;
-
         private final String message;
 
         Type(String message) {

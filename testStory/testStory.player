@@ -1,0 +1,20 @@
+#Easy
+Health: 30
+Score: 100
+Gold: 300
+Inventory: Big Sword UwU, Usable Test, Usable Test
+Weapon: Big Sword UwU
+
+#Normal
+Health: 20
+Score: 50
+Gold: 200
+Inventory: Usable Test, Big Sword UwU
+Weapon: Big Sword UwU
+
+#Hard
+Health: 15
+Score: 0
+Gold: 0
+Inventory: Usable Test
+Weapon: Big Sword UwU

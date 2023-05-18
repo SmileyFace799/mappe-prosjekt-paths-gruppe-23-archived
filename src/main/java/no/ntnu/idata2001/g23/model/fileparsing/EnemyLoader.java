@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -19,14 +18,13 @@ import no.ntnu.idata2001.g23.model.misc.Provider;
 public class EnemyLoader {
     private final Provider<Item> itemProvider;
 
+    /**
+     * Makes an enemy loader.
+     *
+     * @param itemProvider A {@link Provider} that provides items for loaded enemies
+     */
     public EnemyLoader(Provider<Item> itemProvider) {
         this.itemProvider = itemProvider;
-    }
-
-    private List<Item> parseListOfItems(String inventoryData) {
-        return Arrays.stream(inventoryData.split(","))
-                .map(itemName -> itemProvider.provide(itemName.trim()))
-                .toList();
     }
 
     private Supplier<Enemy> parseEnemy(String enemyName, LineNumberReader fileReader)
@@ -41,13 +39,13 @@ public class EnemyLoader {
         try {
             switch (type.substring(1).toLowerCase().replace(" ", "")) {
                 case "basic" -> {
-                    Map<String, String> enemyParameterMap =
-                            MapParser.parseMap(fileReader, Parameters.getBasicParameters());
+                    Map<String, String> enemyParameterMap = CollectionParserUtil
+                            .parseMap(fileReader, Parameters.getBasicParameters());
                     int health = Integer.parseInt(enemyParameterMap.get(Parameters.HEALTH));
                     int score = Integer.parseInt(enemyParameterMap.get(Parameters.SCORE));
                     int gold = Integer.parseInt(enemyParameterMap.get(Parameters.GOLD));
-                    List<Item> items =
-                            parseListOfItems(enemyParameterMap.get(Parameters.INVENTORY));
+                    List<Item> items = itemProvider.provideAll(CollectionParserUtil.parseList(
+                            enemyParameterMap.get(Parameters.INVENTORY)));
                     double dropChance =
                             Double.parseDouble(enemyParameterMap.get(Parameters.DROP_CHANCE));
                     Weapon weapon =
@@ -67,7 +65,7 @@ public class EnemyLoader {
                         CorruptFileException.Type.ENEMY_INVALID_TYPE,
                         fileReader.getLineNumber());
             }
-        } catch (ClassCastException | NumberFormatException e) {
+        } catch (ClassCastException | IllegalArgumentException e) {
             throw new CorruptFileException(CorruptFileException.Type.ENEMY_INVALID_PARAMETER_VALUE,
                     fileReader.getLineNumber());
         }

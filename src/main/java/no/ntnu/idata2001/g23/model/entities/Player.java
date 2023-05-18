@@ -1,6 +1,7 @@
 package no.ntnu.idata2001.g23.model.entities;
 
 import java.util.List;
+import java.util.Objects;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 
@@ -26,10 +27,9 @@ public class Player extends Entity {
     public static class PlayerBuilder {
         //Required
         private final String name;
-        private final int maxHealth;
+        private final int health;
 
         //Optional
-        private int health;
         private int score;
         private int gold;
         private List<Item> items;
@@ -38,41 +38,77 @@ public class Player extends Entity {
         /**
          * Makes a builder for the player.
          *
-         * @param name      The player's name
-         * @param maxHealth The player's max health
+         * @param name   The player's name
+         * @param health The player's health
          */
-        public PlayerBuilder(String name, int maxHealth) {
+        public PlayerBuilder(String name, int health) {
+            if (name == null || name.isBlank()) {
+                throw new IllegalArgumentException("String \"name\" cannot be null or blank");
+            }
+            if (health < 0) {
+                throw new IllegalArgumentException("int \"health\" must be 0 or greater");
+            }
             this.name = name;
-            this.maxHealth = maxHealth;
+            this.health = health;
 
             //Default optional values
-            health = maxHealth;
             score = 0;
             gold = 0;
             items = List.of();
             weapon = null;
         }
 
-        public PlayerBuilder setHealth(int health) {
-            this.health = health;
-            return this;
-        }
-
+        /**
+         * Sets the player's score.
+         *
+         * @param score The player's new score
+         * @return The builder
+         * @throws IllegalArgumentException If the player's new score is less than 0
+         */
         public PlayerBuilder setScore(int score) {
+            if (score < 0) {
+                throw new IllegalArgumentException("int \"score\" must be 0 or greater");
+            }
             this.score = score;
             return this;
         }
 
+        /**
+         * Sets the player's gold.
+         *
+         * @param gold The player's new gold
+         * @return The builder
+         * @throws IllegalArgumentException If the player's new gold is less than 0
+         */
         public PlayerBuilder setGold(int gold) {
+            if (gold < 0) {
+                throw new IllegalArgumentException("int \"gold\" must be 0 or greater");
+            }
             this.gold = gold;
             return this;
         }
 
+        /**
+         * Sets the player's starting items.
+         *
+         * @param items The player's new list of starting items
+         * @return The builder
+         * @throws IllegalArgumentException If the list of new items contains {@code null}
+         */
         public PlayerBuilder setStartingItems(List<Item> items) {
+            if (items != null && items.stream().anyMatch(Objects::isNull)) {
+                throw new IllegalArgumentException("List \"items\" cannot contain null");
+            }
             this.items = items;
             return this;
         }
 
+        /**
+         * Sets the player's equipped weapon.
+         *
+         * @param weapon The player's new equipped weapon
+         * @return The builder
+         */
         public PlayerBuilder setEquippedWeapon(Weapon weapon) {
             this.weapon = weapon;
             return this;
@@ -84,8 +120,7 @@ public class Player extends Entity {
          * @return The player that was made
          */
         public Player build() {
-            Player player = new Player(name, maxHealth, score, gold);
-            player.setHealth(health);
+            Player player = new Player(name, health, score, gold);
             for (Item item : items) {
                 player.getInventory().addItem(item);
             }

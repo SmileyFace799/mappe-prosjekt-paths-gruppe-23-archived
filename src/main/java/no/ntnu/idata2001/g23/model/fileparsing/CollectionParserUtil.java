@@ -2,7 +2,9 @@ package no.ntnu.idata2001.g23.model.fileparsing;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,13 +28,53 @@ import java.util.Map;
  * </ol>
  * </p>
  */
-public class MapParser {
-    private MapParser() {
+public class CollectionParserUtil {
+    private CollectionParserUtil() {
         throw new IllegalStateException("Do not instantiate this class pls :)");
     }
 
     /**
+     * Parses a line of text containing list elements into a {@link List}.
+     * Commas ({@code ,}) are used as separators to separate each element.
+     *
+     * <p>Each element gets trimmed for leading & trailing spaces.</p>
+     *
+     * <p>An example of how the parsing works
+     * <h2>Input ({@link String})</h2>
+     * " foo, BAR ,7357 "
+     * <h2>Output ({@link List}<{@link String}>)</h2>
+     * "foo", "BAR", "7357"</p>
+     *
+     * @param listString The string to be parsed as a list
+     * @return A parsed list with every element in the provided string
+     */
+    public static List<String> parseList(String listString) {
+        return Arrays
+                .stream(listString.split(","))
+                .map(String::trim)
+                .toList();
+    }
+
+    /**
      * Parses multiple lines of text containing key/value-pairs into a {@link Map}.
+     * Colons ({@code :}) are used as separators to separate the keys & values.
+     *
+     * <p>The key has any spaces removed & all letters converted to lowercase,
+     * while the value gets trimmed for leading & trailing spaces.</p>
+     *
+     * <p>An example of how the parsing works:
+     * <h2>Input (Multiline {@link String}):</h2>
+     * <ol>
+     *     <li>"""Key1:  Value1</li>
+     *     <li>k3yTw0  :v4lu3Tw0</li>
+     *     <li>kE Y3: vA L uE 3"""</li>
+     * </ol>
+     * <h2>Output ({@link Map}<{@link String}, {@link String}>)</h2>
+     * <ol>
+     *     <li>"key1": "Value1"</li>
+     *     <li>"k3ytw0": "v4lu3Tw0"</li>
+     *     <li>"key3": "vA L uE 3"</li>
+     * </ol></p>
      *
      * @param fileReader   The {@link LineNumberReader} that contains the map to parse
      * @param requiredKeys A list of required keys to find. Will throw a

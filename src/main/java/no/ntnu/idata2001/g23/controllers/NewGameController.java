@@ -14,6 +14,7 @@ import no.ntnu.idata2001.g23.model.fileparsing.EnemyLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.GameFileCollection;
 import no.ntnu.idata2001.g23.model.fileparsing.GoalLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.ItemLoader;
+import no.ntnu.idata2001.g23.model.fileparsing.PlayerLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
 import no.ntnu.idata2001.g23.model.goals.Goal;
 import no.ntnu.idata2001.g23.model.items.Item;
@@ -116,15 +117,19 @@ public class NewGameController extends GenericController {
                 CorruptFileException.Type.INFO_MISSING_STORY);
         Story story = new StoryLoader(itemProvider).loadStory(storyPath);
 
-        //parse & create goals, using itemProvider
+        //parse & create player, using itemProvider, name & difficulty
+        Path playerPath = gameFiles.getPathRequired(".player",
+                CorruptFileException.Type.INFO_MISSING_PLAYER);
+        Player player = new PlayerLoader(itemProvider, screen.getPlayerNameInput().getText(),
+                difficulty).loadPlayer(playerPath);
+
+        //parse & create goals, using itemProvider & difficulty
         Path goalsPath = gameFiles.getPathRequired(".goals",
                 CorruptFileException.Type.INFO_MISSING_GOALS);
         List<Goal> goals = new GoalLoader(itemProvider, difficulty).loadGoals(goalsPath);
 
         //Create game, using story & goals
-        Game game = new Game(new Player.PlayerBuilder(screen.getPlayerNameInput().getText(), 30)
-                .build(),
-                story, goals);
+        Game game = new Game(player, story, goals);
 
         for (String itemName : new String[]{"Big Sword UwU", "Usable Test", "Usable Test"}) {
             game.getPlayer()

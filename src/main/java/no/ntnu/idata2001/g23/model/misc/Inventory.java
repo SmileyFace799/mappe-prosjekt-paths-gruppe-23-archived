@@ -76,4 +76,27 @@ public class Inventory {
         }
         contents.remove(item);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Inventory inventory = (Inventory) obj;
+        return contents.equals(inventory.contents);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + contents.hashCode();
+        return hash;
+    }
 }
