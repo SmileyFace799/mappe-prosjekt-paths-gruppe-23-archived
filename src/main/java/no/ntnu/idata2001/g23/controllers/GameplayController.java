@@ -11,9 +11,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.entities.Player;
-import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
+import no.ntnu.idata2001.g23.model.misc.Inventory;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
@@ -77,7 +77,7 @@ public class GameplayController extends GenericController {
     }
 
     /**
-     *
+     * Shows the main action prompt with all of the player's actions.
      */
     public void showActionPrompt() {
         screen.getContentPane().setLeft(screen.getActionPrompt());
@@ -113,6 +113,11 @@ public class GameplayController extends GenericController {
         screen.getHistoryContent().getChildren().clear();
     }
 
+    /**
+     * Logs an action in the history pane.
+     *
+     * @param logMessage THe message for the action to log
+     */
     public void logAction(String logMessage) {
         if (actionHistory.size() >= 15) {
             actionHistory.remove(0);

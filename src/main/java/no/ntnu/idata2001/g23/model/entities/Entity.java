@@ -2,11 +2,10 @@ package no.ntnu.idata2001.g23.model.entities;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
-import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
-import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
+import no.ntnu.idata2001.g23.model.misc.FullInventoryException;
+import no.ntnu.idata2001.g23.model.misc.Inventory;
 
 /**
  * An entity with different parameters that can be affected throughout a story.
@@ -178,75 +177,5 @@ public abstract class Entity {
             inventory.addItem(weapon);
         }
         equippedWeapon = weapon;
-    }
-
-    /**
-     * Abstract implementation of builder pattern, so that classes that extend {@link Entity} can
-     * also have a builder that extends this.
-     */
-    protected abstract static class AbstractEntityBuilder<E extends Entity> {
-        //Required
-        protected final String name;
-        protected final int maxHealth;
-
-        //Optional
-        protected int health;
-        protected int score;
-        protected int gold;
-        protected Item[] items;
-
-        /**
-         * Makes a builder for the entity.
-         *
-         * @param name      The entity's name
-         * @param maxHealth The entity's max health
-         */
-        protected AbstractEntityBuilder(String name, int maxHealth) {
-            this.name = name;
-            this.maxHealth = maxHealth;
-
-            //Default optional values
-            health = maxHealth;
-            score = 0;
-            gold = 0;
-            items = new Item[0];
-        }
-
-        public AbstractEntityBuilder<E> setHealth(int health) {
-            this.health = health;
-            return this;
-        }
-
-        public AbstractEntityBuilder<E> setScore(int score) {
-            this.score = score;
-            return this;
-        }
-
-        public AbstractEntityBuilder<E> setGold(int gold) {
-            this.gold = gold;
-            return this;
-        }
-
-        public AbstractEntityBuilder<E> setStartingItems(Item... items) {
-            this.items = items;
-            return this;
-        }
-
-        protected E build(E entity) {
-            entity.setHealth(health);
-            for (Item item : items) {
-                entity.getInventory().addItem(item);
-            }
-            return entity;
-        }
-
-        /**
-         * Builds the entity.
-         *
-         * @return The entity object that was made
-         * @throws FullInventoryException If the entity is built with more starting items
-         *                                than the inventory size allows
-         */
-        protected abstract E build();
     }
 }

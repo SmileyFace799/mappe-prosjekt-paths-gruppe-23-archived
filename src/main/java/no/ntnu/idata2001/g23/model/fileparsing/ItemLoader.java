@@ -79,10 +79,10 @@ public class ItemLoader {
 
     /**
      * Parses items from a {@link LineNumberReader},
-     * and returns an {@link Provider} that can provide all the items.
+     * and returns a {@link Provider} that can provide all the items.
      *
      * @param fileReader A {@link LineNumberReader} that contains some items.
-     * @return An {@link Provider} that can provide all the parsed items
+     * @return A {@link Provider} that can provide all the parsed items
      * @throws CorruptFileException If the items could not be parsed
      */
     public static Provider<Item> parseItems(LineNumberReader fileReader)
@@ -113,10 +113,10 @@ public class ItemLoader {
 
     /**
      * Loads items from a {@code .items}-file,
-     * and returns an {@link Provider} that can provide all the items.
+     * and returns a {@link Provider} that can provide all the items.
      *
      * @param itemsFilePath The file path of the items to load
-     * @return An {@link Provider} that can provide all the loaded items
+     * @return A {@link Provider} that can provide all the loaded items
      * @throws CorruptFileException If the items could not be loaded
      */
     public static Provider<Item> loadItems(Path itemsFilePath) throws CorruptFileException {

@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.model.entities;
 
 import java.util.List;
-import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 
@@ -82,9 +81,7 @@ public class Player extends Entity {
         /**
          * Builds the player.
          *
-         * @return The player object that was made
-         * @throws FullInventoryException If the player is built with more starting items
-         *                                than the inventory size allows
+         * @return The player that was made
          */
         public Player build() {
             Player player = new Player(name, maxHealth, score, gold);

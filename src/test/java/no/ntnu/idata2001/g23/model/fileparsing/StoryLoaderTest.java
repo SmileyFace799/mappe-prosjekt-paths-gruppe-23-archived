@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.model.story;
+package no.ntnu.idata2001.g23.model.fileparsing;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
@@ -6,11 +6,12 @@ import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
-import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
-import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.MiscItem;
+import no.ntnu.idata2001.g23.model.story.Link;
+import no.ntnu.idata2001.g23.model.story.Passage;
+import no.ntnu.idata2001.g23.model.story.Story;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,9 +28,16 @@ class StoryLoaderTest {
         this.validStoryLoader = new StoryLoader(itemProvider);
     }
 
-    void checkStory(String story, CorruptFileException.Type type) {
+    /**
+     * Asserts that a {@link CorruptFileException} is thrown,
+     * and asserts that the exception thrown is of the specified type.
+     *
+     * @param storyString The story string to parse
+     * @param type The {@link CorruptFileException.Type} to check for
+     */
+    private void assertCfeType(String storyString, CorruptFileException.Type type) {
         CorruptFileException exception = assertThrows(CorruptFileException.class, () ->
-                validStoryLoader.parseStory(new LineNumberReader(new StringReader(story))));
+                validStoryLoader.parseStory(new LineNumberReader(new StringReader(storyString))));
         assertEquals(type, exception.getType());
     }
 
@@ -38,7 +46,7 @@ class StoryLoaderTest {
      */
     @Test
     void testLoadingOfValidFile() {
-        String validTestStory = """
+        String validStoryString = """
                 Haunted House
                      
                 ::Beginnings
@@ -58,8 +66,8 @@ class StoryLoaderTest {
                 ::Link-less room
                 You are now soft-locked :D
                 """;
-        Story loadedStory = assertDoesNotThrow(() ->
-                validStoryLoader.parseStory(new LineNumberReader(new StringReader(validTestStory))));
+        Story loadedStory = assertDoesNotThrow(() -> validStoryLoader
+                .parseStory(new LineNumberReader(new StringReader(validStoryString))));
 
         Passage openingPassage = new Passage("Beginnings", "You are in a small, "
                 + "dimly lit room. There is a door in front of you."
@@ -71,24 +79,24 @@ class StoryLoaderTest {
                 new InventoryAction(itemProvider.provide("Test item")),
                 new GoldAction(500)
         )));
-        Story actualStory = new Story("Haunted House", openingPassage);
+        Story validStory = new Story("Haunted House", openingPassage);
 
         Passage anotherPassage = new Passage("Another room",
                 "The door opens to another room. You have reached the end of the game, "
                         + "there is no other option than going back.");
         anotherPassage.addLink(new Link("Back", "Beginnings", null));
-        actualStory.addPassage(anotherPassage);
+        validStory.addPassage(anotherPassage);
 
         Passage yetAnotherPassage = new Passage("Test room",
                 "Wowie, you found the debug area!");
         yetAnotherPassage.addLink(new Link("Back", "Beginnings",
                 List.of(new HealthAction(-5))));
-        actualStory.addPassage(yetAnotherPassage);
+        validStory.addPassage(yetAnotherPassage);
 
-        actualStory.addPassage(new Passage("Link-less room",
+        validStory.addPassage(new Passage("Link-less room",
                 "You are now soft-locked :D"));
 
-        assertEquals(actualStory, loadedStory);
+        assertEquals(validStory, loadedStory);
     }
 
     /**
@@ -96,16 +104,16 @@ class StoryLoaderTest {
      */
     @Test
     void testParsingEmptyFile() {
-        checkStory("", CorruptFileException.Type.EMPTY_FILE);
+        assertCfeType("", CorruptFileException.Type.EMPTY_FILE);
     }
 
     @Test
     void testParsingStoryWithoutTitle() {
-        checkStory("""
+        assertCfeType("""
                                 
                 """, CorruptFileException.Type.NO_TITLE
         );
-        checkStory("""
+        assertCfeType("""
                 ::Some passage
                 """, CorruptFileException.Type.NO_TITLE)
         ;
@@ -113,14 +121,14 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithoutPassages() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 """, CorruptFileException.Type.NO_PASSAGES);
     }
 
     @Test
     void testParsingFileWithInvalidPassage() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Valid passage
@@ -133,7 +141,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithNoPassageName() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::
@@ -143,7 +151,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithNoPassageContent() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
@@ -153,7 +161,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithNoLinkText() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
@@ -164,7 +172,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithNoLinkReference() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
@@ -175,7 +183,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithInvalidAction() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
@@ -186,7 +194,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithInvalidActionFormat() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
@@ -197,7 +205,7 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithInvalidActionType() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
@@ -208,28 +216,28 @@ class StoryLoaderTest {
 
     @Test
     void testParsingFileWithInvalidActionValue() {
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Gold: Invalid value}
                 """, CorruptFileException.Type.ACTION_INVALID_VALUE);
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Health: Invalid value}
                 """, CorruptFileException.Type.ACTION_INVALID_VALUE);
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name
                 Passage content
                 [Link text] (Link reference) {Inventory: Invalid value}
                 """, CorruptFileException.Type.ACTION_INVALID_VALUE);
-        checkStory("""
+        assertCfeType("""
                 Story title
                 
                 ::Passage name

@@ -1,5 +1,6 @@
 package no.ntnu.idata2001.g23.model.misc;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -23,6 +24,15 @@ public class Provider<T> {
      */
     public Provider() {
         this.supplierMap = new HashMap<>();
+    }
+
+    /**
+     * Gets all identifiers associated with any providable object.
+     *
+     * @return A collection of all identifiers associated with any providable object.
+     */
+    public Collection<String> getIdentifiers() {
+        return supplierMap.keySet();
     }
 
     /**

@@ -3,12 +3,11 @@ package no.ntnu.idata2001.g23.controllers;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.Game;
-import no.ntnu.idata2001.g23.model.entities.Enemy;
 import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
 import no.ntnu.idata2001.g23.model.fileparsing.DifficultyLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.EnemyLoader;
@@ -56,11 +55,18 @@ public class NewGameController extends GenericController {
         }
     }
 
+    /**
+     * Shows the game selection that allows the player to select a game to play.
+     */
     public void showGameSelection() {
         setGameSelectErrorMessage(null);
         screen.getContentPane().setCenter(screen.getGameSelect());
     }
 
+    /**
+     * Shows the difficulty selection after the player has selected a game to play,
+     * which allows the player to choose the difficulty of the story..
+     */
     public void showDifficultySelection() {
         String playerName = screen.getPlayerNameInput().getText();
         String gamePath = screen.getGamePathInput().getText();
@@ -83,6 +89,13 @@ public class NewGameController extends GenericController {
         }
     }
 
+    /**
+     * Makes a new {@link Game} object from the game path & difficulty specified by the player.
+     *
+     * @param difficulty The difficulty of the game
+     * @return The newly made game
+     * @throws CorruptFileException If the game cannot be made due to one or more corrupt files
+     */
     private Game makeNewGame(String difficulty) throws CorruptFileException {
         //Parse items, create itemProvider
         Path itemsPath = gameFiles.getPath(".items");
@@ -122,7 +135,7 @@ public class NewGameController extends GenericController {
     }
 
     /**
-     * Makes a new game with the selected game, player details & difficulty selection.
+     * Starts a new game based on the player's selections.
      */
     public void startNewGame() {
         String difficulty = screen.getDifficultyView().getSelectionModel().getSelectedItem();
@@ -158,10 +171,5 @@ public class NewGameController extends GenericController {
      */
     public void setDifficultySelectErrorMessage(String errorMessage) {
         screen.getDifficultySelectErrorText().setText(errorMessage);
-    }
-
-    public void changeVisibleSelection(Pane selectionPane) {
-        setGameSelectErrorMessage(null);
-        screen.getContentPane().setCenter(selectionPane);
     }
 }

@@ -2,7 +2,7 @@ package no.ntnu.idata2001.g23.model.fileparsing;
 
 /**
  * Thrown when reading data from a file failed.
- * Has a specific {@link CorruptFileException.Type} that describes exactly what went wrong.
+ * Has a specific {@link Type Type} that describes exactly what went wrong.
  */
 public class CorruptFileException extends Exception {
     private final CorruptFileException.Type type;
@@ -62,7 +62,8 @@ public class CorruptFileException extends Exception {
     }
 
     /**
-     * TODO: Add javadoc :).
+     * Every type of exception that can occur when some part of a game fails to load.
+     * These mainly exist for reliable unit testing of file parsing.
      */
     public enum Type {
         EMPTY_FILE("File is empty"),
@@ -124,9 +125,9 @@ public class CorruptFileException extends Exception {
         ENEMY_INVALID_PARAMETER_VALUE("A parameter value for an enemy is invalid"),
 
         //Map parsing exceptions
-        PARAMETER_INVALID_FORMAT("Couldn't find the \":\"-separator "
+        ENTRY_INVALID_FORMAT("Couldn't find the \":\"-separator "
                 + "that separates the parameter name & value"),
-        REQUIRED_PARAMETER_MISSING(
+        REQUIRED_KEY_MISSING(
                 "List of parameters is missing one or more required parameters"),
         ;
 

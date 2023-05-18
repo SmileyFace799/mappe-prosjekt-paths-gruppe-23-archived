@@ -2,8 +2,8 @@ package no.ntnu.idata2001.g23.middleman.events;
 
 import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.Action;
-import no.ntnu.idata2001.g23.model.entities.Enemy;
 import no.ntnu.idata2001.g23.model.entities.Entity;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 
 /**
  * Indicates that an enemy has attacked.

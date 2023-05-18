@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.model.entities;
+package no.ntnu.idata2001.g23.model.entities.enemies;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
+import no.ntnu.idata2001.g23.model.entities.Actor;
+import no.ntnu.idata2001.g23.model.entities.Entity;
+import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 
@@ -77,6 +80,9 @@ public class Enemy extends Entity implements Actor {
         return actions;
     }
 
+    /**
+     * Builder pattern, builds an enemy.
+     */
     public static class EnemyBuilder {
         //Required
         private final String name;
@@ -91,6 +97,12 @@ public class Enemy extends Entity implements Actor {
         private double itemDropChance;
         private boolean canDropWeapon;
 
+        /**
+         * Makes a builder for the enemy.
+         *
+         * @param name      The enemy's name
+         * @param maxHealth The enemy's max health
+         */
         public EnemyBuilder(String name, int maxHealth) {
             this.name = name;
             this.maxHealth = maxHealth;
@@ -130,6 +142,12 @@ public class Enemy extends Entity implements Actor {
             return this;
         }
 
+        /**
+         * Sets the chance of each item being dropped upon death.
+         *
+         * @param itemDropChance The new item drop chance
+         * @return The builder
+         */
         public EnemyBuilder setItemDropChance(double itemDropChance) {
             if (itemDropChance < 0 || itemDropChance > 1) {
                 throw new IllegalArgumentException(
@@ -144,6 +162,11 @@ public class Enemy extends Entity implements Actor {
             return this;
         }
 
+        /**
+         * Builds the enemy.
+         *
+         * @return The enemy that was made
+         */
         public Enemy build() {
             Enemy enemy = new Enemy(name, maxHealth, score, gold, itemDropChance, canDropWeapon);
             enemy.setHealth(health);

@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.model.itemhandling;
+package no.ntnu.idata2001.g23.model.misc;
 
 import java.util.ArrayList;
 import java.util.List;

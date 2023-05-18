@@ -1,7 +1,9 @@
-package no.ntnu.idata2001.g23.model.itemhandling;
+package no.ntnu.idata2001.g23.model.misc;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.*;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.items.MiscItem;
+import no.ntnu.idata2001.g23.model.items.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,14 +15,17 @@ class InventoryTest {
     private Inventory validInventory;
 
     @BeforeEach
-    void before() throws FullInventoryException {
-        inventoryMiscItem = ItemFactory.makeItem("Test item");
-        inventorySword = ItemFactory.makeItem("Test sword");
+    void before() {
+        inventoryMiscItem = new MiscItem(
+                500, "Test item", "Test description");
+        inventorySword = new Weapon(5, 0.25, 500,
+                "Test sword", "Test description");
         validInventory = new Inventory(3);
         validInventory.addItem(inventoryMiscItem);
         validInventory.addItem(inventorySword);
 
-        otherItem = ItemFactory.makeItem("Another test item");
+        otherItem = new MiscItem(500, "Another test item",
+                "Another test description");
     }
 
     @Test
@@ -30,7 +35,6 @@ class InventoryTest {
 
     @Test
     void testCreationOfInventoryWithValidParameters() {
-        assertEquals(3, validInventory.getSize());
         assertEquals(inventoryMiscItem, validInventory.getItem(0));
         assertEquals(inventorySword, validInventory.getItem(1));
         assertNull(validInventory.getItem(2));
@@ -53,12 +57,6 @@ class InventoryTest {
     void testAddItemWithInvalidItem() {
         assertThrows(NullValueException.class, () ->
                 validInventory.addItem(null));
-    }
-
-    @Test
-    void testAddItemWithFullInventory() {
-        assertDoesNotThrow(() -> validInventory.addItem(otherItem));
-        assertThrows(FullInventoryException.class, () -> validInventory.addItem(otherItem));
     }
 
     @Test
@@ -95,21 +93,5 @@ class InventoryTest {
         assertFalse(validInventory.hasItems(subset1));
         assertFalse(validInventory.hasItems(subset2));
         assertTrue(validInventory.hasItems(subset3));
-    }
-
-    @Test
-    void testSetInventorySizeToInvalidValue() {
-        assertThrows(NegativeOrZeroNumberException.class, () -> validInventory.setInventorySize(-1));
-    }
-
-    @Test
-    void testReductionOfInventorySizeToLessThanTheAmountOfItems() {
-        assertThrows(NotEmptyException.class, () -> validInventory.setInventorySize(1));
-    }
-
-    @Test
-    void testValidSettingOfInventorySize() {
-        assertDoesNotThrow(() -> validInventory.setInventorySize(2));
-        assertDoesNotThrow(() -> validInventory.setInventorySize(50));
     }
 }

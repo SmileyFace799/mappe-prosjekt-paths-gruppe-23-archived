@@ -13,8 +13,8 @@ import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.actions.Action;
-import no.ntnu.idata2001.g23.model.entities.Enemy;
 import no.ntnu.idata2001.g23.model.entities.Entity;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
@@ -108,6 +108,12 @@ public class GameplayManager {
         notifyListeners(new InventoryUpdateEvent(game.getPlayer().getInventory()));
     }
 
+    /**
+     * Makes an enemy attack.
+     *
+     * @param attacker The enemy that's attacking
+     * @param possibleTargets A collection of possible targets for the enemy to attack
+     */
     public void attack(Enemy attacker, Collection<Entity> possibleTargets) {
         Map<Action, List<Entity>> actionMap = attacker.act(possibleTargets);
         for (Map.Entry<Action, List<Entity>> actionEntry : actionMap.entrySet()) {

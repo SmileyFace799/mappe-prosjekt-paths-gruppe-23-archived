@@ -2,8 +2,8 @@ package no.ntnu.idata2001.g23.model.actions;
 
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.entities.Entity;
-import no.ntnu.idata2001.g23.model.itemhandling.FullInventoryException;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.misc.FullInventoryException;
 
 /**
  * Adds an item to the players inventory.

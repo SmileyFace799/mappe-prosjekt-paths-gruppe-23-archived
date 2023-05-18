@@ -8,12 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import no.ntnu.idata2001.g23.model.entities.Enemy;
-import no.ntnu.idata2001.g23.model.itemhandling.Inventory;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 
+/**
+ * Loads enemies from a {@code .enemies}-file.
+ */
 public class EnemyLoader {
     private final Provider<Item> itemProvider;
 
@@ -72,6 +74,14 @@ public class EnemyLoader {
         return enemySupplier;
     }
 
+    /**
+     * Parses enemies from a {@link LineNumberReader},
+     * and returns a {@link Provider} that can provide all the enemies.
+     *
+     * @param fileReader A {@link LineNumberReader} that contains some enemies.
+     * @return A {@link Provider} that can provide all the parsed enemies
+     * @throws CorruptFileException If the enemies could not be parsed
+     */
     public Provider<Enemy> parseEnemies(LineNumberReader fileReader) throws CorruptFileException {
         Provider<Enemy> provider = new Provider<>();
         try {
@@ -97,6 +107,14 @@ public class EnemyLoader {
         return provider;
     }
 
+    /**
+     * Loads enemies from a {@code .enemies}-file,
+     * and returns a {@link Provider} that can provide all the enemies.
+     *
+     * @param enemiesFilePath The file path of the enemies to load
+     * @return A {@link Provider} that can provide all the loaded enemies
+     * @throws CorruptFileException If the enemies could not be loaded
+     */
     public Provider<Enemy> loadEnemies(Path enemiesFilePath) throws CorruptFileException {
         Provider<Enemy> enemyProvider;
         try (LineNumberReader fileReader = new LineNumberReader(
