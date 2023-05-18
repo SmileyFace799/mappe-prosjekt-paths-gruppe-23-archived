@@ -48,7 +48,7 @@ public class GoalLoader {
                         CorruptFileException.Type.GOAL_INVALID_TYPE,
                         lineNumber, goalType);
             }
-        } catch (NumberFormatException | ElementNotFoundException e) {
+        } catch (IllegalArgumentException | ElementNotFoundException e) {
             throw new CorruptFileException(CorruptFileException.Type.GOAL_INVALID_VALUE,
                     lineNumber, goalValue);
         }
@@ -56,7 +56,6 @@ public class GoalLoader {
     }
 
     /**
-     * TODO: Unit testing.
      * Parses goals from a {@link LineNumberReader},
      * and returns a {@link List} of every goal associated with the goal loader's difficulty.
      *
@@ -73,7 +72,7 @@ public class GoalLoader {
             while (!nextLine.startsWith("#" + difficulty)) {
                 nextLine = fileReader.readLine();
                 if (nextLine == null) {
-                    throw new CorruptFileException(CorruptFileException.Type.DIFFICULTY_NO_GOALS,
+                    throw new CorruptFileException(CorruptFileException.Type.NO_GOALS,
                             fileReader.getLineNumber(), difficulty);
                 }
             }
@@ -82,7 +81,7 @@ public class GoalLoader {
                 goals.add(parseGoal(nextLine, fileReader.getLineNumber(), itemProvider));
             }
             if (goals.isEmpty()) {
-                throw new CorruptFileException(CorruptFileException.Type.DIFFICULTY_NO_GOALS,
+                throw new CorruptFileException(CorruptFileException.Type.NO_GOALS,
                         fileReader.getLineNumber(), difficulty);
             }
         } catch (IOException ioe) {

@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.model.goals;
 
 import java.util.Objects;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.items.Item;
 
@@ -18,7 +17,7 @@ public class InventoryGoal implements Goal {
      */
     public InventoryGoal(Item mandatoryItem) {
         if (mandatoryItem == null) {
-            throw new NullValueException("Item \"mandatoryItem\" cannot be null");
+            throw new IllegalArgumentException("Item \"mandatoryItem\" cannot be null");
         }
         this.mandatoryItem = mandatoryItem;
     }

@@ -71,13 +71,15 @@ public class CorruptFileException extends Exception {
         //Info exceptions
         UNKNOWN_INFO("An unknown error occurred while attempting to read the info file"),
         INFO_INVALID_PATH("An invalid path was found in the info file"),
-        NO_DIFFICULTIES("No difficulties were found for the game"),
-        NO_STORY("No story was found for the game"),
-        NO_GOALS("No goals were found for the game"),
+        INFO_MISSING_DIFFICULTIES(
+                "A \".difficulties\"-file is required & missing from the game"),
+        INFO_MISSING_STORY("A \".paths\"-file is required & missing from the game"),
+        INFO_MISSING_GOALS("A \".goals\"-file is required & missing from the game"),
 
         //Difficulty exceptions
         UNKNOWN_DIFFICULTIES(
                 "An unknown error occurred while attempting to read the difficulties file"),
+        NO_DIFFICULTIES("The \".difficulties\"-file doesn't contain any difficulties"),
 
         //Story exceptions
         UNKNOWN_STORY("An unknown error occurred while attempting to read the story file"),
@@ -106,7 +108,7 @@ public class CorruptFileException extends Exception {
 
         //Goal exceptions
         UNKNOWN_GOALS("An unknown error occurred while attempting to read the goals file"),
-        DIFFICULTY_NO_GOALS("Found difficulty with no goals"),
+        NO_GOALS("Found difficulty with no goals"),
         GOAL_INVALID_FORMAT("Couldn't find the \":\"-separator "
                 + "that separates the goal type & value"),
         GOAL_INVALID_TYPE("Cannot recognize goal type"),
@@ -114,7 +116,7 @@ public class CorruptFileException extends Exception {
 
         //Player exceptions
         UNKNOWN_PLAYER("An unknown error occurred while attempting to read the player file"),
-        DIFFICULTY_NO_PLAYER("Found difficulty with no player"),
+        NO_PLAYER("Found difficulty with no player"),
 
         //Enemy exceptions
         UNKNOWN_ENEMIES("An unknown error occurred while attempting to read the enemies file"),

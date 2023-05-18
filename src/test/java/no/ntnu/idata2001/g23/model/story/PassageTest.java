@@ -16,7 +16,6 @@ class PassageTest {
     @BeforeEach
     public void before() {
         validPassage = new Passage("Test title", "Test content");
-        //TODO: Update test lol
         link = new Link("Test text", "Test reference", new ArrayList<>());
     }
 

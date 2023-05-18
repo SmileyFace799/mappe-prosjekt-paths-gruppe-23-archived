@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.model.goals;
 
 import java.util.Objects;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.model.entities.Player;
 
 /**
@@ -17,7 +16,7 @@ public class ScoreGoal implements Goal {
      */
     public ScoreGoal(int minimumPoints) {
         if (minimumPoints <= 0) {
-            throw new NegativeOrZeroNumberException("Minimum score must be greater than 0");
+            throw new IllegalArgumentException("Minimum score must be greater than 0");
         }
         this.minimumPoints = minimumPoints;
     }

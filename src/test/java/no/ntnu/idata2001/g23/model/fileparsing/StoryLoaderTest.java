@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StoryLoaderTest {
     private Provider<Item> itemProvider;
-    private StoryLoader validStoryLoader;
+    private StoryLoader storyLoader;
 
     @BeforeEach
     void before() {
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Test item", () ->
                 new MiscItem(500, "Test Item", "Test description"));
-        this.validStoryLoader = new StoryLoader(itemProvider);
+        this.storyLoader = new StoryLoader(itemProvider);
     }
 
     /**
@@ -37,7 +37,7 @@ class StoryLoaderTest {
      */
     private void assertCfeType(String storyString, CorruptFileException.Type type) {
         CorruptFileException exception = assertThrows(CorruptFileException.class, () ->
-                validStoryLoader.parseStory(new LineNumberReader(new StringReader(storyString))));
+                storyLoader.parseStory(new LineNumberReader(new StringReader(storyString))));
         assertEquals(type, exception.getType());
     }
 
@@ -66,7 +66,7 @@ class StoryLoaderTest {
                 ::Link-less room
                 You are now soft-locked :D
                 """;
-        Story loadedStory = assertDoesNotThrow(() -> validStoryLoader
+        Story parsedStory = assertDoesNotThrow(() -> storyLoader
                 .parseStory(new LineNumberReader(new StringReader(validStoryString))));
 
         Passage openingPassage = new Passage("Beginnings", "You are in a small, "
@@ -96,7 +96,7 @@ class StoryLoaderTest {
         validStory.addPassage(new Passage("Link-less room",
                 "You are now soft-locked :D"));
 
-        assertEquals(validStory, loadedStory);
+        assertEquals(validStory, parsedStory);
     }
 
     /**

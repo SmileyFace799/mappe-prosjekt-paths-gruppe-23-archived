@@ -80,7 +80,7 @@ public class NewGameController extends GenericController {
                 gameFiles = new GameFileCollection(gamePath);
                 screen.getDifficultyView().getItems().addAll(DifficultyLoader
                         .loadDifficulties(gameFiles.getPathRequired(".difficulties",
-                                CorruptFileException.Type.NO_DIFFICULTIES)));
+                                CorruptFileException.Type.INFO_MISSING_DIFFICULTIES)));
                 setDifficultySelectErrorMessage(null);
                 screen.getContentPane().setCenter(screen.getDifficultySelect());
             } catch (CorruptFileException cfe) {
@@ -113,12 +113,12 @@ public class NewGameController extends GenericController {
 
         //parse & create story, using itemProvider
         Path storyPath = gameFiles.getPathRequired(".paths",
-                CorruptFileException.Type.NO_STORY);
+                CorruptFileException.Type.INFO_MISSING_STORY);
         Story story = new StoryLoader(itemProvider).loadStory(storyPath);
 
         //parse & create goals, using itemProvider
         Path goalsPath = gameFiles.getPathRequired(".goals",
-                CorruptFileException.Type.NO_GOALS);
+                CorruptFileException.Type.INFO_MISSING_GOALS);
         List<Goal> goals = new GoalLoader(itemProvider, difficulty).loadGoals(goalsPath);
 
         //Create game, using story & goals

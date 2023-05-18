@@ -1,7 +1,6 @@
 package no.ntnu.idata2001.g23.model.goals;
 
 import java.util.Objects;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
 import no.ntnu.idata2001.g23.model.entities.Player;
 
 /**
@@ -17,7 +16,7 @@ public class GoldGoal implements Goal {
      */
     public GoldGoal(int minimumGold) {
         if (minimumGold <= 0) {
-            throw new NegativeOrZeroNumberException("Minimum gold must be greater than 0");
+            throw new IllegalArgumentException("Minimum gold must be greater than 0");
         }
         this.minimumGold = minimumGold;
     }

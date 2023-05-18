@@ -16,7 +16,6 @@ public class DifficultyLoader {
     }
 
     /**
-     * TODO: Unit testing.
      * Parses difficulties from a {@link LineNumberReader},
      * and returns a {@link List} of every difficulty in the game.
      *
@@ -37,6 +36,9 @@ public class DifficultyLoader {
         } catch (IOException ioe) {
             throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_DIFFICULTIES,
                     fileReader.getLineNumber());
+        }
+        if (difficulties.isEmpty()) {
+            throw new CorruptFileException(CorruptFileException.Type.NO_DIFFICULTIES);
         }
         return difficulties;
     }

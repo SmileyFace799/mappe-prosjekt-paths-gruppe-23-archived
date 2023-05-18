@@ -22,14 +22,12 @@ class GameFileCollectionTest {
      * and asserts that the exception thrown is of the specified type.
      *
      * @param infoString The info string to parse
-     * @param type The {@link CorruptFileException.Type} to check for
      */
-    private void assertCfeType(
-            String infoString, CorruptFileException.Type type) {
+    private void assertCfeType(String infoString) {
         CorruptFileException exception = assertThrows(CorruptFileException.class, () ->
                 GameFileCollection.parseInfo(new LineNumberReader(new StringReader(infoString)),
                         gamePath));
-        assertEquals(type, exception.getType());
+        assertEquals(CorruptFileException.Type.INFO_INVALID_PATH, exception.getType());
     }
 
     @Test
@@ -59,10 +57,10 @@ class GameFileCollectionTest {
                 
                 testStoryPaths
                 duplicate.items
-                """, CorruptFileException.Type.INFO_INVALID_PATH);
+                """);
 
         assertCfeType("""
                 ///...:?ææåø^'\\`´..-\\\\\\
-                """, CorruptFileException.Type.INFO_INVALID_PATH);
+                """);
     }
 }
