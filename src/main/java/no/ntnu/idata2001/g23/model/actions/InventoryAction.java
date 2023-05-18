@@ -3,7 +3,6 @@ package no.ntnu.idata2001.g23.model.actions;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.items.Item;
-import no.ntnu.idata2001.g23.model.misc.FullInventoryException;
 
 /**
  * Adds an item to the players inventory.
@@ -24,7 +23,7 @@ public class InventoryAction implements Action {
     }
 
     @Override
-    public void execute(Entity entity) throws FullInventoryException {
+    public void execute(Entity entity) {
         entity.getInventory().addItem(item);
     }
 

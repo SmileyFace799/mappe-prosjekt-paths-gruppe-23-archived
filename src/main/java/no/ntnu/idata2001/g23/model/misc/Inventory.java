@@ -3,10 +3,7 @@ package no.ntnu.idata2001.g23.model.misc;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeOrZeroNumberException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NotEmptyException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.model.items.Item;
 
 /**
@@ -14,15 +11,9 @@ import no.ntnu.idata2001.g23.model.items.Item;
  */
 public class Inventory {
     private final List<Item> contents;
-    private int inventorySize = 1;
 
-    public Inventory(int inventorySize) {
+    public Inventory() {
         contents = new ArrayList<>();
-        setInventorySize(inventorySize);
-    }
-
-    public int getSize() {
-        return inventorySize;
     }
 
     public List<Item> getContents() {
@@ -37,9 +28,8 @@ public class Inventory {
      *         this will return {@code null}.
      */
     public Item getItem(int index) {
-        if (index < 0 || index >= inventorySize) {
-            throw new NumberOutOfRangeException(
-                    "int \"index\" must be between 0 and the inventory size");
+        if (index < 0) {
+            throw new IllegalArgumentException("int \"index\" must be 0 or greater");
         }
         Item foundItem = null;
         if (index < contents.size()) {
@@ -69,12 +59,9 @@ public class Inventory {
      *
      * @param item The item to add to the inventory.
      */
-    public void addItem(Item item) throws FullInventoryException {
+    public void addItem(Item item) {
         if (item == null) {
             throw new NullValueException("\"item\" cannot be null");
-        }
-        if (contents.size() == inventorySize) {
-            throw new FullInventoryException("Cannot add item, inventory is full");
         }
         contents.add(item);
     }
@@ -90,22 +77,5 @@ public class Inventory {
             throw new ElementNotFoundException("\"item\" is not present in the inventory");
         }
         contents.remove(item);
-    }
-
-    /**
-     * Sets a new inventory size.
-     *
-     * @param newSize The new size of the inventory. If the size is reduced,
-     *                the inventory cannot contain any items in the range that is to be removed.
-     */
-    public void setInventorySize(int newSize) {
-        if (newSize <= 0) {
-            throw new NegativeOrZeroNumberException("int \"newSize\" must be greater than 0");
-        }
-        if (newSize < contents.size()) {
-            throw new NotEmptyException("Cannot reduce inventory size: "
-                    + "The range that is to be removed is not empty");
-        }
-        inventorySize = newSize;
     }
 }

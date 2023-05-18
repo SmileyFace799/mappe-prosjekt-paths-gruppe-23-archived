@@ -4,7 +4,6 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
 import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
-import no.ntnu.idata2001.g23.model.misc.FullInventoryException;
 import no.ntnu.idata2001.g23.model.misc.Inventory;
 
 /**
@@ -36,7 +35,7 @@ public abstract class Entity {
         this.health = maxHealth;
         this.score = score;
         this.gold = gold;
-        this.inventory = new Inventory(16);
+        this.inventory = new Inventory();
     }
 
     /**
@@ -169,10 +168,8 @@ public abstract class Entity {
      * Assigns a weapon for the entity to use during combat.
      *
      * @param weapon The weapon to equip. If it's not in the entity's inventory, it will be added
-     * @throws FullInventoryException If the weapon is not in the entity's inventory,
-     *                                and there is no space to add it
      */
-    public void equipWeapon(Weapon weapon) throws FullInventoryException {
+    public void equipWeapon(Weapon weapon) {
         if (!inventory.hasItem(weapon)) {
             inventory.addItem(weapon);
         }

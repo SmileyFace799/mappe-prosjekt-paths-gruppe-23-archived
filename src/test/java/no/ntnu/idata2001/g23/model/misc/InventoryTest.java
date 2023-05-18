@@ -20,17 +20,12 @@ class InventoryTest {
                 500, "Test item", "Test description");
         inventorySword = new Weapon(5, 0.25, 500,
                 "Test sword", "Test description");
-        validInventory = new Inventory(3);
+        validInventory = new Inventory();
         validInventory.addItem(inventoryMiscItem);
         validInventory.addItem(inventorySword);
 
         otherItem = new MiscItem(500, "Another test item",
                 "Another test description");
-    }
-
-    @Test
-    void testCreationOfInventoryWithInvalidSize() {
-        assertThrows(NegativeOrZeroNumberException.class, () -> new Inventory(0));
     }
 
     @Test
@@ -79,14 +74,14 @@ class InventoryTest {
     }
 
     @Test
-    void testInventoryHasSubsetOfItems() throws FullInventoryException {
-        Inventory subset1 = new Inventory(2);
+    void testInventoryHasSubsetOfItems() {
+        Inventory subset1 = new Inventory();
         subset1.addItem(otherItem);
         subset1.addItem(inventorySword);
-        Inventory subset2 = new Inventory(2);
+        Inventory subset2 = new Inventory();
         subset2.addItem(otherItem);
         subset2.addItem(inventoryMiscItem);
-        Inventory subset3 = new Inventory(2);
+        Inventory subset3 = new Inventory();
         subset3.addItem(inventorySword);
         subset3.addItem(inventoryMiscItem);
 
