@@ -9,18 +9,21 @@ import javafx.scene.transform.Scale;
  * Represents a screen, which consists of a scene,
  * and a reference to the scene's corresponding controller.
  */
-public abstract class GenericScreen {
-    private static final String CSS_PATH = "no/ntnu/idata2001/g23/view/";
+public abstract class GenericScreen extends Scene {
     public static final int BASE_WIDTH = 3840;
     public static final int BASE_HEIGHT = 2160;
+
     protected static final int HORIZONTAL_SPACING = 60;
     protected static final int VERTICAL_SPACING = 60;
 
-    private final Scene scene;
-    private final Pane root;
+    private static final int DEFAULT_WINDOW_WIDTH = 1280;
+    private static final int DEFAULT_WINDOW_HEIGHT = 720;
+    private static final String CSS_PATH = "no/ntnu/idata2001/g23/view/";
+
+    private final Pane rootPane;
 
     /**
-     * Constructs a screen and makes its scene.
+     * Constructs a screen.
      * The scene's root will be the {@link Pane} returned by {@link #makeRoot()}.<br/>
      * <b>Note:</b> This does not make a controller,
      * extensions of this class are expected to make their own.
@@ -29,27 +32,29 @@ public abstract class GenericScreen {
      *                   <b>Note: </b> {@code global.css} will always be applied to the scene
      */
     protected GenericScreen(String... cssFiles) {
+        super(new Group(), DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+
         initializeNodes();
-        this.root = makeRoot(); //Makes the root pane
+        this.rootPane = makeRoot(); //Makes the root pane
 
         //Putting "root" in a group makes the scaling work properly.
         //This means "root" isn't actually the root node, but its behavior is otherwise identical,
         //and it can be treated as if it was the actual root node
-        this.scene = new Scene(new Group(root), 1280, 720);
+        setRoot(new Group(rootPane));
 
         //"root" style class must be added manually, due to the reason above
-        root.getStyleClass().add("root");
+        rootPane.getStyleClass().add("root");
 
         //Adds .css
-        scene.getStylesheets().add(CSS_PATH + "global.css");
+        getStylesheets().add(CSS_PATH + "global.css");
         for (String cssFile : cssFiles) {
-            scene.getStylesheets().add(CSS_PATH + cssFile);
+            getStylesheets().add(CSS_PATH + cssFile);
         }
 
         //Makes the root pane scale upon window resize
-        scene.widthProperty().addListener((observableValue, oldValue, newValue) ->
+        widthProperty().addListener((observableValue, oldValue, newValue) ->
                 sizeChangeListener());
-        scene.heightProperty().addListener((observableValue, oldValue, newValue) ->
+        heightProperty().addListener((observableValue, oldValue, newValue) ->
                 sizeChangeListener());
     }
 
@@ -87,8 +92,8 @@ public abstract class GenericScreen {
      * A listener function that runs whenever this screen is visible & resized.
      */
     public void sizeChangeListener() {
-        double newWidth = scene.getWidth();
-        double newHeight = scene.getHeight();
+        double newWidth = getWidth();
+        double newHeight = getHeight();
 
         double scaleFactor = Math.min(
                 newWidth / BASE_WIDTH,
@@ -99,17 +104,13 @@ public abstract class GenericScreen {
         Scale scale = new Scale(scaleFactor, scaleFactor);
         scale.setPivotX(0);
         scale.setPivotY(0);
-        scene.getRoot().getTransforms().setAll(scale);
+        getRoot().getTransforms().setAll(scale);
 
-        root.setPrefWidth(newWidth / scaleFactor);
-        root.setPrefHeight(newHeight / scaleFactor);
+        rootPane.setPrefWidth(newWidth / scaleFactor);
+        rootPane.setPrefHeight(newHeight / scaleFactor);
     }
 
-    public Scene getScene() {
-        return scene;
-    }
-
-    public Pane getRoot() {
-        return root;
+    public Pane getRootPane() {
+        return rootPane;
     }
 }

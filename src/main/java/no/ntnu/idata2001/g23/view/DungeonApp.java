@@ -49,7 +49,7 @@ public class DungeonApp extends Application {
                 ScreenManager.getInstance().getScreen(screenClass);
         screen.setDefaultState();
         screen.sizeChangeListener();
-        primaryStage.setScene(screen.getScene());
+        primaryStage.setScene(screen);
         primaryStage.setFullScreen(fullscreen);
         primaryStage.setWidth(width);
         primaryStage.setHeight(height);

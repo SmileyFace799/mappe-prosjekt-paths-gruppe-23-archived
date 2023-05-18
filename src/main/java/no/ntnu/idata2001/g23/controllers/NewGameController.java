@@ -49,7 +49,7 @@ public class NewGameController extends GenericController {
      * Opens the gameChooser, allowing the user to select a game.
      */
     public void browseGame() {
-        File chosenFile = gameChooser.showDialog(screen.getScene().getWindow());
+        File chosenFile = gameChooser.showDialog(screen.getWindow());
         if (chosenFile != null) {
             screen.getGamePathInput().setText(chosenFile.getPath());
         }

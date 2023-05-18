@@ -44,28 +44,28 @@ public class GameplayController extends GenericController {
         Pane overlay = new FlowPane();
         overlay.getStyleClass().add(GameplayScreen.Css.OVERLAY);
         overlay.getChildren().add(node);
-        screen.getRoot().getChildren().add(overlay);
+        screen.getRootPane().getChildren().add(overlay);
     }
 
     /**
      * Removes the top-level modal content.
      */
     public void removeTopModal() {
-        int size = screen.getRoot().getChildren().size();
-        if (size == 0 || screen.getRoot().getChildren().get(size - 1)
+        int size = screen.getRootPane().getChildren().size();
+        if (size == 0 || screen.getRootPane().getChildren().get(size - 1)
                 .equals(screen.getContentPane())) {
             throw new IllegalStateException("This screen doesn't have any active modals");
         }
-        screen.getRoot().getChildren().remove(size - 1);
+        screen.getRootPane().getChildren().remove(size - 1);
     }
 
     /**
      * Removes all modal content.
      */
     public void removeAllModal() {
-        screen.getRoot().getChildren().remove(
-                screen.getRoot().getChildren().indexOf(screen.getContentPane()) + 1,
-                screen.getRoot().getChildren().size()
+        screen.getRootPane().getChildren().remove(
+                screen.getRootPane().getChildren().indexOf(screen.getContentPane()) + 1,
+                screen.getRootPane().getChildren().size()
         );
     }
 

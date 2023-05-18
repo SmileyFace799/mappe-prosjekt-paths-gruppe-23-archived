@@ -72,8 +72,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     }
 
     @Override
-    public StackPane getRoot() {
-        return (StackPane) super.getRoot();
+    public StackPane getRootPane() {
+        return (StackPane) super.getRootPane();
     }
 
     public BorderPane getContentPane() {
