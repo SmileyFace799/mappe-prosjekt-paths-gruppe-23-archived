@@ -3,13 +3,6 @@ package no.ntnu.idata2001.g23.model.story;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.EmptyArrayException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
-import no.ntnu.idata2001.g23.model.goals.Goal;
-import no.ntnu.idata2001.g23.model.goals.ScoreGoal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,27 +13,25 @@ class StoryTest {
     private Link nextLink;
     private Passage nextPassage;
     private Story validStory;
-    private List<Goal> validGoalList;
 
     @BeforeEach
     void before() {
         nextPassage = new Passage("Next passage", "Test content");
-        nextLink = new Link("Next link", nextPassage.getTitle(), null);
+        nextLink = new Link("Next link", nextPassage.getTitle());
         openingPassage = new Passage("Opening passage", "Test content");
         openingPassage.addLink(nextLink);
         validStory = new Story("Test story", openingPassage);
-        validGoalList = List.of(new ScoreGoal(100));
     }
 
     @Test
     void testCreationOfStoryWithInvalidTitle() {
-        assertThrows(BlankStringException.class, () -> new Story(null, openingPassage));
-        assertThrows(BlankStringException.class, () -> new Story("  ", openingPassage));
+        assertThrows(IllegalArgumentException.class, () -> new Story(null, openingPassage));
+        assertThrows(IllegalArgumentException.class, () -> new Story("  ", openingPassage));
     }
 
     @Test
     void testCreationOfStoryWithNoOpeningPassage() {
-        assertThrows(NullValueException.class, () -> new Story("Test story", null));
+        assertThrows(IllegalArgumentException.class, () -> new Story("Test story", null));
     }
 
     /**
@@ -62,12 +53,12 @@ class StoryTest {
 
     @Test
     void testAdditionOfNullPassage() {
-        assertThrows(NullValueException.class, () -> validStory.addPassage(null));
+        assertThrows(IllegalArgumentException.class, () -> validStory.addPassage(null));
     }
 
     @Test
     void testAdditionOfDuplicatePassage() {
-        assertThrows(DuplicateElementException.class, () -> validStory.addPassage(openingPassage));
+        assertThrows(IllegalArgumentException.class, () -> validStory.addPassage(openingPassage));
     }
 
     /**
@@ -91,7 +82,7 @@ class StoryTest {
 
     @Test
     void testRemovingOfPassageWithNullLink() {
-        assertThrows(NullValueException.class, () -> validStory.removePassage(null));
+        assertThrows(IllegalArgumentException.class, () -> validStory.removePassage(null));
     }
 
     @Test
@@ -104,24 +95,24 @@ class StoryTest {
     void testValidRemovingOfPassage() {
         validStory.addPassage(new Passage("Unlinked passage", "Unlinked content"));
         assertDoesNotThrow(() -> validStory.removePassage(new Link(
-                "Unlinked link", "Unlinked passage", null)));
+                "Unlinked link", "Unlinked passage")));
     }
 
     @Test
     void testGettingOfPassageWithNullLink() {
-        assertThrows(NullValueException.class, () -> validStory.getPassage(null));
+        assertThrows(IllegalArgumentException.class, () -> validStory.getPassage(null));
     }
 
     @Test
     void testGettingOfPassageWithBrokenLink() {
-        assertThrows(ElementNotFoundException.class, () -> validStory.getPassage(nextLink));
+        assertThrows(IllegalArgumentException.class, () -> validStory.getPassage(nextLink));
     }
 
     @Test
     void testGettingBrokenLinks() {
         validStory.addPassage(nextPassage);
         Link brokenLink = new Link(
-                "Broken link", "A non-existant passage", null);
+                "Broken link", "A non-existant passage");
         validStory.getOpeningPassage().addLink(brokenLink);
         assertEquals(List.of(brokenLink), validStory.getBrokenLinks());
     }

@@ -1,8 +1,5 @@
 package no.ntnu.idata2001.g23.model.items;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
-
 /**
  * Any item that can be equipped as a weapon to damage enemies.
  */
@@ -24,11 +21,11 @@ public class Weapon extends Item {
                      String name, String description) {
         super(value, name, description);
         if (baseDamage < 0) {
-            throw new NegativeNumberException("int \"damage\" cannot be negative");
+            throw new IllegalArgumentException("int \"damage\" cannot be negative");
         }
         if (baseCritChance < 0 || baseCritChance > 1) {
-            throw new NumberOutOfRangeException(
-                    "double \"baseCritChance\" cannot be outside the range \"0 <= x <= 1\"");
+            throw new IllegalArgumentException(
+                    "double \"baseCritChance\" cannot be less than 0, or greater than 1");
         }
         this.baseDamage = baseDamage;
         this.baseCritChance = baseCritChance;
@@ -43,19 +40,10 @@ public class Weapon extends Item {
     }
 
     @Override
-    public String getCategory() {
-        return "Weapon";
-    }
-
-    @Override
     public String toString() {
-        return "Value: " + getValue()
-                + "\nSellable: " + isSellable()
-                + "\nName: " + getName()
-                + "\nDescription: " + getDescription()
-                + "\nCategory: " + getCategory()
-                + "\nBase damage: " + baseDamage
-                + "\nBase critical strike chance: " + baseCritChance;
+        return super.toString()
+                + "\nBase damage: " + getBaseDamage()
+                + "\nBase critical strike chance: " + getBaseCritChance();
     }
 
     @Override
@@ -70,21 +58,16 @@ public class Weapon extends Item {
             return false;
         }
         Weapon weapon = (Weapon) obj;
-        return getValue() == weapon.getValue()
-                && getName().equals(weapon.getName())
-                && getDescription().equals(weapon.getDescription())
-                && baseDamage == weapon.getBaseDamage()
-                && baseCritChance == weapon.getBaseCritChance();
+        return super.equals(weapon)
+                && getBaseDamage() == weapon.getBaseDamage()
+                && getBaseCritChance() == weapon.getBaseCritChance();
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + getValue();
-        hash = 31 * hash + getName().hashCode();
-        hash = 31 * hash + getDescription().hashCode();
-        hash = 31 * hash + baseDamage;
-        hash = 31 * hash + Double.hashCode(baseCritChance);
+        int hash = super.hashCode();
+        hash = 31 * hash + Integer.hashCode(getBaseDamage());
+        hash = 31 * hash + Double.hashCode(getBaseCritChance());
         return hash;
     }
 }

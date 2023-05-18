@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 
 /**
  * Stores {@link Supplier}s with instructions on how to make objects,
@@ -40,15 +37,15 @@ public class Provider<T> {
      *
      * @param identifier The unique identifier for the object to be provided
      * @param supplier A supplier that makes the object to be provided
-     * @throws BlankStringException If identifier is {@code null} or blank
-     * @throws NullValueException If supplier is {@code null}
+     * @throws IllegalArgumentException If identifier is {@code null} or blank
+     * @throws IllegalArgumentException If supplier is {@code null}
      */
     public void addProvidable(String identifier, Supplier<T> supplier) {
         if (identifier == null || identifier.isBlank()) {
-            throw new BlankStringException("String \"identifier\" cannot be blank");
+            throw new IllegalArgumentException("String \"identifier\" cannot be blank");
         }
         if (supplier == null) {
-            throw new NullValueException("\"supplier\" cannot be null");
+            throw new IllegalArgumentException("\"supplier\" cannot be null");
         }
         supplierMap.put(identifier, supplier);
     }
@@ -58,11 +55,11 @@ public class Provider<T> {
      *
      * @param identifier The unique identifier for the object to provide
      * @return The provided object
-     * @throws ElementNotFoundException If the identifier is not associated with any object
+     * @throws IllegalArgumentException If the identifier is not associated with any object
      */
     public T provide(String identifier) {
         if (identifier == null || identifier.isBlank() || !supplierMap.containsKey(identifier)) {
-            throw new ElementNotFoundException(
+            throw new IllegalArgumentException(
                     "No object associated with the specified identifier");
         }
         return supplierMap.get(identifier).get();

@@ -1,75 +1,73 @@
 package no.ntnu.idata2001.g23.model.items;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MiscItemTest {
-    private MiscItem validMiscItem;
+class ItemTest {
+    private Item validItem;
 
     @BeforeEach
     void before() {
-        validMiscItem = new MiscItem(500, "Test name", "Test description");
+        validItem = new Item(500, "Test name", "Test description");
     }
 
     @Test
-    void testCreationOfMiscItemWithInvalidValue() {
-        assertThrows(NegativeNumberException.class, () -> new MiscItem(-500,
+    void testCreationOfItemWithInvalidValue() {
+        assertThrows(IllegalArgumentException.class, () -> new Item(-500,
                 "Test name", "Test description"));
     }
 
     @Test
-    void testCreationOfMiscItemWithInvalidName() {
-        assertThrows(BlankStringException.class, () -> new MiscItem(
+    void testCreationOfItemWithInvalidName() {
+        assertThrows(IllegalArgumentException.class, () -> new Item(
                 500, null, "Test description"
         ));
-        assertThrows(BlankStringException.class, () -> new MiscItem(
+        assertThrows(IllegalArgumentException.class, () -> new Item(
                 500, "  ", "Test description"
         ));
     }
 
     @Test
-    void testCreationOfMiscItemWithInvalidDescription() {
-        assertThrows(BlankStringException.class, () -> new MiscItem(
+    void testCreationOfItemWithInvalidDescription() {
+        assertThrows(IllegalArgumentException.class, () -> new Item(
                 500, "Test name", null
         ));
-        assertThrows(BlankStringException.class, () -> new MiscItem(
+        assertThrows(IllegalArgumentException.class, () -> new Item(
                 500, "Test name", "  "
         ));
     }
 
     @Test
-    void testCreationOfMiscItemWithZeroValue() {
-        MiscItem unsellableMiscItem = new MiscItem(0, "Test name", "Test description");
-        assertEquals(0, unsellableMiscItem.getValue());
-        assertFalse(unsellableMiscItem.isSellable());
+    void testCreationOfItemWithZeroValue() {
+        Item unsellableItem = new Item(0, "Test name", "Test description");
+        assertEquals(0, unsellableItem.getValue());
+        assertFalse(unsellableItem.isSellable());
     }
 
     @Test
-    void testCreationOfMiscItemWithValidParameters() {
-        assertEquals(500, validMiscItem.getValue());
-        assertTrue(validMiscItem.isSellable());
-        assertEquals("Test name", validMiscItem.getName());
-        assertEquals("Test description", validMiscItem.getDescription());
+    void testCreationOfItemWithValidParameters() {
+        assertEquals(500, validItem.getValue());
+        assertTrue(validItem.isSellable());
+        assertEquals("Test name", validItem.getName());
+        assertEquals("Test description", validItem.getDescription());
     }
 
     @Test
-    void testMiscItemEquals() {
-        assertEquals(validMiscItem, validMiscItem);
-        assertNotEquals(null, validMiscItem);
-        assertNotEquals(new Object(), validMiscItem);
+    void testItemEquals() {
+        assertEquals(validItem, validItem);
+        assertNotEquals(null, validItem);
+        assertNotEquals(new Object(), validItem);
 
-        assertNotEquals(new MiscItem(250,
-                "Test name", "Test description"), validMiscItem);
-        assertNotEquals(new MiscItem(500,
-                "Different name", "Test description"), validMiscItem);
-        assertNotEquals(new MiscItem(500,
-                "Test name", "Different description"), validMiscItem);
+        assertNotEquals(new Item(250,
+                "Test name", "Test description"), validItem);
+        assertNotEquals(new Item(500,
+                "Different name", "Test description"), validItem);
+        assertNotEquals(new Item(500,
+                "Test name", "Different description"), validItem);
 
-        assertEquals(new MiscItem(500,
-                "Test name", "Test description"), validMiscItem);
+        assertEquals(new Item(500,
+                "Test name", "Test description"), validItem);
     }
 
 }

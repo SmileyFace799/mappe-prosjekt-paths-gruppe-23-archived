@@ -9,7 +9,6 @@ import no.ntnu.idata2001.g23.model.goals.HealthGoal;
 import no.ntnu.idata2001.g23.model.goals.InventoryGoal;
 import no.ntnu.idata2001.g23.model.goals.ScoreGoal;
 import no.ntnu.idata2001.g23.model.items.Item;
-import no.ntnu.idata2001.g23.model.items.MiscItem;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +23,9 @@ class GoalLoaderTest {
     void before() {
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Test Item", () ->
-                new MiscItem(500, "Test Item", "Test description"));
+                new Item(500, "Test Item", "Test description"));
         itemProvider.addProvidable("Other Item", () ->
-                new MiscItem(500, "Other Item", "Other description"));
+                new Item(500, "Other Item", "Other description"));
         difficulty = "Test";
         goalLoader = new GoalLoader(itemProvider, difficulty);
     }

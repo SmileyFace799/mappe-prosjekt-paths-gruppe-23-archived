@@ -2,8 +2,6 @@ package no.ntnu.idata2001.g23.model.misc;
 
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.items.Item;
 
 /**
@@ -61,7 +59,7 @@ public class Inventory {
      */
     public void addItem(Item item) {
         if (item == null) {
-            throw new NullValueException("\"item\" cannot be null");
+            throw new IllegalArgumentException("\"item\" cannot be null");
         }
         contents.add(item);
     }
@@ -70,11 +68,11 @@ public class Inventory {
      * Removes an item from the inventory.
      *
      * @param item The item to remove
-     * @throws ElementNotFoundException If the item to remove is not present in the inventory
+     * @throws IllegalArgumentException If the item to remove is not present in the inventory
      */
     public void removeItem(Item item) {
         if (item == null || !contents.contains(item)) {
-            throw new ElementNotFoundException("\"item\" is not present in the inventory");
+            throw new IllegalArgumentException("\"item\" is not present in the inventory");
         }
         contents.remove(item);
     }

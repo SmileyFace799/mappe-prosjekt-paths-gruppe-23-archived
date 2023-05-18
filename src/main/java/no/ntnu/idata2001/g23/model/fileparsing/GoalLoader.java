@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.model.goals.Goal;
 import no.ntnu.idata2001.g23.model.goals.GoldGoal;
 import no.ntnu.idata2001.g23.model.goals.HealthGoal;
@@ -48,7 +47,7 @@ public class GoalLoader {
                         CorruptFileException.Type.GOAL_INVALID_TYPE,
                         lineNumber, goalType);
             }
-        } catch (IllegalArgumentException | ElementNotFoundException e) {
+        } catch (IllegalArgumentException iae) {
             throw new CorruptFileException(CorruptFileException.Type.GOAL_INVALID_VALUE,
                     lineNumber, goalValue);
         }

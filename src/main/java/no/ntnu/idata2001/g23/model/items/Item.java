@@ -1,12 +1,9 @@
 package no.ntnu.idata2001.g23.model.items;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
-
 /**
  * Any item that can be stored in some inventory.
  */
-public abstract class Item {
+public class Item {
     private final int value;
     private final String name;
     private final String description;
@@ -19,15 +16,15 @@ public abstract class Item {
      * @param name        The item's name.
      * @param description The item's description.
      */
-    protected Item(int value, String name, String description) {
+    public Item(int value, String name, String description) {
         if (value < 0) {
-            throw new NegativeNumberException("int \"value\" cannot be negative");
+            throw new IllegalArgumentException("int \"value\" cannot be negative");
         }
         if (name == null || name.isBlank()) {
-            throw new BlankStringException("String \"name\" cannot be null or blank");
+            throw new IllegalArgumentException("String \"name\" cannot be null or blank");
         }
         if (description == null || description.isBlank()) {
-            throw new BlankStringException("String \"description\" cannot be null or blank");
+            throw new IllegalArgumentException("String \"description\" cannot be null or blank");
         }
         this.value = value;
         this.name = name;
@@ -50,16 +47,12 @@ public abstract class Item {
         return description;
     }
 
-    //TODO: Possibly remove this, obsolete?
-    public abstract String getCategory();
-
     @Override
     public String toString() {
-        return "Value: " + value
+        return "Value: " + getValue()
                 + "\nSellable: " + isSellable()
-                + "\nName: " + name
-                + "\nDescription: " + description
-                + "\nCategory: " + getCategory();
+                + "\nName: " + getName()
+                + "\nDescription: " + getDescription();
     }
 
     @Override
@@ -74,17 +67,17 @@ public abstract class Item {
             return false;
         }
         Item item = (Item) obj;
-        return value == item.getValue()
-                && name.equals(item.getName())
-                && description.equals(item.getDescription());
+        return getValue() == item.getValue()
+                && getName().equals(item.getName())
+                && getDescription().equals(item.getDescription());
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + value;
-        hash = 31 * hash + name.hashCode();
-        hash = 31 * hash + description.hashCode();
+        hash = 31 * hash + Integer.hashCode(getValue());
+        hash = 31 * hash + getName().hashCode();
+        hash = 31 * hash + getDescription().hashCode();
         return hash;
     }
 }

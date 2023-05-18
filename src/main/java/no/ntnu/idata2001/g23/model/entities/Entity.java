@@ -1,7 +1,5 @@
 package no.ntnu.idata2001.g23.model.entities;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.misc.Inventory;
@@ -28,7 +26,7 @@ public abstract class Entity {
      */
     protected Entity(String name, int maxHealth, int score, int gold) {
         if (name == null || name.isBlank()) {
-            throw new BlankStringException("Name cannot be null or blank");
+            throw new IllegalArgumentException("Name cannot be null or blank");
         }
         this.name = name;
         this.maxHealth = maxHealth;
@@ -139,7 +137,7 @@ public abstract class Entity {
      * Uses an item in the entity's inventory. Using the item also consumes it.
      *
      * @param item The item to use. Must exist in the entity's inventory
-     * @throws ElementNotFoundException If the specified item is not in the entity's inventory
+     * @throws IllegalArgumentException If the specified item is not in the entity's inventory
      * @see UsableItem
      */
     public void useItem(UsableItem item) {
@@ -147,20 +145,7 @@ public abstract class Entity {
             item.use(this);
             getInventory().removeItem(item);
         } else {
-            throw new ElementNotFoundException("\"item\" is not in the entity's inventory");
-        }
-    }
-
-    /**
-     * Assigns a weapon for the entity to use during combat.
-     *
-     * @param inventoryIndex The index of the weapon in the inventory
-     */
-    public void equipWeapon(int inventoryIndex) {
-        if (inventory.getItem(inventoryIndex) instanceof Weapon weapon) {
-            equippedWeapon = weapon;
-        } else {
-            throw new ElementNotFoundException("No weapon found at the provided index");
+            throw new IllegalArgumentException("\"item\" is not in the entity's inventory");
         }
     }
 

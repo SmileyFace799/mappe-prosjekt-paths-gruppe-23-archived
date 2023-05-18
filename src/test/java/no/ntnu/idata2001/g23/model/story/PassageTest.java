@@ -1,9 +1,5 @@
 package no.ntnu.idata2001.g23.model.story;
 
-import java.util.ArrayList;
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -16,19 +12,19 @@ class PassageTest {
     @BeforeEach
     public void before() {
         validPassage = new Passage("Test title", "Test content");
-        link = new Link("Test text", "Test reference", new ArrayList<>());
+        link = new Link("Test text", "Test reference");
     }
 
     @Test
     void testCreationOfPassageWithInvalidTitle() {
-        assertThrows(BlankStringException.class, () -> new Passage(null, "Test content"));
-        assertThrows(BlankStringException.class, () -> new Passage("  ", "Test content"));
+        assertThrows(IllegalArgumentException.class, () -> new Passage(null, "Test content"));
+        assertThrows(IllegalArgumentException.class, () -> new Passage("  ", "Test content"));
     }
 
     @Test
     void testCreationOfPassageWithInvalidContent() {
-        assertThrows(BlankStringException.class, () -> new Passage("Test title", null));
-        assertThrows(BlankStringException.class, () -> new Passage("Test title", "  "));
+        assertThrows(IllegalArgumentException.class, () -> new Passage("Test title", null));
+        assertThrows(IllegalArgumentException.class, () -> new Passage("Test title", "  "));
     }
 
     @Test
@@ -58,13 +54,13 @@ class PassageTest {
 
     @Test
     void testAdditonofNullLink() {
-        assertThrows(NullValueException.class, () -> validPassage.addLink(null));
+        assertThrows(IllegalArgumentException.class, () -> validPassage.addLink(null));
     }
 
     @Test
     void testAdditionOfDuplicateLink() {
         validPassage.addLink(link);
-        assertThrows(DuplicateElementException.class, () -> validPassage.addLink(link));
+        assertThrows(IllegalArgumentException.class, () -> validPassage.addLink(link));
     }
 
     /**

@@ -7,13 +7,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
 
 /**
  * A factory class for loading textures.
  */
 public class TxLoader {
-    private static final Image defaultTexture = makeDefaultTexture();
+    private static final Image DEFAULT_TEXTURE = makeDefaultTexture();
 
     private TxLoader() {
         throw new IllegalStateException("Do not instantiate this class pls :)");
@@ -39,9 +38,7 @@ public class TxLoader {
         Image image;
         InputStream is = TxLoader.class.getResourceAsStream(filePath);
         if (is == null) {
-            image = defaultTexture;
-            System.out.println(
-                    "WARNING: Couldn't find image \"" + filePath + "\", loading default texture");
+            image = DEFAULT_TEXTURE;
         } else {
             image = new Image(is);
         }
@@ -57,7 +54,7 @@ public class TxLoader {
      * @param preserveRatio If the image should preserve its aspect ratio.
      * @return The loaded image file as a viewable image. If the image cannot be loaded,
      *         this returns a default texture
-     * @throws NegativeNumberException  If {@code width} & {@code height} is less than 0.
+     * @throws IllegalArgumentException  If {@code width} & {@code height} is less than 0.
      * @throws IllegalArgumentException If {@code preserveRatio == true},
      *                                  but both {@code width} & {@code height} are not 0.
      */
@@ -65,10 +62,10 @@ public class TxLoader {
             String filePath, double width, double height, boolean preserveRatio
     ) {
         if (width < 0) {
-            throw new NegativeNumberException("int \"width\" cannot be less than 0");
+            throw new IllegalArgumentException("int \"width\" cannot be less than 0");
         }
         if (height < 0) {
-            throw new NegativeNumberException("int \"height\" cannot be less than 0");
+            throw new IllegalArgumentException("int \"height\" cannot be less than 0");
         }
         if (preserveRatio && width != 0 && height != 0) {
             throw new IllegalArgumentException(
@@ -98,7 +95,7 @@ public class TxLoader {
      */
     public static ImageView getIcon(String filePath, double size) {
         ImageView icon = getImageView(filePath, size, size, false);
-        if (!defaultTexture.equals(icon.getImage())) {
+        if (!DEFAULT_TEXTURE.equals(icon.getImage())) {
             ColorAdjust colorAdjust = new ColorAdjust();
             colorAdjust.setBrightness(1); //Makes the icon fully white
             icon.setEffect(colorAdjust);

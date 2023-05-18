@@ -6,7 +6,6 @@ import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
 import no.ntnu.idata2001.g23.model.actions.ScoreAction;
 import no.ntnu.idata2001.g23.model.items.Item;
-import no.ntnu.idata2001.g23.model.items.MiscItem;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ class ActionParserTest {
     void before() {
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Test item", () ->
-                new MiscItem(500, "Test Item", "Test description"));
+                new Item(500, "Test Item", "Test description"));
     }
 
     /**

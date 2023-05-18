@@ -2,13 +2,11 @@ package no.ntnu.idata2001.g23.model.fileparsing;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 import no.ntnu.idata2001.g23.model.items.Item;
-import no.ntnu.idata2001.g23.model.items.MiscItem;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.model.story.Story;
@@ -24,7 +22,7 @@ class StoryLoaderTest {
     void before() {
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Test item", () ->
-                new MiscItem(500, "Test Item", "Test description"));
+                new Item(500, "Test Item", "Test description"));
         this.storyLoader = new StoryLoader(itemProvider);
     }
 
@@ -72,26 +70,29 @@ class StoryLoaderTest {
         Passage openingPassage = new Passage("Beginnings", "You are in a small, "
                 + "dimly lit room. There is a door in front of you."
                 + "\nThere is also an entrance behind you.");
-        openingPassage.addLink(new Link(
-                "Try to open the door", "Another room", null
-        ));
-        openingPassage.addLink(new Link("Go behind you", "Test room", List.of(
-                new InventoryAction(itemProvider.provide("Test item")),
-                new GoldAction(500)
-        )));
+
+        openingPassage.addLink(new Link("Try to open the door", "Another room"));
+
+        Link openingPassageTestRoom = new Link("Go behind you", "Test room");
+        openingPassageTestRoom.addAction(new InventoryAction(itemProvider.provide("Test item")));
+        openingPassageTestRoom.addAction(new GoldAction(500));
+        openingPassage.addLink(openingPassageTestRoom);
+
         Story validStory = new Story("Haunted House", openingPassage);
 
         Passage anotherPassage = new Passage("Another room",
                 "The door opens to another room. You have reached the end of the game, "
                         + "there is no other option than going back.");
-        anotherPassage.addLink(new Link("Back", "Beginnings", null));
+        anotherPassage.addLink(new Link("Back", "Beginnings"));
         validStory.addPassage(anotherPassage);
 
         Passage yetAnotherPassage = new Passage("Test room",
                 "Wowie, you found the debug area!");
-        yetAnotherPassage.addLink(new Link("Back", "Beginnings",
-                List.of(new HealthAction(-5))));
         validStory.addPassage(yetAnotherPassage);
+
+        Link yetAnotherPassageBeginnings = new Link("Back", "Beginnings");
+        yetAnotherPassageBeginnings.addAction(new HealthAction(-5));
+        yetAnotherPassage.addLink(yetAnotherPassageBeginnings);
 
         validStory.addPassage(new Passage("Link-less room",
                 "You are now soft-locked :D"));

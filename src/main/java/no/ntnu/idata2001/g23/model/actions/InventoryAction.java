@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.model.actions;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.items.Item;
 
@@ -17,7 +16,7 @@ public class InventoryAction implements Action {
      */
     public InventoryAction(Item item) {
         if (item == null) {
-            throw new NullValueException("\"item\" cannot be null");
+            throw new IllegalArgumentException("\"item\" cannot be null");
         }
         this.item = item;
     }

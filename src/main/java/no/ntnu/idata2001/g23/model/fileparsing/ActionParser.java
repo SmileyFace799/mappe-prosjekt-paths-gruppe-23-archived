@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.model.fileparsing;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
@@ -49,7 +48,7 @@ public class ActionParser {
                 default -> throw new CorruptFileException(
                         CorruptFileException.Type.ACTION_INVALID_TYPE, lineNumber, actionType);
             }
-        } catch (NumberFormatException | ElementNotFoundException e) {
+        } catch (IllegalArgumentException iae) {
             throw new CorruptFileException(CorruptFileException.Type.ACTION_INVALID_VALUE,
                     lineNumber, actionValue);
         }

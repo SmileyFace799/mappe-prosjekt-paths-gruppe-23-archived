@@ -1,8 +1,5 @@
 package no.ntnu.idata2001.g23.model.items.weapons;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NegativeNumberException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NumberOutOfRangeException;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +16,7 @@ class WeaponTest {
 
     @Test
     void testCreationOfWeaponWithInvalidBaseDamage() {
-        assertThrows(NegativeNumberException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 -5, 0.25, 500,
                 "Test name", "Test description"
         ));
@@ -27,11 +24,11 @@ class WeaponTest {
 
     @Test
     void testCreationOfWeaponWithInvalidBaseCritChance() {
-        assertThrows(NumberOutOfRangeException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, -0.25, 500,
                 "Test name", "Test description"
         ));
-        assertThrows(NumberOutOfRangeException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, 1.25, 500,
                 "Test name", "Test description"
         ));
@@ -39,18 +36,18 @@ class WeaponTest {
 
     @Test
     void testCreationOfWeaponWithInvalidValue() {
-        assertThrows(NegativeNumberException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, 0.25, -500,
                 "Test name", "Test description"));
     }
 
     @Test
     void testCreationOfWeaponWithInvalidName() {
-        assertThrows(BlankStringException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, 0.25, 500,
                 null, "Test description"
         ));
-        assertThrows(BlankStringException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, 0.25, 500,
                 "  ", "Test description"
         ));
@@ -58,11 +55,11 @@ class WeaponTest {
 
     @Test
     void testCreationOfWeaponWithInvalidDescription() {
-        assertThrows(BlankStringException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, 0.25, 500,
                 "Test name", null
         ));
-        assertThrows(BlankStringException.class, () -> new Weapon(
+        assertThrows(IllegalArgumentException.class, () -> new Weapon(
                 5, 0.25, 500,
                 "Test name", "  "
         ));

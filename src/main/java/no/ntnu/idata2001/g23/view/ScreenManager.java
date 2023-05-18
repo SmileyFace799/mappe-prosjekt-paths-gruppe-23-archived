@@ -2,7 +2,6 @@ package no.ntnu.idata2001.g23.view;
 
 import java.util.Collection;
 import java.util.Set;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.GenericScreen;
 import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
@@ -54,7 +53,7 @@ public class ScreenManager {
      * @param screenClass The class of the screen to get
      * @param <S>        The screen type
      * @return The screen of the type that belongs to the provided class
-     * @throws ElementNotFoundException If the screen class passed has not been initialized yet
+     * @throws IllegalArgumentException If the screen class passed has not been initialized yet
      */
     public <S extends GenericScreen> S getScreen(
             Class<S> screenClass
@@ -63,7 +62,7 @@ public class ScreenManager {
                 .stream()
                 .filter(screen -> screen.getClass() == screenClass)
                 .findFirst()
-                .orElseThrow(() -> new ElementNotFoundException("This screen hasn't been made yet")
+                .orElseThrow(() -> new IllegalArgumentException("This screen hasn't been made yet")
                 ));
     }
 }

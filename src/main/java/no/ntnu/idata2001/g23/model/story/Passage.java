@@ -2,9 +2,6 @@ package no.ntnu.idata2001.g23.model.story;
 
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 
 /**
  * A smaller part/segment of a story.
@@ -22,10 +19,10 @@ public class Passage {
      */
     public Passage(String title, String content) {
         if (title == null || title.isBlank()) {
-            throw new BlankStringException("String \"title\" cannot be null or blank");
+            throw new IllegalArgumentException("String \"title\" cannot be null or blank");
         }
         if (content == null || content.isBlank()) {
-            throw new BlankStringException("String \"Content\" cannot be null or blank");
+            throw new IllegalArgumentException("String \"Content\" cannot be null or blank");
         }
         this.title = title;
         this.content = content;
@@ -46,12 +43,12 @@ public class Passage {
      */
     public void addLink(Link link) {
         if (link == null) {
-            throw new NullValueException("\"link\" cannot be null");
+            throw new IllegalArgumentException("\"link\" cannot be null");
         }
         if (!links.contains(link)) {
             links.add(link);
         } else {
-            throw new DuplicateElementException("Link \"" + link.getText()
+            throw new IllegalArgumentException("Link \"" + link.getText()
                     + "\" is already added to the passage");
         }
     }

@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.middleman.events.AttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
@@ -75,7 +73,7 @@ public class GameplayManager {
         this.game = game;
         if (startPassage != null) {
             if (!game.getStory().getPassages().contains(startPassage)) {
-                throw new ElementNotFoundException("The story does not contain the start passage");
+                throw new IllegalArgumentException("The story does not contain the start passage");
             }
             currentPassage = startPassage;
         } else {
@@ -88,11 +86,11 @@ public class GameplayManager {
      * Updates the current passage to the passage associated with the provided link.
      *
      * @param link The link associated with the passage to move to
-     * @throws NullValueException If {@code link} is {@code null}
+     * @throws IllegalArgumentException If {@code link} is {@code null}
      */
     public void movePassage(Link link) {
         if (link == null) {
-            throw new NullValueException("\"link\" cannot be null");
+            throw new IllegalArgumentException("\"link\" cannot be null");
         }
         this.currentPassage = game.go(link);
         notifyListeners(new ChangePassageEvent(currentPassage));

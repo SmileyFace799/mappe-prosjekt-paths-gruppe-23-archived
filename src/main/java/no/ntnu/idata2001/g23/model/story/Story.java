@@ -4,10 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.ntnu.idata2001.g23.exceptions.unchecked.BlankStringException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.DuplicateElementException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.ElementNotFoundException;
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 
 /**
  * A story containing passages for the player to navigate through,
@@ -26,10 +22,10 @@ public class Story {
      */
     public Story(String title, Passage openingPassage) {
         if (title == null || title.isBlank()) {
-            throw new BlankStringException("String \"title\" cannot be null or blank");
+            throw new IllegalArgumentException("String \"title\" cannot be null or blank");
         }
         if (openingPassage == null) {
-            throw new NullValueException("Passage \"openingPassage\" cannot be null");
+            throw new IllegalArgumentException("Passage \"openingPassage\" cannot be null");
         }
         this.title = title;
         this.openingPassage = openingPassage;
@@ -57,13 +53,13 @@ public class Story {
      */
     public void addPassage(Passage passage) {
         if (passage == null) {
-            throw new NullValueException("\"passage\" cannot be null");
+            throw new IllegalArgumentException("\"passage\" cannot be null");
         }
         if (getPassages().contains(passage)) {
-            throw new DuplicateElementException("Passage \"" + passage.getTitle()
+            throw new IllegalArgumentException("Passage \"" + passage.getTitle()
                     + "\" is already added to the story");
         }
-        passages.put(new Link(passage.getTitle(), passage.getTitle(), null), passage);
+        passages.put(new Link(passage.getTitle(), passage.getTitle()), passage);
     }
 
     /**
@@ -73,7 +69,7 @@ public class Story {
      */
     public void removePassage(Link link) {
         if (link == null) {
-            throw new NullValueException("\"link\" cannot be null");
+            throw new IllegalArgumentException("\"link\" cannot be null");
         }
         if (getPassages()
                 .stream()
@@ -94,10 +90,10 @@ public class Story {
      */
     public Passage getPassage(Link link) {
         if (link == null) {
-            throw new NullValueException("\"link\" cannot be null");
+            throw new IllegalArgumentException("\"link\" cannot be null");
         }
         if (!passages.containsKey(link)) {
-            throw new ElementNotFoundException("No passage found for reference \""
+            throw new IllegalArgumentException("No passage found for reference \""
                     + link.getReference() + "\"");
         }
         return passages.get(link);

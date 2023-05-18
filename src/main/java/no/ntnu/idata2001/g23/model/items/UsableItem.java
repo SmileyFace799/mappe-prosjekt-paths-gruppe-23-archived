@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.model.items;
 
-import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 
@@ -21,18 +20,19 @@ public class UsableItem extends Item {
     public UsableItem(int value, String name, String description, Action onUse) {
         super(value, name, description);
         if (onUse == null) {
-            throw new NullValueException("Action \"onUse\" cannot be null");
+            throw new IllegalArgumentException("Action \"onUse\" cannot be null");
         }
         this.onUse = onUse;
     }
 
-    @Override
-    public String getCategory() {
-        return "Usable item";
-    }
-
     public void use(Entity entity) {
         onUse.execute(entity);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nOn use: " + onUse.toString();
     }
 
     @Override
@@ -47,18 +47,13 @@ public class UsableItem extends Item {
             return false;
         }
         UsableItem usableItem = (UsableItem) obj;
-        return getValue() == usableItem.getValue()
-                && getName().equals(usableItem.getName())
-                && getDescription().equals(usableItem.getDescription())
+        return super.equals(usableItem)
                 && onUse.equals(usableItem.onUse);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + Integer.hashCode(getValue());
-        hash = 31 * hash + getName().hashCode();
-        hash = 31 * hash + getDescription().hashCode();
+        int hash = super.hashCode();
         hash = 31 * hash + onUse.hashCode();
         return hash;
     }

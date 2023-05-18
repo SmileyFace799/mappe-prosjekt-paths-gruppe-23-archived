@@ -50,7 +50,11 @@ public class StoryLoader {
                     splitLinkData[0].substring(1), lineNumber, itemProvider));
             rawLinkData = splitLinkData[1].trim();
         }
-        return new Link(linkText, linkReference, linkActions);
+        Link link = new Link(linkText, linkReference);
+        for (Action linkAction : linkActions) {
+            link.addAction(linkAction);
+        }
+        return link;
     }
 
     private Passage parsePassage(String passageTitle, LineNumberReader fileReader)
