@@ -6,8 +6,8 @@ import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.actions.InventoryAction;
 import no.ntnu.idata2001.g23.model.actions.ScoreAction;
-import no.ntnu.idata2001.g23.model.misc.Provider;
 import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.misc.Provider;
 
 /**
  * Utility class for parsing actions.

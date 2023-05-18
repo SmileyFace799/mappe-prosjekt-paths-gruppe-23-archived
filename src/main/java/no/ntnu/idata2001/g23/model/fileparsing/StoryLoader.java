@@ -14,7 +14,7 @@ import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.model.story.Story;
 
 /**
- * A class for loading stories from files.
+ * Loads a story from a {@code .paths}-file.
  */
 public class StoryLoader {
     private final Provider<Item> itemProvider;

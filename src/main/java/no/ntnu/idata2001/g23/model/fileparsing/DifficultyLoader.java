@@ -7,16 +7,22 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Loads difficulties from a {@code .difficulties}-file.
+ */
 public class DifficultyLoader {
     private DifficultyLoader() {
         throw new IllegalStateException("Do not instantiate this class pls :)");
     }
 
     /**
-     * TODO: javadoc & unit testing
-     * @param fileReader
-     * @return
-     * @throws CorruptFileException
+     * TODO: Unit testing.
+     * Parses difficulties from a {@link LineNumberReader},
+     * and returns a {@link List} of every difficulty in the game.
+     *
+     * @param fileReader A {@link LineNumberReader} that contains some difficulties.
+     * @return A {@link List} of every difficulty in the game
+     * @throws CorruptFileException If the difficulties could not be parsed
      */
     public static List<String> parseDifficulties(LineNumberReader fileReader)
             throws CorruptFileException {
@@ -36,11 +42,12 @@ public class DifficultyLoader {
     }
 
     /**
-     * TODO: javadoc
+     * Loads difficulties from a {@code .difficulties}-file,
+     * and returns a {@link List} of every difficulty in the game.
      *
-     * @param difficultiesFilePath
-     * @return
-     * @throws CorruptFileException
+     * @param difficultiesFilePath The file path of the difficulties to load
+     * @return A {@link List} of every difficulty in the game
+     * @throws CorruptFileException If the difficulties could not be loaded
      */
     public static List<String> loadDifficulties(Path difficultiesFilePath)
             throws CorruptFileException {

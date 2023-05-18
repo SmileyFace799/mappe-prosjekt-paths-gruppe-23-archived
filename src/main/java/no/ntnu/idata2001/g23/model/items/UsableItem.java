@@ -4,6 +4,9 @@ import no.ntnu.idata2001.g23.exceptions.unchecked.NullValueException;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 
+/**
+ * An item that can be used & consumed upon use.
+ */
 public class UsableItem extends Item {
     private final Action onUse;
 

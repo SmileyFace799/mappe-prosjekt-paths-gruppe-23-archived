@@ -20,6 +20,11 @@ public class PlayGameScreen extends GenericScreen implements GameUpdateListener 
     private final PlayGameController controller;
     private Button continueStory;
 
+    /**
+     * Makes the play game screen.
+     *
+     * @param application The application instance to give to the controller
+     */
     public PlayGameScreen(DungeonApp application) {
         super();
         controller = new PlayGameController(application);

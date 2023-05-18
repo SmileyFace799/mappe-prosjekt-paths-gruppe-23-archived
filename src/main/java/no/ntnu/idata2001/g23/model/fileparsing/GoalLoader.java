@@ -16,7 +16,7 @@ import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 
 /**
- * A class for loading & parsing goals from files.
+ * Loads goals from a {@code .goals}-file.
  */
 public class GoalLoader {
     private final Provider<Item> itemProvider;
@@ -56,11 +56,13 @@ public class GoalLoader {
     }
 
     /**
-     * TODO: javadoc, unit testing of this
+     * TODO: Unit testing.
+     * Parses goals from a {@link LineNumberReader},
+     * and returns a {@link List} of every goal associated with the goal loader's difficulty.
      *
-     * @param fileReader
-     * @return
-     * @throws CorruptFileException
+     * @param fileReader A {@link LineNumberReader} that contains some goals.
+     * @return A {@link List} of every goal associated with the goal loader's difficulty
+     * @throws CorruptFileException If the goals could not be parsed
      */
     public List<Goal> parseGoals(LineNumberReader fileReader)
             throws CorruptFileException {
@@ -91,11 +93,12 @@ public class GoalLoader {
     }
 
     /**
-     * TODO: javadoc
+     * Loads goals from a {@code .goals}-file,
+     * and returns a {@link List} of every goal associated with the goal loader's difficulty.
      *
-     * @param goalsFilePath
-     * @return
-     * @throws CorruptFileException
+     * @param goalsFilePath The file path of the goals to load
+     * @return A {@link List} of every goal associated with the goal loader's difficulty
+     * @throws CorruptFileException If the goals could not be loaded
      */
     public List<Goal> loadGoals(Path goalsFilePath)
             throws CorruptFileException {
