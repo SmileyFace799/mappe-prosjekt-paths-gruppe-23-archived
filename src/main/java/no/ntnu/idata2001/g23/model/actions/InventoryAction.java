@@ -26,6 +26,12 @@ public class InventoryAction implements Action {
         entity.getInventory().addItem(item);
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is an inventory action with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -41,6 +47,11 @@ public class InventoryAction implements Action {
         return item.equals(inventoryAction.item);
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the inventory action, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;

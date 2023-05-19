@@ -113,6 +113,12 @@ public class Story {
                 .toList();
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a story with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -127,10 +133,15 @@ public class Story {
 
         Story story = (Story) obj;
         return title.equals(story.title)
-                && getOpeningPassage().equals(story.getOpeningPassage())
+                && openingPassage.equals(story.openingPassage)
                 && passages.equals(story.passages);
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the story, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;

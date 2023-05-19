@@ -55,6 +55,12 @@ public class Item {
                 + "\nDescription: " + getDescription();
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a item with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -67,17 +73,22 @@ public class Item {
             return false;
         }
         Item item = (Item) obj;
-        return getValue() == item.getValue()
-                && getName().equals(item.getName())
-                && getDescription().equals(item.getDescription());
+        return value == item.value
+                && name.equals(item.name)
+                && description.equals(item.description);
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the item, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Integer.hashCode(getValue());
-        hash = 31 * hash + getName().hashCode();
-        hash = 31 * hash + getDescription().hashCode();
+        hash = 31 * hash + Integer.hashCode(value);
+        hash = 31 * hash + name.hashCode();
+        hash = 31 * hash + description.hashCode();
         return hash;
     }
 }

@@ -37,7 +37,7 @@ public class Enemy extends Entity implements Actor {
         super(name, maxHealth, score, gold);
         if (itemDropChance < 0 || itemDropChance > 1) {
             throw new IllegalArgumentException(
-                    "double \"itemDropChance\" must be a number between 0 and 1 (inclusive)");
+                    "double \"itemDropChance\" cannot be less than 0 or greater than 1");
         }
         this.itemDropChance = itemDropChance;
         this.canDropWeapon = canDropWeapon;
@@ -78,6 +78,43 @@ public class Enemy extends Entity implements Actor {
             actions.put(new HealthAction(-weapon.getBaseDamage()), List.of(target));
         }
         return actions;
+    }
+
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is ae enemy action with matching parameters
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Enemy enemy = (Enemy) obj;
+        return super.equals(obj)
+                && itemDropChance == enemy.itemDropChance
+                && canDropWeapon == enemy.canDropWeapon;
+    }
+
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the enemy, using all its parameters
+     */
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 31 * hash + Double.hashCode(itemDropChance);
+        hash = 31 * hash + Boolean.hashCode(canDropWeapon);
+        return hash;
     }
 
     /**

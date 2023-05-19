@@ -26,6 +26,12 @@ public class ScoreGoal implements Goal {
         return player.getScore() >= minimumPoints;
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a score goal with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -41,6 +47,11 @@ public class ScoreGoal implements Goal {
         return Objects.equals(minimumPoints, scoreGoal.minimumPoints);
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the score goal, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;

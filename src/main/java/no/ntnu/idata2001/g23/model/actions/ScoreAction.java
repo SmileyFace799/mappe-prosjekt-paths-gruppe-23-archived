@@ -17,6 +17,12 @@ public class ScoreAction implements Action {
         entity.changeScore(points);
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a score action with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -32,6 +38,11 @@ public class ScoreAction implements Action {
         return points == scoreAction.points;
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the score action, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;

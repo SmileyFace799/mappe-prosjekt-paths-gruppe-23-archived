@@ -87,8 +87,8 @@ public class Link {
     /**
      * Test for content equality between two objects.
      *
-     * @param obj The object to compare to this one.
-     * @return True if the argument object is a link with matching reference.
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a link with matching reference
      */
     @Override
     public boolean equals(Object obj) {
@@ -103,7 +103,7 @@ public class Link {
         }
 
         Link link = (Link) obj;
-        return getReference().equals(link.getReference());
+        return reference.equals(link.reference);
     }
 
     /**
@@ -114,7 +114,7 @@ public class Link {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 37 * result + getReference().hashCode();
+        result = 37 * result + reference.hashCode();
         return result;
     }
 }

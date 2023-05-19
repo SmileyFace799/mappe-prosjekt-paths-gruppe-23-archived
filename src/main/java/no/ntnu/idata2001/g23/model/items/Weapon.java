@@ -46,6 +46,12 @@ public class Weapon extends Item {
                 + "\nBase critical strike chance: " + getBaseCritChance();
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a weapon with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -59,15 +65,20 @@ public class Weapon extends Item {
         }
         Weapon weapon = (Weapon) obj;
         return super.equals(weapon)
-                && getBaseDamage() == weapon.getBaseDamage()
-                && getBaseCritChance() == weapon.getBaseCritChance();
+                && baseDamage == weapon.baseDamage
+                && baseCritChance == weapon.baseCritChance;
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the weapon, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 31 * hash + Integer.hashCode(getBaseDamage());
-        hash = 31 * hash + Double.hashCode(getBaseCritChance());
+        hash = 31 * hash + Integer.hashCode(baseDamage);
+        hash = 31 * hash + Double.hashCode(baseCritChance);
         return hash;
     }
 }

@@ -27,6 +27,12 @@ public class InventoryGoal implements Goal {
         return player.getInventory().hasItem(mandatoryItem);
     }
 
+    /**
+     * Test for content equality between two objects.
+     *
+     * @param obj The object to compare to this one
+     * @return True if the argument object is an inventory goal with matching parameters
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -42,6 +48,11 @@ public class InventoryGoal implements Goal {
         return Objects.equals(mandatoryItem, inventoryGoal.mandatoryItem);
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the inventory goal, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;

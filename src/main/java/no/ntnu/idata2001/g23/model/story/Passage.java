@@ -78,11 +78,10 @@ public class Passage {
     }
 
     /**
-     * Checks if another object equals this passage.
+     * Test for content equality between two objects.
      *
-     * @param obj The object to check if equals this passage.
-     * @return True if checked object is an instance of passage,
-     *         with matching title, content & links.
+     * @param obj The object to compare to this one
+     * @return True if the argument object is a passage with matching parameters
      */
     @Override
     public boolean equals(Object obj) {
@@ -96,11 +95,16 @@ public class Passage {
             return false;
         }
         Passage passage = (Passage) obj;
-        return title.equals(passage.getTitle())
-                && content.equals(passage.getContent())
-                && links.equals(passage.getLinks());
+        return title.equals(passage.title)
+                && content.equals(passage.content)
+                && links.equals(passage.links);
     }
 
+    /**
+     * Compute a hashCode using the rules found in "Effective java" by Joshua Bloch.
+     *
+     * @return A hashCode for the passage, using all its parameters
+     */
     @Override
     public int hashCode() {
         int hash = 7;
