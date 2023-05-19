@@ -47,8 +47,12 @@ public class Item {
         return description;
     }
 
-    @Override
-    public String toString() {
+    /**
+     * Gets all the item's details in a multiline string.
+     *
+     * @return The item's details
+     */
+    public String getDetails() {
         return "Value: " + getValue()
                 + "\nSellable: " + isSellable()
                 + "\nName: " + getName()

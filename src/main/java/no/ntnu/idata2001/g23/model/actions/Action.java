@@ -7,4 +7,11 @@ import no.ntnu.idata2001.g23.model.entities.Entity;
  */
 public interface Action {
     void execute(Entity entity);
+
+    /**
+     * A detailed string that describes what the action does.
+     *
+     * @return Details about the action
+     */
+    String getDetails();
 }

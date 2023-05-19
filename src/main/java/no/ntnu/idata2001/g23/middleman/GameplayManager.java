@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.middleman.events.AttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
+import no.ntnu.idata2001.g23.middleman.events.EquipWeaponEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
@@ -14,6 +15,7 @@ import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
+import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
 
@@ -104,6 +106,11 @@ public class GameplayManager {
     public void useItem(UsableItem item) {
         game.getPlayer().useItem(item);
         notifyListeners(new InventoryUpdateEvent(game.getPlayer().getInventory()));
+    }
+
+    public void equipWeapon(Weapon weapon) {
+        game.getPlayer().equipWeapon(weapon);
+        notifyListeners(new EquipWeaponEvent(game.getPlayer().getEquippedWeapon()));
     }
 
     /**

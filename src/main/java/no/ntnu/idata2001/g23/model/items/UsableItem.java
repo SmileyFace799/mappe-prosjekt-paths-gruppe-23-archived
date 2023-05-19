@@ -30,9 +30,9 @@ public class UsableItem extends Item {
     }
 
     @Override
-    public String toString() {
-        return super.toString()
-                + "\nOn use: " + onUse.toString();
+    public String getDetails() {
+        return super.getDetails()
+                + "\nOn use: " + onUse.getDetails();
     }
 
     /**

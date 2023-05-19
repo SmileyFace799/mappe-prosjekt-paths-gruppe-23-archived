@@ -17,6 +17,11 @@ public class HealthAction implements Action {
         entity.changeHealth(health);
     }
 
+    @Override
+    public String getDetails() {
+        return (health < 0 ? "-" : "+") + Math.abs(health) + " Health";
+    }
+
     /**
      * Test for content equality between two objects.
      *

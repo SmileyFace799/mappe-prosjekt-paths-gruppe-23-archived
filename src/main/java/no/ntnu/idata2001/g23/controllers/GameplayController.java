@@ -13,6 +13,7 @@ import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
+import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.misc.Inventory;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
@@ -97,15 +98,40 @@ public class GameplayController extends GenericController {
         screen.getContentPane().setLeft(screen.getInventoryPrompt());
     }
 
+    public void showViewItemsPrompt() {
+        screen.getViewItemsView().getSelectionModel().clearSelection();
+        screen.getContentPane().setLeft(screen.getViewItemsPrompt());
+    }
+
+    public void showUseItemPrompt() {
+        screen.getUseItemView().getSelectionModel().clearSelection();
+        screen.getContentPane().setLeft(screen.getUseItemPrompt());
+    }
+
+    public void showEquipWeaponPrompt() {
+        screen.getEquipWeaponView().getSelectionModel().clearSelection();
+        screen.getContentPane().setLeft(screen.getEquipWeaponPrompt());
+    }
+
     /**
-     * Uses the selected item if it is usable.
+     * Uses the selected item in the use item view.
      */
     public void useSelectedItem() {
-        if (screen.getInventoryContent().getSelectionModel().getSelectedItem()
-                instanceof UsableItem usableItem) {
-            gameplayManager.useItem(usableItem);
-            showActionPrompt();
+        UsableItem item = screen.getUseItemView().getSelectionModel().getSelectedItem();
+        if (item != null) {
+            gameplayManager.useItem(item);
         }
+    }
+
+    /**
+     * Equips the selected weapon in the equip weapon view.
+     */
+    public void equipSelectedWeapon() {
+        Weapon selectedWeapon = screen.getEquipWeaponView().getSelectionModel().getSelectedItem();
+        if (selectedWeapon != null) {
+            gameplayManager.equipWeapon(selectedWeapon);
+        }
+        screen.getEquipWeaponView().getSelectionModel().clearSelection();
     }
 
     public void clearActionHistory() {
@@ -150,14 +176,26 @@ public class GameplayController extends GenericController {
     }
 
     /**
-     * Update the inventory list view.
+     * Updates any inventory list views.
      *
      * @param inventory The inventory of items to show
      */
-    public void updateInventoryList(Inventory inventory) {
-        ListView<Item> inventoryContent = screen.getInventoryContent();
-        inventoryContent.getItems().clear();
-        inventoryContent.getItems().addAll(inventory.getContents());
+    public void updateInventoryLists(Inventory inventory) {
+        ListView<Item> viewItemsView = screen.getViewItemsView();
+        ListView<UsableItem> useItemView = screen.getUseItemView();
+        ListView<Weapon> equipeWeaponView = screen.getEquipWeaponView();
+        viewItemsView.getItems().clear();
+        useItemView.getItems().clear();
+        equipeWeaponView.getItems().clear();
+
+        inventory.getContents().forEach(item -> {
+            viewItemsView.getItems().add(item);
+            if (item instanceof UsableItem usableItem) {
+                useItemView.getItems().add(usableItem);
+            } else if (item instanceof Weapon weapon) {
+                equipeWeaponView.getItems().add(weapon);
+            }
+        });
     }
 
     /**

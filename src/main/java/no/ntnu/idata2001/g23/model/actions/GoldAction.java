@@ -17,6 +17,11 @@ public class GoldAction implements Action {
         entity.changeGold(gold);
     }
 
+    @Override
+    public String getDetails() {
+        return (gold < 0 ? "-" : "+") + Math.abs(gold) + " Gold";
+    }
+
     /**
      * Test for content equality between two objects.
      *

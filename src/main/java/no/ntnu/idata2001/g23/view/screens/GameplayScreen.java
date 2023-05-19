@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.view.screens;
 
-import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -10,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.controllers.GameplayController;
 import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
@@ -20,6 +20,7 @@ import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
+import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.misc.DebugScrollPane;
@@ -30,10 +31,10 @@ import no.ntnu.idata2001.g23.view.textures.TxLoader;
  * The gameplay screen, where the game is played.
  */
 public class GameplayScreen extends GenericScreen implements GameUpdateListener {
+    private static final int HORIZONTAL_SPACING = 50;
+    private static final int VERTICAL_SPACING = 30;
+    private static final String BACK_ICON = "backIcon.png";
     private final GameplayController controller;
-    protected static final int HORIZONTAL_SPACING = 50;
-    protected static final int VERTICAL_SPACING = 30;
-
     private BorderPane contentPane;
 
     private VBox pauseModal;
@@ -48,7 +49,12 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     private VBox moveOptions;
 
     private VBox inventoryPrompt;
-    private ListView<Item> inventoryContent;
+    private ScrollPane viewItemsPrompt;
+    private ListView<Item> viewItemsView;
+    private ScrollPane useItemPrompt;
+    private ListView<UsableItem> useItemView;
+    private ScrollPane equipWeaponPrompt;
+    private ListView<Weapon> equipWeaponView;
 
     private ScrollPane historyPrompt;
     private VBox historyContent;
@@ -59,6 +65,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     private Label goldLabel;
     private Label scoreLabel;
 
+    private TilePane enemyPane;
 
     /**
      * Makes the gameplay screen.
@@ -108,8 +115,28 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         return inventoryPrompt;
     }
 
-    public ListView<Item> getInventoryContent() {
-        return inventoryContent;
+    public ScrollPane getViewItemsPrompt() {
+        return viewItemsPrompt;
+    }
+
+    public ListView<Item> getViewItemsView() {
+        return viewItemsView;
+    }
+
+    public ScrollPane getUseItemPrompt() {
+        return useItemPrompt;
+    }
+
+    public ListView<UsableItem> getUseItemView() {
+        return useItemView;
+    }
+
+    public ScrollPane getEquipWeaponPrompt() {
+        return equipWeaponPrompt;
+    }
+
+    public ListView<Weapon> getEquipWeaponView() {
+        return equipWeaponView;
     }
 
     public VBox getHistoryContent() {
@@ -209,7 +236,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         moveContent.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon("backIcon.png", 100));
+        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
         backButton.setOnAction(ae -> controller.showActionPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -226,11 +253,11 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         inventoryPrompt.getStyleClass().addAll(Css.LEFT_PROMPT);
 
         HBox titleBox = new HBox(HORIZONTAL_SPACING);
-        titleBox.setStyle("-fx-alignment: center-left");
+        titleBox.getStyleClass().add(Css.BACK_BUTTON_BOX);
         inventoryPrompt.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon("backIcon.png", 100));
+        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
         backButton.setOnAction(ae -> controller.showActionPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -238,10 +265,42 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         inventoryHeader.getStyleClass().add(GlobalCss.HEADER);
         titleBox.getChildren().add(inventoryHeader);
 
-        inventoryContent = new ListView<>();
-        inventoryContent.setPlaceholder(new Label("(No items)"));
-        inventoryContent.setItems(FXCollections.observableArrayList());
-        inventoryContent.setCellFactory(param -> new ListCell<>() {
+        Button viewItems = new Button("View items");
+        viewItems.setOnAction(ae -> controller.showViewItemsPrompt());
+        inventoryPrompt.getChildren().add(viewItems);
+
+        Button useItem = new Button("Use item");
+        useItem.setOnAction(ae -> controller.showUseItemPrompt());
+        inventoryPrompt.getChildren().add(useItem);
+
+        Button equipWeapon = new Button("Equip weapon");
+        equipWeapon.setOnAction(ae -> controller.showEquipWeaponPrompt());
+        inventoryPrompt.getChildren().add(equipWeapon);
+    }
+
+    private void initializeViewItemsPrompt() {
+        viewItemsPrompt = new DebugScrollPane();
+        viewItemsPrompt.getStyleClass().addAll(Css.LEFT_PROMPT);
+
+        VBox viewItemsContent = new VBox(VERTICAL_SPACING);
+        viewItemsPrompt.setContent(viewItemsContent);
+
+        HBox titleBox = new HBox(HORIZONTAL_SPACING);
+        titleBox.getStyleClass().add(Css.BACK_BUTTON_BOX);
+        viewItemsContent.getChildren().add(titleBox);
+
+        Button backButton = new Button();
+        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setOnAction(ae -> controller.showInventoryPrompt());
+        titleBox.getChildren().add(backButton);
+
+        Label inventoryHeader = new Label("Items");
+        inventoryHeader.getStyleClass().add(GlobalCss.HEADER);
+        titleBox.getChildren().add(inventoryHeader);
+
+        viewItemsView = new ListView<>();
+        viewItemsView.setPlaceholder(new Label("(No items)"));
+        viewItemsView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Item item, boolean empty) {
                 super.updateItem(item, empty);
@@ -249,21 +308,110 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
                     setText(null);
                 } else {
                     setText(item.getName());
-                    if (item instanceof UsableItem) {
-                        setDisable(false);
-                        setStyle("-fx-font-style: italic;");
-                    } else {
-                        setDisable(true);
-                        setStyle("-fx-font-style: none;");
-                    }
                 }
             }
         });
-        inventoryPrompt.getChildren().add(inventoryContent);
+        viewItemsContent.getChildren().add(viewItemsView);
+        Label selectedItemDetails = new Label();
+        viewItemsView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> selectedItemDetails
+                        .setText(newValue != null ? newValue.getDetails() : null));
+        viewItemsContent.getChildren().add(selectedItemDetails);
+    }
 
-        Button useButton = new Button("Use selected item");
+    private void initializeUseItemPrompt() {
+        useItemPrompt = new DebugScrollPane();
+        useItemPrompt.getStyleClass().addAll(Css.LEFT_PROMPT);
+
+        VBox useItemContent = new VBox(VERTICAL_SPACING);
+        useItemPrompt.setContent(useItemContent);
+
+        HBox titleBox = new HBox(HORIZONTAL_SPACING);
+        titleBox.getStyleClass().add(Css.BACK_BUTTON_BOX);
+        useItemContent.getChildren().add(titleBox);
+
+        Button backButton = new Button();
+        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setOnAction(ae -> controller.showInventoryPrompt());
+        titleBox.getChildren().add(backButton);
+
+        Label inventoryHeader = new Label("Use an item");
+        inventoryHeader.getStyleClass().add(GlobalCss.HEADER);
+        titleBox.getChildren().add(inventoryHeader);
+
+        useItemView = new ListView<>();
+        useItemView.setPlaceholder(new Label("(No usable items)"));
+        useItemView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(UsableItem item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+        useItemContent.getChildren().add(useItemView);
+
+        Label selectedItemDetails = new Label();
+        useItemView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> selectedItemDetails
+                        .setText(newValue != null ? newValue.getDetails() : null));
+        useItemContent.getChildren().add(selectedItemDetails);
+
+        Button useButton = new Button("Use");
         useButton.setOnAction(ae -> controller.useSelectedItem());
-        inventoryPrompt.getChildren().add(useButton);
+        useItemContent.getChildren().add(useButton);
+    }
+
+    private void initializeEquipWeaponPrompt() {
+        equipWeaponPrompt = new DebugScrollPane();
+        equipWeaponPrompt.getStyleClass().addAll(Css.LEFT_PROMPT);
+
+        VBox equipWeaponContent = new VBox(VERTICAL_SPACING);
+        equipWeaponPrompt.setContent(equipWeaponContent);
+
+        HBox titleBox = new HBox(HORIZONTAL_SPACING);
+        titleBox.getStyleClass().add(Css.BACK_BUTTON_BOX);
+        equipWeaponContent.getChildren().add(titleBox);
+
+        Button backButton = new Button();
+        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setOnAction(ae -> controller.showInventoryPrompt());
+        titleBox.getChildren().add(backButton);
+
+        Label inventoryHeader = new Label("Equip a weapon");
+        inventoryHeader.getStyleClass().add(GlobalCss.HEADER);
+        titleBox.getChildren().add(inventoryHeader);
+
+        equipWeaponView = new ListView<>();
+        equipWeaponView.setPlaceholder(new Label("(No weapons)"));
+        equipWeaponView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Weapon item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+        equipWeaponContent.getChildren().add(equipWeaponView);
+
+        Label selectedItemDetails = new Label();
+        equipWeaponView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> selectedItemDetails
+                        .setText(newValue != null ? newValue.getDetails() : null));
+        equipWeaponContent.getChildren().add(selectedItemDetails);
+
+        Button equipButton = new Button("Equip");
+        equipButton.setOnAction(ae -> controller.equipSelectedWeapon());
+        equipWeaponContent.getChildren().add(equipButton);
     }
 
     private void initializeHistoryPrompt() {
@@ -314,15 +462,29 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         scoreBox.getChildren().add(scoreLabel);
     }
 
+    private void initializeEnemyPane() {
+        enemyPane = new TilePane();
+        enemyPane.getStyleClass().add(Css.CENTER_PANE);
+    }
+
     @Override
     protected void initializeNodes() {
         initializePauseModal();
+
         initializeTopPrompt();
+
         initializeActionPrompt();
         initializeMovePrompt();
         initializeInventoryPrompt();
+        initializeViewItemsPrompt();
+        initializeUseItemPrompt();
+        initializeEquipWeaponPrompt();
+
         initializeHistoryPrompt();
+
         initializeStatPrompt();
+
+        initializeEnemyPane();
     }
 
     @Override
@@ -331,6 +493,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         contentPane.setTop(topPrompt);
         contentPane.setRight(historyPrompt);
         contentPane.setBottom(statPrompt);
+        contentPane.setCenter(enemyPane);
 
         StackPane root = new StackPane();
         root.getChildren().add(contentPane);
@@ -348,14 +511,14 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent newGameEvent) {
             controller.updateCurrentPassage(newGameEvent.startPassage());
-            controller.updateInventoryList(newGameEvent.game().getPlayer().getInventory());
+            controller.updateInventoryLists(newGameEvent.game().getPlayer().getInventory());
             controller.updatePlayerStats(newGameEvent.game().getPlayer());
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
             Passage currentPassage = changePassageEvent.currentPassage();
             controller.updateCurrentPassage(currentPassage);
             controller.logAction("Moved to " + currentPassage.getTitle());
         } else if (event instanceof InventoryUpdateEvent inventoryUpdateEvent) {
-            controller.updateInventoryList(inventoryUpdateEvent.inventory());
+            controller.updateInventoryLists(inventoryUpdateEvent.inventory());
         }
     }
 
@@ -364,17 +527,17 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
      * This class is public so {@link GameplayController} can access it.
      */
     public static class Css {
-        private Css() {
-            throw new IllegalStateException("Do not instantiate this class pls :)");
-        }
-
         public static final String OVERLAY = "overlay";
-
         public static final String PROMPT = "prompt";
         public static final String TOP_PROMPT = "top-prompt";
         public static final String LEFT_PROMPT = "left-prompt";
         public static final String RIGHT_PROMPT = "right-prompt";
-
+        public static final String CENTER_PANE = "center-pane";
         public static final String TOP_CONTENT = "top-content";
+        public static final String BACK_BUTTON_BOX = "back-button-box";
+
+        private Css() {
+            throw new IllegalStateException("Do not instantiate this class pls :)");
+        }
     }
 }

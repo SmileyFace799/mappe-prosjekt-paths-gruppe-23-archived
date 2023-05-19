@@ -10,7 +10,7 @@
 }
 
 .list-view {
-    -fx-pref-height: 1000px;
+    -fx-pref-height: 750px;
 }
 
 /* Custom classes */
@@ -47,7 +47,17 @@
     -fx-text-alignment: right;
 }
 
+.center-pane {
+    -fx-alignment: top-center;
+    -fx-hgap: 100px;
+    -fx-vgap: 100px;
+}
+
 .top-content {
     -fx-alignment: top-left;
     -fx-padding: 60px;
+}
+
+.back-button-box {
+    -fx-alignment: center-left;
 }

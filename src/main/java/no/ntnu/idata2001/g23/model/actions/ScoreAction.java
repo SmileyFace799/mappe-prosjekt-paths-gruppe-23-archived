@@ -17,6 +17,11 @@ public class ScoreAction implements Action {
         entity.changeScore(points);
     }
 
+    @Override
+    public String getDetails() {
+        return (points < 0 ? "-" : "+") + Math.abs(points) + " Points";
+    }
+
     /**
      * Test for content equality between two objects.
      *

@@ -26,6 +26,11 @@ public class InventoryAction implements Action {
         entity.getInventory().addItem(item);
     }
 
+    @Override
+    public String getDetails() {
+        return "Gain \"" + item.getName() + "\"";
+    }
+
     /**
      * Test for content equality between two objects.
      *

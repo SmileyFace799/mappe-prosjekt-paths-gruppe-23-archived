@@ -40,8 +40,8 @@ public class Weapon extends Item {
     }
 
     @Override
-    public String toString() {
-        return super.toString()
+    public String getDetails() {
+        return super.getDetails()
                 + "\nBase damage: " + getBaseDamage()
                 + "\nBase critical strike chance: " + getBaseCritChance();
     }
