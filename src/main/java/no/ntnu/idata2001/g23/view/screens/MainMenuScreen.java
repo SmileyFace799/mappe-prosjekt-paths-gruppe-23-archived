@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.MainMenuController;
 import no.ntnu.idata2001.g23.view.DungeonApp;
-import no.ntnu.idata2001.g23.view.textures.TxLoader;
+import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 
 /**
  * The main menu screen.
@@ -22,8 +22,8 @@ public class MainMenuScreen extends GenericScreen {
     @Override
     protected Pane makeRoot() {
         VBox content = new VBox(60);
-        content.getChildren().add(TxLoader.getImageView(
-                "title.png", 0, 500, true));
+        content.getChildren().add(ImageLoader.getImageView(
+                ImageLoader.getImageResource("title.png"), 0, 500, true));
 
         content.getChildren().add(new Rectangle(0, 200));
 

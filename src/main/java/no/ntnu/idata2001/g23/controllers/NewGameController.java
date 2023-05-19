@@ -3,6 +3,7 @@ package no.ntnu.idata2001.g23.controllers;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import javafx.stage.DirectoryChooser;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.model.Game;
@@ -15,6 +16,7 @@ import no.ntnu.idata2001.g23.model.fileparsing.GameFileCollection;
 import no.ntnu.idata2001.g23.model.fileparsing.GoalLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.ItemLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.PlayerLoader;
+import no.ntnu.idata2001.g23.model.fileparsing.SpritePathsLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
 import no.ntnu.idata2001.g23.model.goals.Goal;
 import no.ntnu.idata2001.g23.model.items.Item;
@@ -110,8 +112,6 @@ public class NewGameController extends GenericController {
                 ? new EnemyLoader(itemProvider).loadEnemies(enemiesPath)
                 : null;
 
-        System.out.println(enemyProvider.provide("Test Enemy").getName());
-
         //parse & create story, using itemProvider
         Path storyPath = gameFiles.getPathRequired(".paths",
                 CorruptFileException.Type.INFO_MISSING_STORY);
@@ -131,10 +131,9 @@ public class NewGameController extends GenericController {
         //Create game, using story & goals
         Game game = new Game(player, story, goals);
 
-        for (String itemName : new String[]{"Big Sword UwU", "Usable Test", "Usable Test"}) {
-            game.getPlayer()
-                    .getInventory()
-                    .addItem(itemProvider.provide(itemName));
+        for (String enemyName : new String[]{"Test Enemy", "Test Enemy"}) {
+            game.getStory().getPassages().forEach(passage ->
+                    passage.getEnemies().add(enemyProvider.provide(enemyName)));
         }
         return game;
     }
@@ -148,7 +147,12 @@ public class NewGameController extends GenericController {
             setDifficultySelectErrorMessage("Please select a difficulty");
         } else {
             try {
-                GameplayManager.getInstance().startGame(makeNewGame(difficulty));
+                Path spritesFilePath = gameFiles.getPath(".sprites");
+                Map<String, String> spritePaths = spritesFilePath != null
+                        ? new SpritePathsLoader(gameFiles.getGamePath())
+                        .loadSpritePaths(spritesFilePath)
+                        : null;
+                GameplayManager.getInstance().startGame(makeNewGame(difficulty), spritePaths);
                 changeScreen(GameplayScreen.class);
             } catch (CorruptFileException cfe) {
                 setDifficultySelectErrorMessage("Game files are corrupt: " + cfe.getMessage());

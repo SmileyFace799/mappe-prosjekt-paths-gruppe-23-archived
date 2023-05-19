@@ -53,7 +53,8 @@ public class PlayerLoader {
             }
 
             Map<String, String> playerParameterMap =
-                    CollectionParserUtil.parseMap(fileReader, Parameters.getPlayerParameters());
+                    CollectionParserUtil.parseMap(fileReader, true,
+                            Parameters.getPlayerParameters());
             player = new Player.PlayerBuilder(name,
                     Integer.parseInt(playerParameterMap.get(Parameters.HEALTH)))
                     .setGold(Integer.parseInt(playerParameterMap.get(Parameters.GOLD)))

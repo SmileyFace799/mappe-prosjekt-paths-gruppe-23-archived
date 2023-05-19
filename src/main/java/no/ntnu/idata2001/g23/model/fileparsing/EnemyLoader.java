@@ -40,7 +40,7 @@ public class EnemyLoader {
             switch (type.substring(1).toLowerCase().replace(" ", "")) {
                 case "basic" -> {
                     Map<String, String> enemyParameterMap = CollectionParserUtil
-                            .parseMap(fileReader, Parameters.getBasicParameters());
+                            .parseMap(fileReader, true, Parameters.getBasicParameters());
                     int health = Integer.parseInt(enemyParameterMap.get(Parameters.HEALTH));
                     int score = Integer.parseInt(enemyParameterMap.get(Parameters.SCORE));
                     int gold = Integer.parseInt(enemyParameterMap.get(Parameters.GOLD));

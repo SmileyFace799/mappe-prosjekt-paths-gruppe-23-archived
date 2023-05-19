@@ -13,6 +13,7 @@ import java.util.Optional;
  * A collection of files that make up an entire game.
  */
 public class GameFileCollection {
+    private final Path gamePath;
     private final Collection<Path> gameFiles;
 
     /**
@@ -23,7 +24,7 @@ public class GameFileCollection {
      * @throws CorruptFileException If {@code game.info} is missing or cannot be parsed
      */
     public GameFileCollection(String gameDirectory) throws CorruptFileException {
-        Path gamePath = Path.of(gameDirectory);
+        gamePath = Path.of(gameDirectory);
         try (LineNumberReader fileReader = new LineNumberReader(
                 Files.newBufferedReader(gamePath.resolve("game.info"))
         )) {
@@ -31,6 +32,10 @@ public class GameFileCollection {
         } catch (IOException ioe) {
             throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_ITEMS);
         }
+    }
+
+    public Path getGamePath() {
+        return gamePath;
     }
 
     /**

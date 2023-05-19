@@ -17,7 +17,7 @@ class CollectionParserUtilTest {
     private void assertCfeType(
             String mapString, CorruptFileException.Type type, String... requiredKeys) {
         CorruptFileException exception = assertThrows(CorruptFileException.class, () -> CollectionParserUtil
-                .parseMap(new LineNumberReader(new StringReader(mapString)), requiredKeys));
+                .parseMap(new LineNumberReader(new StringReader(mapString)), true, requiredKeys));
         assertEquals(type, exception.getType());
     }
 
@@ -30,7 +30,7 @@ class CollectionParserUtilTest {
                 """;
 
         Map<String, String> loadedMap = assertDoesNotThrow(() -> CollectionParserUtil
-                .parseMap(new LineNumberReader(new StringReader(validMapString)),
+                .parseMap(new LineNumberReader(new StringReader(validMapString)), true,
                         "keY 3", "K3Y tW0"));
 
         Map<String, String> validMap = Map.of(

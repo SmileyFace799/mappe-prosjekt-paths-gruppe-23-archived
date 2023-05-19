@@ -26,6 +26,13 @@ import no.ntnu.idata2001.g23.model.story.Passage;
  */
 public class GameplayManager {
     private static GameplayManager instance;
+    private final Collection<GameUpdateListener> listeners;
+    private Game game;
+    private Passage currentPassage;
+
+    private GameplayManager() {
+        listeners = new HashSet<>();
+    }
 
     /**
      * Singleton.
@@ -39,14 +46,6 @@ public class GameplayManager {
         return instance;
     }
 
-    private final Collection<GameUpdateListener> listeners;
-    private Game game;
-    private Passage currentPassage;
-
-    private GameplayManager() {
-        listeners = new HashSet<>();
-    }
-
     public void addUpdateListener(GameUpdateListener listener) {
         listeners.add(listener);
     }
@@ -56,32 +55,15 @@ public class GameplayManager {
     }
 
     /**
-     * Starts a game from the beginning.
+     * Starts a game from a the beginning.
      *
-     * @param game The game to start
+     * @param game         The game to start
+     * @param spritePaths  A map of sprite paths for every sprite used in the game
      */
-    public void startGame(Game game) {
-        startGame(game, null);
-    }
-
-    /**
-     * Starts a game from a specified passage.
-     *
-     * @param game The game to start
-     * @param startPassage The starting passage. The story must contain this passage.
-     *                     If this is {@code null}, the story will start from the beginning
-     */
-    public void startGame(Game game, Passage startPassage) {
+    public void startGame(Game game, Map<String, String> spritePaths) {
         this.game = game;
-        if (startPassage != null) {
-            if (!game.getStory().getPassages().contains(startPassage)) {
-                throw new IllegalArgumentException("The story does not contain the start passage");
-            }
-            currentPassage = startPassage;
-        } else {
-            this.currentPassage = game.begin();
-        }
-        notifyListeners(new NewGameEvent(game, currentPassage));
+        this.currentPassage = game.begin();
+        notifyListeners(new NewGameEvent(game, currentPassage, spritePaths));
     }
 
     /**
@@ -116,7 +98,7 @@ public class GameplayManager {
     /**
      * Makes an enemy attack.
      *
-     * @param attacker The enemy that's attacking
+     * @param attacker        The enemy that's attacking
      * @param possibleTargets A collection of possible targets for the enemy to attack
      */
     public void attack(Enemy attacker, Collection<Entity> possibleTargets) {

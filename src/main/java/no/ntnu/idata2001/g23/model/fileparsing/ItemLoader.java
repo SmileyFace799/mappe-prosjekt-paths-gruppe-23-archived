@@ -45,7 +45,7 @@ public class ItemLoader {
             switch (type.substring(1).toLowerCase().replace(" ", "")) {
                 case "meleeweapon" -> {
                     Map<String, String> itemParameterMap = CollectionParserUtil
-                            .parseMap(fileReader, Parameters.getWeaponParameters());
+                            .parseMap(fileReader, true, Parameters.getWeaponParameters());
                     int damage = Integer.parseInt(itemParameterMap.get(Parameters.DAMAGE));
                     double critChance = Double.parseDouble(
                             itemParameterMap.get(Parameters.CRIT_CHANCE));
@@ -55,7 +55,7 @@ public class ItemLoader {
                 }
                 case "usable" -> {
                     Map<String, String> itemParameterMap = CollectionParserUtil
-                            .parseMap(fileReader, Parameters.getUsableParameters());
+                            .parseMap(fileReader, true, Parameters.getUsableParameters());
                     int value = Integer.parseInt(itemParameterMap.get(Parameters.VALUE));
                     Action onUse = ActionParser.parseAction(
                             itemParameterMap

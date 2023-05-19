@@ -1,8 +1,8 @@
 /* Built-in classes */
 .scroll-pane {
+    -fx-background-color: transparent;
     -fx-hbar-policy: as-needed;
     -fx-vbar-policy: as-needed;
-    -fx-pannable: true;
 }
 
 .scroll-pane .viewport {
@@ -48,14 +48,19 @@
 }
 
 .center-pane {
-    -fx-alignment: top-center;
-    -fx-hgap: 100px;
-    -fx-vgap: 100px;
+    -fx-fit-to-width: true;
+    -fx-padding: 50px;
 }
 
 .top-content {
     -fx-alignment: top-left;
     -fx-padding: 60px;
+}
+
+.center-content {
+    -fx-alignment: top-center;
+    -fx-hgap: 100px;
+    -fx-vgap: 100px;
 }
 
 .back-button-box {

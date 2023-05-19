@@ -123,12 +123,18 @@ public class CorruptFileException extends Exception {
         GOAL_INVALID_VALUE("Value cannot be assigned to goal"),
 
         //Enemy exceptions
-        UNKNOWN_ENEMIES("An unknown error occurred while attempting to read the enemies file"),
+        UNKNOWN_ENEMIES(
+                "An unknown error occurred while attempting to read the enemies file"),
         INVALID_ENEMY("Expected to find an enemy, "
                 + "found non-empty line that isn't an enemy"),
         ENEMY_NO_NAME("Found enemy with no name"),
         ENEMY_INVALID_TYPE("Found enemy with invalid type"),
         ENEMY_INVALID_PARAMETER_VALUE("A parameter value for an enemy is invalid"),
+
+        //Sprite exceptions
+        UNKNOWN_SPRITES(
+                "An unknown error occurred while attempting to read the sprites file"),
+        INVALID_SPRITE("An invalid path for a sprite was found"),
 
         //Map parsing exceptions
         ENTRY_INVALID_FORMAT(MISSING_COLON_SEPARATOR_STRING

@@ -12,29 +12,24 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.controllers.GameplayController;
-import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
-import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
-import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.misc.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
-import no.ntnu.idata2001.g23.view.textures.TxLoader;
+import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 
 /**
  * The gameplay screen, where the game is played.
  */
-public class GameplayScreen extends GenericScreen implements GameUpdateListener {
+public class GameplayScreen extends GenericScreen {
     private static final int HORIZONTAL_SPACING = 50;
     private static final int VERTICAL_SPACING = 30;
     private static final String BACK_ICON = "backIcon.png";
+
     private final GameplayController controller;
+
     private BorderPane contentPane;
 
     private VBox pauseModal;
@@ -65,7 +60,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     private Label goldLabel;
     private Label scoreLabel;
 
-    private TilePane enemyPane;
+    private ScrollPane enemyPane;
+    private TilePane enemyContent;
 
     /**
      * Makes the gameplay screen.
@@ -75,7 +71,6 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     public GameplayScreen(DungeonApp application) {
         super("gameplay.css");
         controller = new GameplayController(this, application);
-        GameplayManager.getInstance().addUpdateListener(this);
     }
 
     @Override
@@ -159,6 +154,10 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         return scoreLabel;
     }
 
+    public TilePane getEnemyContent() {
+        return enemyContent;
+    }
+
     private void initializePauseModal() {
         pauseModal = new VBox(VERTICAL_SPACING);
         pauseModal.getStyleClass().add(Css.PROMPT);
@@ -197,7 +196,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         passageContent.getChildren().add(passageText);
 
         Button menuButton = new Button();
-        menuButton.setGraphic(TxLoader.getIcon("menuIcon.png", 100));
+        menuButton.setGraphic(ImageLoader.getIcon(
+                ImageLoader.getImageResource("menuIcon.png"), 100));
         menuButton.setOnAction(ae -> controller.showPauseModal());
         topPrompt.setRight(menuButton);
     }
@@ -236,7 +236,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         moveContent.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setGraphic(ImageLoader.getIcon(
+                ImageLoader.getImageResource(BACK_ICON), 100));
         backButton.setOnAction(ae -> controller.showActionPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -257,7 +258,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         inventoryPrompt.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setGraphic(ImageLoader.getIcon(
+                ImageLoader.getImageResource(BACK_ICON), 100));
         backButton.setOnAction(ae -> controller.showActionPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -290,7 +292,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         viewItemsContent.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setGraphic(ImageLoader.getIcon(
+                ImageLoader.getImageResource(BACK_ICON), 100));
         backButton.setOnAction(ae -> controller.showInventoryPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -332,7 +335,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         useItemContent.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setGraphic(ImageLoader.getIcon(
+                ImageLoader.getImageResource(BACK_ICON), 100));
         backButton.setOnAction(ae -> controller.showInventoryPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -379,7 +383,8 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         equipWeaponContent.getChildren().add(titleBox);
 
         Button backButton = new Button();
-        backButton.setGraphic(TxLoader.getIcon(BACK_ICON, 100));
+        backButton.setGraphic(ImageLoader.getIcon(
+                ImageLoader.getImageResource(BACK_ICON), 100));
         backButton.setOnAction(ae -> controller.showInventoryPrompt());
         titleBox.getChildren().add(backButton);
 
@@ -463,8 +468,12 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
     }
 
     private void initializeEnemyPane() {
-        enemyPane = new TilePane();
+        enemyPane = new DebugScrollPane();
         enemyPane.getStyleClass().add(Css.CENTER_PANE);
+
+        enemyContent = new TilePane();
+        enemyContent.getStyleClass().add(Css.CENTER_CONTENT);
+        enemyPane.setContent(enemyContent);
     }
 
     @Override
@@ -507,21 +516,6 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         controller.clearActionHistory();
     }
 
-    @Override
-    public void onUpdate(GameUpdateEvent event) {
-        if (event instanceof NewGameEvent newGameEvent) {
-            controller.updateCurrentPassage(newGameEvent.startPassage());
-            controller.updateInventoryLists(newGameEvent.game().getPlayer().getInventory());
-            controller.updatePlayerStats(newGameEvent.game().getPlayer());
-        } else if (event instanceof ChangePassageEvent changePassageEvent) {
-            Passage currentPassage = changePassageEvent.currentPassage();
-            controller.updateCurrentPassage(currentPassage);
-            controller.logAction("Moved to " + currentPassage.getTitle());
-        } else if (event instanceof InventoryUpdateEvent inventoryUpdateEvent) {
-            controller.updateInventoryLists(inventoryUpdateEvent.inventory());
-        }
-    }
-
     /**
      * Contains custom {@code .css} style classes used by the gameplay screen.
      * This class is public so {@link GameplayController} can access it.
@@ -534,6 +528,7 @@ public class GameplayScreen extends GenericScreen implements GameUpdateListener 
         public static final String RIGHT_PROMPT = "right-prompt";
         public static final String CENTER_PANE = "center-pane";
         public static final String TOP_CONTENT = "top-content";
+        public static final String CENTER_CONTENT = "center-content";
         public static final String BACK_BUTTON_BOX = "back-button-box";
 
         private Css() {

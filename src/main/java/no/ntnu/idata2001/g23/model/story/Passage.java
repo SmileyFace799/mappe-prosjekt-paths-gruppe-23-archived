@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.model.story;
 
 import java.util.ArrayList;
 import java.util.List;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 
 /**
  * A smaller part/segment of a story.
@@ -9,7 +10,8 @@ import java.util.List;
 public class Passage {
     private final String title;
     private final String content;
-    private final ArrayList<Link> links = new ArrayList<>();
+    private final List<Link> links;
+    private final List<Enemy> enemies;
 
     /**
      * Makes a passage.
@@ -26,6 +28,8 @@ public class Passage {
         }
         this.title = title;
         this.content = content;
+        this.links = new ArrayList<>();
+        this.enemies = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -36,38 +40,64 @@ public class Passage {
         return content;
     }
 
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
+
     /**
      * Adds a link to this passage.
      *
-     * @param link The link to add.
+     * @param link The link to add
      */
     public void addLink(Link link) {
         if (link == null) {
             throw new IllegalArgumentException("\"link\" cannot be null");
         }
-        if (!links.contains(link)) {
-            links.add(link);
-        } else {
+        if (links.contains(link)) {
             throw new IllegalArgumentException("Link \"" + link.getText()
                     + "\" is already added to the passage");
         }
-    }
-
-    public List<Link> getLinks() {
-        return links;
+        links.add(link);
     }
 
     /**
      * Checks if this passage has any links or not.
      *
-     * @return A boolean representing if the passage has any links:
-     *         <ul>
-     *             <li>{@code true}: The passage has links.</li>
-     *             <li>{@code false}: The passage has no links.</li>
+     * @return <ul>
+     *         <li>{@code true}: The passage has links.</li>
+     *         <li>{@code false}: The passage has no links.</li>
      *         </ul>
      */
     public boolean hasLinks() {
         return !links.isEmpty();
+    }
+
+    /**
+     * Adds an enemy to this passage.
+     *
+     * @param enemy The enemy to add
+     */
+    public void addEnemy(Enemy enemy) {
+        if (enemy == null) {
+            throw new IllegalArgumentException("\"enemy\" cannot be null");
+        }
+        enemies.add(enemy);
+    }
+
+    /**
+     * Removes an enemy from this passage.
+     *
+     * @param enemy The enemy to remove
+     */
+    public void removeEnemy(Enemy enemy) {
+        if (!enemies.contains(enemy)) {
+            throw new IllegalArgumentException("\"enemy\" is not in the passage's list of enemies");
+        }
+        enemies.remove(enemy);
     }
 
     @Override
