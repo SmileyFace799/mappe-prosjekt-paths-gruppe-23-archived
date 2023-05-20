@@ -91,7 +91,7 @@ public class EnemyLoader {
                         throw new CorruptFileException(CorruptFileException.Type.ENEMY_NO_NAME,
                                 fileReader.getLineNumber());
                     }
-                    String enemyName = nextLine.substring(1);
+                    String enemyName = nextLine.substring(1).trim();
                     provider.addProvidable(enemyName, parseEnemy(enemyName, fileReader));
                 } else if (!nextLine.isBlank()) {
                     throw new CorruptFileException(CorruptFileException.Type.INVALID_ENEMY,
@@ -126,13 +126,13 @@ public class EnemyLoader {
     }
 
     private static class Parameters {
-        public static final String HEALTH = "health";
-        public static final String SCORE = "score";
-        public static final String GOLD = "gold";
-        public static final String INVENTORY = "inventory";
-        public static final String DROP_CHANCE = "dropchance";
-        public static final String WEAPON = "weapon";
-        public static final String DROP_WEAPON = "dropweapon";
+        public static final String HEALTH = "Health";
+        public static final String SCORE = "Score";
+        public static final String GOLD = "Gold";
+        public static final String INVENTORY = "Inventory";
+        public static final String DROP_CHANCE = "Drop Chance";
+        public static final String WEAPON = "Weapon";
+        public static final String DROP_WEAPON = "Drop Weapon";
 
         private Parameters() {
             throw new IllegalStateException("Do not instantiate this class pls :)");

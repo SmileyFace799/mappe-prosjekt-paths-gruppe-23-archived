@@ -1,18 +1,22 @@
 package no.ntnu.idata2001.g23.middleman;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import no.ntnu.idata2001.g23.middleman.events.AttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
+import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.EquipWeaponEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
+import no.ntnu.idata2001.g23.middleman.events.PlayerAttackEvent;
 import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.actions.Action;
+import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.entities.Entity;
+import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
@@ -57,8 +61,8 @@ public class GameplayManager {
     /**
      * Starts a game from a the beginning.
      *
-     * @param game         The game to start
-     * @param spritePaths  A map of sprite paths for every sprite used in the game
+     * @param game        The game to start
+     * @param spritePaths A map of sprite paths for every sprite used in the game
      */
     public void startGame(Game game, Map<String, String> spritePaths) {
         this.game = game;
@@ -96,18 +100,39 @@ public class GameplayManager {
     }
 
     /**
-     * Makes an enemy attack.
+     * Executes an attack phase.
      *
-     * @param attacker        The enemy that's attacking
-     * @param possibleTargets A collection of possible targets for the enemy to attack
+     * @param target The target to attack
      */
-    public void attack(Enemy attacker, Collection<Entity> possibleTargets) {
-        Map<Action, List<Entity>> actionMap = attacker.act(possibleTargets);
-        for (Map.Entry<Action, List<Entity>> actionEntry : actionMap.entrySet()) {
-            Action action = actionEntry.getKey();
-            List<Entity> targets = actionEntry.getValue();
-            targets.forEach(action::execute);
-            notifyListeners(new AttackEvent(attacker, action, targets));
+    public void attack(Enemy target) {
+        Player player = game.getPlayer();
+        List<Enemy> enemies = currentPassage.getEnemies();
+        Action attack = new HealthAction(-player.getEquippedWeapon().getBaseDamage());
+        attack.execute(target);
+        if (target.getHealth() <= 0) {
+            enemies.remove(target);
+        }
+        notifyListeners(new PlayerAttackEvent(
+                player, null, target, enemies));
+
+        //After the player attacks, every enemy goes for an attack
+        for (Enemy enemy : new ArrayList<>(enemies)) {
+            if (enemy.getHealth() > 0) {
+                List<Entity> possibleTargets = new ArrayList<>();
+                possibleTargets.add(game.getPlayer());
+                possibleTargets.addAll(enemies);
+
+                Map<Action, List<Entity>> actionMap = enemy.act(possibleTargets);
+                for (Map.Entry<Action, List<Entity>> actionEntry : actionMap.entrySet()) {
+                    Action action = actionEntry.getKey();
+                    List<Entity> targets = actionEntry.getValue();
+                    targets.forEach(action::execute);
+                    //TODO: Death event
+                    enemies.removeIf(e -> e.getHealth() == 0);
+                    notifyListeners(new EnemyAttackEvent(
+                            enemy, action, targets, enemies));
+                }
+            }
         }
     }
 }

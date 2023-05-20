@@ -66,3 +66,13 @@
 .back-button-box {
     -fx-alignment: center-left;
 }
+
+.enemy-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0px;
+}
+
+.enemy-button:hover {
+    -fx-background-color: rgba(16, 16, 16, 0.25)
+}

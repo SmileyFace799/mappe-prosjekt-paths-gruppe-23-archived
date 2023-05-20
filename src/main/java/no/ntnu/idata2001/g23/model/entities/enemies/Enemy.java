@@ -52,6 +52,16 @@ public class Enemy extends Entity implements Actor {
     }
 
     /**
+     * Gets every detail about the enemy that the player should know.
+     *
+     * @return A string of enemy details
+     */
+    public String getDetails() {
+        return String.format("%nHealth: %s/%s", getHealth(), getMaxHealth())
+                + "\nWeapon: " + getEquippedWeapon().getName();
+    }
+
+    /**
      * The attacking AI of an enemy.
      *
      * <p>Does the following:

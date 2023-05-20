@@ -214,11 +214,6 @@ public class GameplayScreen extends GenericScreen {
         moveButton.setOnAction(ae -> controller.showMovePrompt());
         actionPrompt.getChildren().add(moveButton);
 
-        Button fightButton = new Button("Fight");
-        //TODO: Make this button work
-        fightButton.setDisable(true);
-        actionPrompt.getChildren().add(fightButton);
-
         Button inventoryButton = new Button("Inventory");
         inventoryButton.setOnAction(ae -> controller.showInventoryPrompt());
         actionPrompt.getChildren().add(inventoryButton);
@@ -530,6 +525,7 @@ public class GameplayScreen extends GenericScreen {
         public static final String TOP_CONTENT = "top-content";
         public static final String CENTER_CONTENT = "center-content";
         public static final String BACK_BUTTON_BOX = "back-button-box";
+        public static final String ENEMY_BUTTON = "enemy-button";
 
         private Css() {
             throw new IllegalStateException("Do not instantiate this class pls :)");

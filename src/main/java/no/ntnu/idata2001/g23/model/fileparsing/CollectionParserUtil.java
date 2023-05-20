@@ -45,36 +45,34 @@ public class CollectionParserUtil {
             throw new CorruptFileException(CorruptFileException.Type.ENTRY_INVALID_FORMAT,
                     lineNumber, entryString);
         }
-        return new AbstractMap.SimpleEntry<>(splitData[0].toLowerCase()
-                .replace(" ", ""), splitData[1].trim());
+        return new AbstractMap.SimpleEntry<>(splitData[0].trim(), splitData[1].trim());
     }
 
     /**
      * Parses multiple lines of text containing key/value-pairs into a {@link Map}.
      * Colons ({@code :}) are used as separators to separate the keys & values.
      *
-     * <p>The key has any spaces removed & all letters converted to lowercase,
-     * while the value gets trimmed for leading & trailing spaces.</p>
+     * <p>The keys & values are trimmed for leading & trailing spaces.</p>
      *
      * <p>An example of how the parsing works:
      * <h2>Input (Multiline {@link String}):</h2>
      * <ol>
-     *     <li>"""Key1:  Value1</li>
+     *     <li>""" Key1:  Value1</li>
      *     <li>k3yTw0  :v4lu3Tw0</li>
-     *     <li>kE Y3: vA L uE 3"""</li>
+     *     <li>kE Y3: vA L uE 3 """</li>
      * </ol>
      * <h2>Output ({@link Map}<{@link String}, {@link String}>)</h2>
      * <ol>
-     *     <li>"key1": "Value1"</li>
-     *     <li>"k3ytw0": "v4lu3Tw0"</li>
-     *     <li>"key3": "vA L uE 3"</li>
+     *     <li>"Key1": "Value1"</li>
+     *     <li>"k3yTw0": "v4lu3Tw0"</li>
+     *     <li>"kE Y3": "vA L uE 3"</li>
      * </ol></p>
      *
      * @param fileReader      The {@link LineNumberReader} that contains the map to parse
      * @param stopAtBlankLine If the file reader should stop parsing upon reaching a blank line
      * @param requiredKeys    A list of required keys to find. Will throw a
-     *                        {@link CorruptFileException} with type
-     *                        {@link CorruptFileException.Type#REQUIRED_KEY_MISSING}
+     *                        {@link CorruptFileException} with type {@link
+     *                        CorruptFileException.Type#REQUIRED_KEY_MISSING REQUIRED_KEY_MISSING}
      *                        if any of these are not present
      * @return A parsed map with any found string keys & values
      * @throws IOException          If an I/O error occurs
@@ -98,7 +96,7 @@ public class CollectionParserUtil {
             }
         }
         for (String key : requiredKeys) {
-            if (!parsedMap.containsKey(key.toLowerCase().replace(" ", ""))) {
+            if (!parsedMap.containsKey(key.trim())) {
                 throw new CorruptFileException(CorruptFileException.Type.REQUIRED_KEY_MISSING,
                         fileReader.getLineNumber(), key);
             }

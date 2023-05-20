@@ -4,26 +4,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
+import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
+import no.ntnu.idata2001.g23.middleman.events.PlayerAttackEvent;
+import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.misc.Inventory;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 
@@ -35,7 +43,7 @@ public class GameplayController extends GenericController implements GameUpdateL
     private final GameplayScreen screen;
     private final List<String> actionHistory;
 
-    private Map<String, String> spritePaths;
+    private Map<String, Image> sprites;
 
     /**
      * Controller for the gameplay screen.
@@ -85,6 +93,38 @@ public class GameplayController extends GenericController implements GameUpdateL
      */
     public void showPauseModal() {
         addModal(screen.getPauseModal());
+    }
+
+    /**
+     * Shows a modal window with enemy stats & interaction options.
+     *
+     * @param enemy The enemy to show a modal window for
+     */
+    public void showEnemyModal(Enemy enemy) {
+        VBox enemyModal = new VBox();
+        enemyModal.getStyleClass().add(GameplayScreen.Css.PROMPT);
+
+        Label enemyHeader = new Label(enemy.getName());
+        enemyHeader.getStyleClass().add(GlobalCss.HEADER);
+        enemyModal.getChildren().add(enemyHeader);
+
+        enemyModal.getChildren().add(ImageLoader.getImageView(sprites.get(enemy.getName()),
+                0, 800, true));
+
+        enemyModal.getChildren().add(new Label(enemy.getDetails()));
+
+        Button attackButton = new Button("Attack");
+        attackButton.setOnAction(ae -> {
+            GameplayManager.getInstance().attack(enemy);
+            removeTopModal();
+        });
+        enemyModal.getChildren().add(attackButton);
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(ae -> removeTopModal());
+        enemyModal.getChildren().add(closeButton);
+
+        addModal(enemyModal);
     }
 
     /**
@@ -152,19 +192,40 @@ public class GameplayController extends GenericController implements GameUpdateL
     @Override
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent newGameEvent) {
-            spritePaths = newGameEvent.spritePaths();
-            if (spritePaths == null) {
-                spritePaths = new HashMap<>();
+            Map<String, String> spritePaths = newGameEvent.spritePaths();
+            if (spritePaths != null) {
+                sprites = spritePaths
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> ImageLoader.getImage(entry.getValue())
+                ));
+            } else {
+                sprites = new HashMap<>();
             }
-            updateCurrentPassage(newGameEvent.startPassage());
-            updateInventoryLists(newGameEvent.game().getPlayer().getInventory());
-            updatePlayerStats(newGameEvent.game().getPlayer());
+            Passage startPassage = newGameEvent.startPassage();
+            updateCurrentPassage(startPassage);
+            updateEnemies(startPassage.getEnemies());
+            Player player = newGameEvent.game().getPlayer();
+            updateInventoryLists(player.getInventory());
+            updatePlayerStats(player);
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
             Passage currentPassage = changePassageEvent.currentPassage();
             updateCurrentPassage(currentPassage);
+            updateEnemies(currentPassage.getEnemies());
             logAction("Moved to " + currentPassage.getTitle());
         } else if (event instanceof InventoryUpdateEvent inventoryUpdateEvent) {
             updateInventoryLists(inventoryUpdateEvent.inventory());
+        } else if (event instanceof EnemyAttackEvent enemyAttackEvent) {
+            List<Entity> targets = enemyAttackEvent.targets();
+            targets.stream()
+                    .filter(Player.class::isInstance)
+                    .findFirst()
+                    .ifPresent(playerEntity -> updatePlayerStats((Player) playerEntity));
+            updateEnemies(enemyAttackEvent.remainingEnemies());
+        } else if (event instanceof PlayerAttackEvent playerAttackEvent) {
+            updateEnemies(playerAttackEvent.remainingEnemies());
         }
     }
 
@@ -202,24 +263,6 @@ public class GameplayController extends GenericController implements GameUpdateL
             });
             moveOptions.getChildren().add(linkButton);
         });
-
-        newPassage.getEnemies().forEach(enemy -> {
-            VBox enemyBox = new VBox();
-            enemyBox.setStyle("-fx-alignment: center");
-            screen.getEnemyContent().getChildren().add(enemyBox);
-
-            enemyBox.getChildren().add(ImageLoader.getImageView(
-                    ImageLoader.getImage(spritePaths.get(enemy
-                            .getName().trim().toLowerCase().replace(" ", ""))),
-                    0, 400, true
-            ));
-
-            enemyBox.getChildren().add(new Label(enemy.getName()));
-
-            enemyBox.getChildren().add(new Label(String.format(
-                    "HP: %s/%s", enemy.getHealth(), enemy.getMaxHealth()
-            )));
-        });
     }
 
     /**
@@ -252,8 +295,41 @@ public class GameplayController extends GenericController implements GameUpdateL
      */
     public void updatePlayerStats(Player player) {
         screen.getNameLabel().setText(player.getName());
-        screen.getHpLabel().setText(player.getHealth() + "/" + player.getMaxHealth());
+        screen.getHpLabel().setText(String.format(
+                "%s/%s", player.getHealth(), player.getMaxHealth()));
         screen.getGoldLabel().setText(Integer.toString(player.getGold()));
         screen.getScoreLabel().setText(Integer.toString(player.getScore()));
+    }
+
+    /**
+     * Updates the enemies showed on the screen & all their stats.
+     *
+     * @param enemies The enemies to be showed on the screen
+     */
+    public void updateEnemies(List<Enemy> enemies) {
+        screen.getEnemyContent().getChildren().clear();
+
+        enemies.forEach(enemy -> {
+            Button enemyButton = new Button();
+            enemyButton.getStyleClass().add(GameplayScreen.Css.ENEMY_BUTTON);
+            enemyButton.setOnAction(ae -> showEnemyModal(enemy));
+            screen.getEnemyContent().getChildren().add(enemyButton);
+
+            VBox enemyBox = new VBox();
+            enemyBox.setStyle("-fx-alignment: center");
+            //The group makes the button not super tall
+            enemyButton.setGraphic(new Group(enemyBox));
+
+            enemyBox.getChildren().add(ImageLoader.getImageView(
+                    sprites.get(enemy.getName()),
+                    0, 400, true
+            ));
+
+            enemyBox.getChildren().add(new Label(enemy.getName()));
+
+            enemyBox.getChildren().add(new Label(String.format(
+                    "HP: %s/%s", enemy.getHealth(), enemy.getMaxHealth()
+            )));
+        });
     }
 }

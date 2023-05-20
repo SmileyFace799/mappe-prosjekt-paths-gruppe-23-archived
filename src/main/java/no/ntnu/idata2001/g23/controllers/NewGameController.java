@@ -68,7 +68,7 @@ public class NewGameController extends GenericController {
 
     /**
      * Shows the difficulty selection after the player has selected a game to play,
-     * which allows the player to choose the difficulty of the story..
+     * which allows the player to choose the difficulty of the story.
      */
     public void showDifficultySelection() {
         String playerName = screen.getPlayerNameInput().getText();

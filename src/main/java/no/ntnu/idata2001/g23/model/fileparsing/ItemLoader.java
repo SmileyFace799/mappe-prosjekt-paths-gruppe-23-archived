@@ -97,7 +97,7 @@ public class ItemLoader {
                         throw new CorruptFileException(CorruptFileException.Type.ITEM_NO_NAME,
                                 fileReader.getLineNumber());
                     }
-                    String itemName = nextLine.substring(1);
+                    String itemName = nextLine.substring(1).trim();
                     provider.addProvidable(itemName, parseItem(itemName, fileReader, provider));
                 } else if (!nextLine.isBlank()) {
                     throw new CorruptFileException(CorruptFileException.Type.INVALID_ITEM,
@@ -132,11 +132,11 @@ public class ItemLoader {
     }
 
     private static class Parameters {
-        public static final String VALUE = "value";
-        public static final String DESCRIPTION = "description";
-        public static final String DAMAGE = "damage";
-        public static final String CRIT_CHANCE = "critchance";
-        public static final String ON_USE = "onuse";
+        public static final String VALUE = "Value";
+        public static final String DESCRIPTION = "Description";
+        public static final String DAMAGE = "Damage";
+        public static final String CRIT_CHANCE = "Crit Chance";
+        public static final String ON_USE = "On Use";
 
         private Parameters() {
             throw new IllegalStateException("Do not instantiate this class pls :)");

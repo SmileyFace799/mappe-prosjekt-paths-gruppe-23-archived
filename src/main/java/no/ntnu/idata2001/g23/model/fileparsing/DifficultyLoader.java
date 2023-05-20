@@ -30,7 +30,7 @@ public class DifficultyLoader {
         try {
             while ((nextLine = fileReader.readLine()) != null) {
                 if (!nextLine.isBlank()) {
-                    difficulties.add(nextLine);
+                    difficulties.add(nextLine.trim());
                 }
             }
         } catch (IOException ioe) {

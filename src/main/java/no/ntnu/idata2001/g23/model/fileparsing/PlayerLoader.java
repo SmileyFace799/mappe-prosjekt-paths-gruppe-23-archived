@@ -27,7 +27,7 @@ public class PlayerLoader {
      */
     public PlayerLoader(Provider<Item> itemProvider, String name, String difficulty) {
         this.itemProvider = itemProvider;
-        this.name = name;
+        this.name = name.trim();
         this.difficulty = difficulty;
     }
 
@@ -94,11 +94,11 @@ public class PlayerLoader {
     }
 
     private static class Parameters {
-        public static final String HEALTH = "health";
-        public static final String SCORE = "score";
-        public static final String GOLD = "gold";
-        public static final String INVENTORY = "inventory";
-        public static final String WEAPON = "weapon";
+        public static final String HEALTH = "Health";
+        public static final String SCORE = "Score";
+        public static final String GOLD = "Gold";
+        public static final String INVENTORY = "Inventory";
+        public static final String WEAPON = "Weapon";
 
         private Parameters() {
             throw new IllegalStateException("Do not instantiate this class pls :)");

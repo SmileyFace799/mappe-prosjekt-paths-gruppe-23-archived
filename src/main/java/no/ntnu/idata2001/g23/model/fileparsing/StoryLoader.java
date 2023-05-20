@@ -29,14 +29,14 @@ public class StoryLoader {
         if (!rawLinkData.startsWith("[") || splitLinkData.length < 2) {
             throw new CorruptFileException(CorruptFileException.Type.LINK_NO_TEXT, lineNumber);
         }
-        final String linkText = splitLinkData[0].substring(1);
+        final String linkText = splitLinkData[0].substring(1).trim();
         rawLinkData = splitLinkData[1].trim();
 
         splitLinkData = rawLinkData.split("\\)", 2);
         if (!rawLinkData.startsWith("(") || splitLinkData.length < 2) {
             throw new CorruptFileException(CorruptFileException.Type.LINK_NO_REFERENCE, lineNumber);
         }
-        String linkReference = splitLinkData[0].substring(1);
+        String linkReference = splitLinkData[0].substring(1).trim();
         rawLinkData = splitLinkData[1].trim();
 
         List<Action> linkActions = new ArrayList<>();
@@ -113,7 +113,7 @@ public class StoryLoader {
             while ((nextLine = fileReader.readLine()) != null) { //Goes through whole file
 
                 if (nextLine.startsWith("::")) {
-                    passages.add(parsePassage(nextLine.substring(2), fileReader));
+                    passages.add(parsePassage(nextLine.substring(2).trim(), fileReader));
                 } else if (!nextLine.isBlank()) {
                     throw new CorruptFileException(CorruptFileException.Type.INVALID_PASSAGE,
                             fileReader.getLineNumber(), nextLine);
@@ -123,7 +123,7 @@ public class StoryLoader {
                 throw new CorruptFileException(CorruptFileException.Type.NO_PASSAGES,
                         fileReader.getLineNumber());
             }
-            loadedStory = new Story(storyTitle, passages.remove(0));
+            loadedStory = new Story(storyTitle.trim(), passages.remove(0));
             passages.forEach(loadedStory::addPassage);
         } catch (IOException ioe) {
             throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_STORY,
