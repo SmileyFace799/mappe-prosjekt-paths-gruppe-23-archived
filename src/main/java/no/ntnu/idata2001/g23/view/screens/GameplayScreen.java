@@ -170,11 +170,6 @@ public class GameplayScreen extends GenericScreen {
         resumeButton.setOnAction(ae -> controller.removeTopModal());
         pauseModal.getChildren().add(resumeButton);
 
-        Button saveButton = new Button("Save game");
-        //TODO: Save game features
-        saveButton.setDisable(true);
-        pauseModal.getChildren().add(saveButton);
-
         Button mainMenuButton = new Button("Main menu");
         mainMenuButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
         pauseModal.getChildren().add(mainMenuButton);

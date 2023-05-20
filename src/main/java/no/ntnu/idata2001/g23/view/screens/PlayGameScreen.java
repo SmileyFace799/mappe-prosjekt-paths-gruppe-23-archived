@@ -54,11 +54,6 @@ public class PlayGameScreen extends GenericScreen implements GameUpdateListener 
         startNewStory.setOnAction(ae -> controller.changeScreen(NewGameScreen.class));
         content.getChildren().add(startNewStory);
 
-        Button loadgame = new Button("Load Game");
-        //TODO: Make this button work
-        loadgame.setDisable(true);
-        content.getChildren().add(loadgame);
-
         Button tutorial = new Button("Tutorial");
         //TODO: Make this button work
         tutorial.setDisable(true);
