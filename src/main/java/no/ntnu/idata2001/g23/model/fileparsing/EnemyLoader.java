@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
+import no.ntnu.idata2001.g23.model.entities.enemies.VampireEnemy;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.Weapon;
 import no.ntnu.idata2001.g23.model.misc.Provider;
@@ -27,6 +27,57 @@ public class EnemyLoader {
         this.itemProvider = itemProvider;
     }
 
+    private Supplier<Enemy> parseBasicEnemy(String enemyName, Map<String, String> parameterMap) {
+        Enemy.EnemyBuilder enemyBuilder = new Enemy.EnemyBuilder(enemyName,
+                Integer.parseInt(parameterMap.get(Parameters.HEALTH)))
+                .setScore(Integer.parseInt(parameterMap.get(Parameters.SCORE)))
+                .setGold(Integer.parseInt(parameterMap.get(Parameters.GOLD)));
+        String inventoryString = parameterMap.get(Parameters.INVENTORY);
+        if (inventoryString != null) {
+            enemyBuilder.setStartingItems(itemProvider.provideAll(CollectionParserUtil
+                    .parseList(inventoryString)));
+        }
+        String dropChanceString = parameterMap.get(Parameters.DROP_CHANCE);
+        if (dropChanceString != null) {
+            enemyBuilder.setItemDropChance(Double.parseDouble(dropChanceString));
+        }
+        String weaponString = parameterMap.get(Parameters.WEAPON);
+        if (weaponString != null) {
+            enemyBuilder.setEquippedWeapon((Weapon) itemProvider.provide(weaponString));
+        }
+        String dropWeaponString = parameterMap.get(Parameters.DROP_WEAPON);
+        if (dropWeaponString != null) {
+            enemyBuilder.canDropWeapon(Boolean.parseBoolean(dropWeaponString));
+        }
+        return enemyBuilder::build;
+    }
+
+    private Supplier<Enemy> parseVampireEnemy(String enemyName, Map<String, String> parameterMap) {
+        VampireEnemy.VampireEnemyBuilder vampireBuilder =
+                new VampireEnemy.VampireEnemyBuilder(enemyName,
+                        Integer.parseInt(parameterMap.get(Parameters.HEALTH)))
+                        .setScore(Integer.parseInt(parameterMap.get(Parameters.SCORE)))
+                        .setGold(Integer.parseInt(parameterMap.get(Parameters.GOLD)));
+        String inventoryString = parameterMap.get(Parameters.INVENTORY);
+        if (inventoryString != null) {
+            vampireBuilder.setStartingItems(itemProvider.provideAll(CollectionParserUtil
+                    .parseList(inventoryString)));
+        }
+        String dropChanceString = parameterMap.get(Parameters.DROP_CHANCE);
+        if (dropChanceString != null) {
+            vampireBuilder.setItemDropChance(Double.parseDouble(dropChanceString));
+        }
+        String weaponString = parameterMap.get(Parameters.WEAPON);
+        if (weaponString != null) {
+            vampireBuilder.setEquippedWeapon((Weapon) itemProvider.provide(weaponString));
+        }
+        String dropWeaponString = parameterMap.get(Parameters.DROP_WEAPON);
+        if (dropWeaponString != null) {
+            vampireBuilder.canDropWeapon(Boolean.parseBoolean(dropWeaponString));
+        }
+        return vampireBuilder::build;
+    }
+
     private Supplier<Enemy> parseEnemy(String enemyName, LineNumberReader fileReader)
             throws IOException, CorruptFileException {
         String type = fileReader.readLine();
@@ -38,29 +89,13 @@ public class EnemyLoader {
         Supplier<Enemy> enemySupplier;
         try {
             switch (type.substring(1).toLowerCase().replace(" ", "")) {
-                case "basic" -> {
-                    Map<String, String> enemyParameterMap = CollectionParserUtil
-                            .parseMap(fileReader, true, Parameters.getBasicParameters());
-                    int health = Integer.parseInt(enemyParameterMap.get(Parameters.HEALTH));
-                    int score = Integer.parseInt(enemyParameterMap.get(Parameters.SCORE));
-                    int gold = Integer.parseInt(enemyParameterMap.get(Parameters.GOLD));
-                    List<Item> items = itemProvider.provideAll(CollectionParserUtil.parseList(
-                            enemyParameterMap.get(Parameters.INVENTORY)));
-                    double dropChance =
-                            Double.parseDouble(enemyParameterMap.get(Parameters.DROP_CHANCE));
-                    Weapon weapon =
-                            (Weapon) itemProvider.provide(enemyParameterMap.get(Parameters.WEAPON));
-                    boolean dropWeapon =
-                            Boolean.parseBoolean(enemyParameterMap.get(Parameters.DROP_WEAPON));
-                    enemySupplier = () -> new Enemy.EnemyBuilder(enemyName, health)
-                            .setScore(score)
-                            .setGold(gold)
-                            .setStartingItems(items)
-                            .setItemDropChance(dropChance)
-                            .setEquippedWeapon(weapon)
-                            .canDropWeapon(dropWeapon)
-                            .build();
-                }
+                case "basic" -> enemySupplier = parseBasicEnemy(enemyName,
+                        CollectionParserUtil.parseMap(fileReader, true,
+                                Parameters.getBasicRequired()));
+                case "vampire" -> enemySupplier = parseVampireEnemy(enemyName,
+                        CollectionParserUtil.parseMap(fileReader, true,
+                                Parameters.getVampireRequired()));
+
                 default -> throw new CorruptFileException(
                         CorruptFileException.Type.ENEMY_INVALID_TYPE,
                         fileReader.getLineNumber());
@@ -138,8 +173,12 @@ public class EnemyLoader {
             throw new IllegalStateException("Do not instantiate this class pls :)");
         }
 
-        public static String[] getBasicParameters() {
-            return new String[]{HEALTH, SCORE, GOLD, INVENTORY, DROP_CHANCE, WEAPON, DROP_WEAPON};
+        public static String[] getBasicRequired() {
+            return new String[]{HEALTH, SCORE, GOLD};
+        }
+
+        public static String[] getVampireRequired() {
+            return getBasicRequired();
         }
     }
 }

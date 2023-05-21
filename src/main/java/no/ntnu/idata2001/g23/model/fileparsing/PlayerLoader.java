@@ -22,8 +22,8 @@ public class PlayerLoader {
      * Makes a player loader.
      *
      * @param itemProvider A {@link Provider} that provides items for the loaded player
-     * @param name The player's name
-     * @param difficulty The difficulty to load the player for
+     * @param name         The player's name
+     * @param difficulty   The difficulty to load the player for
      */
     public PlayerLoader(Provider<Item> itemProvider, String name, String difficulty) {
         this.itemProvider = itemProvider;
@@ -40,7 +40,7 @@ public class PlayerLoader {
      */
     public Player parsePlayer(LineNumberReader fileReader)
             throws CorruptFileException {
-        Player player;
+        Player.PlayerBuilder playerBuilder;
         try {
             String nextLine = "";
             //Moves the reader forward to the player stats for the specified difficulty.
@@ -54,16 +54,20 @@ public class PlayerLoader {
 
             Map<String, String> playerParameterMap =
                     CollectionParserUtil.parseMap(fileReader, true,
-                            Parameters.getPlayerParameters());
-            player = new Player.PlayerBuilder(name,
+                            Parameters.getPlayerRequired());
+            playerBuilder = new Player.PlayerBuilder(name,
                     Integer.parseInt(playerParameterMap.get(Parameters.HEALTH)))
                     .setGold(Integer.parseInt(playerParameterMap.get(Parameters.GOLD)))
-                    .setScore(Integer.parseInt(playerParameterMap.get(Parameters.SCORE)))
-                    .setStartingItems(itemProvider.provideAll(CollectionParserUtil
-                            .parseList(playerParameterMap.get(Parameters.INVENTORY))))
-                    .setEquippedWeapon((Weapon) itemProvider
-                            .provide(playerParameterMap.get(Parameters.WEAPON)))
-                    .build();
+                    .setScore(Integer.parseInt(playerParameterMap.get(Parameters.SCORE)));
+            String inventoryString = playerParameterMap.get(Parameters.INVENTORY);
+            if (inventoryString != null) {
+                playerBuilder.setStartingItems(itemProvider.provideAll(CollectionParserUtil
+                        .parseList(inventoryString)));
+            }
+            String weaponString = playerParameterMap.get(Parameters.WEAPON);
+            if (weaponString != null) {
+                playerBuilder.setEquippedWeapon((Weapon) itemProvider.provide(weaponString));
+            }
         } catch (IOException ioe) {
             throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_ENEMIES,
                     fileReader.getLineNumber());
@@ -71,7 +75,7 @@ public class PlayerLoader {
             throw new CorruptFileException(CorruptFileException.Type.PLAYER_INVALID_VALUE,
                     fileReader.getLineNumber());
         }
-        return player;
+        return playerBuilder.build();
     }
 
     /**
@@ -104,8 +108,8 @@ public class PlayerLoader {
             throw new IllegalStateException("Do not instantiate this class pls :)");
         }
 
-        public static String[] getPlayerParameters() {
-            return new String[]{HEALTH, SCORE, GOLD, INVENTORY, WEAPON};
+        public static String[] getPlayerRequired() {
+            return new String[]{HEALTH, SCORE, GOLD};
         }
     }
 }

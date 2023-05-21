@@ -25,8 +25,8 @@ import no.ntnu.idata2001.g23.view.textures.ImageLoader;
  * The gameplay screen, where the game is played.
  */
 public class GameplayScreen extends GenericScreen {
-    private static final int HORIZONTAL_SPACING = 50;
-    private static final int VERTICAL_SPACING = 30;
+    public static final int HORIZONTAL_SPACING = 50;
+    public static final int VERTICAL_SPACING = 30;
     private static final String BACK_ICON = "backIcon.png";
 
     private final GameplayController controller;

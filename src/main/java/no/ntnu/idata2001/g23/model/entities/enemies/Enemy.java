@@ -26,12 +26,14 @@ public class Enemy extends Entity implements Actor {
     /**
      * Creates an enemy. This should only be called by {@link EnemyBuilder}.
      *
-     * @param name      The name of the enemy
-     * @param maxHealth How much max health the enemy has
-     * @param score     The amount of score the enemy will give upon death
-     * @param gold      How much gold the enemy will give upon death
+     * @param name           The name of the enemy
+     * @param maxHealth      How much max health the enemy has
+     * @param score          The amount of score the enemy will give upon death
+     * @param gold           How much gold the enemy will give upon death
+     * @param itemDropChance The chance for the enemy to drop any of it's inventory items
+     * @param canDropWeapon  If the enemy can drop their equipped weapon
      */
-    private Enemy(
+    protected Enemy(
             String name,
             int maxHealth,
             int score,
@@ -56,9 +58,10 @@ public class Enemy extends Entity implements Actor {
         List<Action> dropActions = new ArrayList<>();
         dropActions.add(new GoldAction(getGold()));
         dropActions.add(new ScoreAction(getScore()));
-        if (!canDropWeapon) {
+        Weapon equippedWeapon = getEquippedWeapon();
+        if (equippedWeapon != null && !canDropWeapon) {
             //Removes weapon so enemy can't drop it
-            getInventory().removeItem(getEquippedWeapon());
+            getInventory().removeItem(equippedWeapon);
         }
         getInventory().getContents().forEach(item -> {
             if (itemDropChance > Math.random()) {
@@ -81,8 +84,9 @@ public class Enemy extends Entity implements Actor {
      * @return A string of enemy details
      */
     public String getDetails() {
+        Weapon equippedWeapon = getEquippedWeapon();
         return String.format("%nHealth: %s/%s", getHealth(), getMaxHealth())
-                + "\nWeapon: " + getEquippedWeapon().getName();
+            + "\nWeapon: " + (equippedWeapon != null ? equippedWeapon.getName() : "None");
     }
 
     /**
@@ -97,6 +101,7 @@ public class Enemy extends Entity implements Actor {
      * </ul></p>
      *
      * @param possibleTargets A collection of all possible targets.
+     * @return A map of the enemy's actions, and the targets of them
      */
     @Override
     public Map<Action, List<Entity>> act(Collection<Entity> possibleTargets) {

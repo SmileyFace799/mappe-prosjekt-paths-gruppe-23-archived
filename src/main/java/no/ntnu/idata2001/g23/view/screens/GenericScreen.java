@@ -12,9 +12,8 @@ import javafx.scene.transform.Scale;
 public abstract class GenericScreen extends Scene {
     public static final int BASE_WIDTH = 3840;
     public static final int BASE_HEIGHT = 2160;
-
-    protected static final int HORIZONTAL_SPACING = 60;
-    protected static final int VERTICAL_SPACING = 60;
+    public static final int HORIZONTAL_SPACING = 60;
+    public static final int VERTICAL_SPACING = 60;
 
     private static final int DEFAULT_WINDOW_WIDTH = 1280;
     private static final int DEFAULT_WINDOW_HEIGHT = 720;

@@ -112,7 +112,7 @@ public class GameplayController extends GenericController implements GameUpdateL
      * @param enemy The enemy to show a modal window for
      */
     public void showEnemyModal(Enemy enemy) {
-        VBox enemyModal = new VBox();
+        VBox enemyModal = new VBox(GameplayScreen.VERTICAL_SPACING);
         enemyModal.getStyleClass().add(GameplayScreen.Css.PROMPT);
 
         Label enemyHeader = new Label(enemy.getName());
@@ -122,7 +122,9 @@ public class GameplayController extends GenericController implements GameUpdateL
         enemyModal.getChildren().add(ImageLoader.getImageView(sprites.get(enemy.getName()),
                 0, 800, true));
 
-        enemyModal.getChildren().add(new Label(enemy.getDetails()));
+        Label detailsText = new Label(enemy.getDetails());
+        detailsText.setStyle("-fx-text-alignment: center;");
+        enemyModal.getChildren().add(detailsText);
 
         Button attackButton = new Button("Attack");
         attackButton.setOnAction(ae -> {

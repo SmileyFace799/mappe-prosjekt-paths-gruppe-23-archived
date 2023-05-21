@@ -45,7 +45,7 @@ public class ItemLoader {
             switch (type.substring(1).toLowerCase().replace(" ", "")) {
                 case "meleeweapon" -> {
                     Map<String, String> itemParameterMap = CollectionParserUtil
-                            .parseMap(fileReader, true, Parameters.getWeaponParameters());
+                            .parseMap(fileReader, true, Parameters.getWeaponRequired());
                     int damage = Integer.parseInt(itemParameterMap.get(Parameters.DAMAGE));
                     double critChance = Double.parseDouble(
                             itemParameterMap.get(Parameters.CRIT_CHANCE));
@@ -55,7 +55,7 @@ public class ItemLoader {
                 }
                 case "usable" -> {
                     Map<String, String> itemParameterMap = CollectionParserUtil
-                            .parseMap(fileReader, true, Parameters.getUsableParameters());
+                            .parseMap(fileReader, true, Parameters.getUsableRequired());
                     int value = Integer.parseInt(itemParameterMap.get(Parameters.VALUE));
                     Action onUse = ActionParser.parseAction(
                             itemParameterMap
@@ -142,11 +142,11 @@ public class ItemLoader {
             throw new IllegalStateException("Do not instantiate this class pls :)");
         }
 
-        public static String[] getWeaponParameters() {
+        public static String[] getWeaponRequired() {
             return new String[]{VALUE, DESCRIPTION, DAMAGE, CRIT_CHANCE};
         }
 
-        public static  String[] getUsableParameters() {
+        public static  String[] getUsableRequired() {
             return new String[]{VALUE, DESCRIPTION, ON_USE};
         }
     }
