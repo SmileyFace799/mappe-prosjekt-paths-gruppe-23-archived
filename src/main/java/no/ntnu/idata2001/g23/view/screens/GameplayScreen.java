@@ -414,6 +414,8 @@ public class GameplayScreen extends GenericScreen {
         historyPrompt.getStyleClass().add(Css.RIGHT_PROMPT);
 
         VBox historyContentContainer = new VBox(VERTICAL_SPACING);
+        historyContentContainer.heightProperty().addListener(observable ->
+                historyPrompt.setVvalue(historyPrompt.getVmax()));
         historyPrompt.setContent(historyContentContainer);
 
         Label historyHeader = new Label("History");
@@ -503,7 +505,6 @@ public class GameplayScreen extends GenericScreen {
     public void setDefaultState() {
         controller.removeAllModal();
         controller.showActionPrompt();
-        controller.clearActionHistory();
     }
 
     /**

@@ -9,9 +9,16 @@ public interface Action {
     void execute(Entity entity);
 
     /**
-     * A detailed string that describes what the action does.
+     * A detailed string that describes what the action will do.
      *
-     * @return Details about the action
+     * @return Details about what the action will do
      */
-    String getDetails();
+    String getDescriptiveText();
+
+    /**
+     * A string of text that says what the action did upon execution.
+     *
+     * @return What the action did upon execution
+     */
+    String getExecutedText();
 }

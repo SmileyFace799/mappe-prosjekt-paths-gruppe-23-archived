@@ -18,8 +18,19 @@ public class GoldAction implements Action {
     }
 
     @Override
-    public String getDetails() {
-        return (gold < 0 ? "-" : "+") + Math.abs(gold) + " Gold";
+    public String getDescriptiveText() {
+        return String.format("%s %s gold",
+                gold < 0 ? "Lose" : "Gain",
+                Math.abs(gold)
+        );
+    }
+
+    @Override
+    public String getExecutedText() {
+        return String.format("%s %s gold",
+                gold < 0 ? "lost" : "gained",
+                Math.abs(gold)
+        );
     }
 
     /**

@@ -27,8 +27,13 @@ public class InventoryAction implements Action {
     }
 
     @Override
-    public String getDetails() {
-        return "Gain \"" + item.getName() + "\"";
+    public String getDescriptiveText() {
+        return "Gain " + item.getName();
+    }
+
+    @Override
+    public String getExecutedText() {
+        return "gained " + item.getName();
     }
 
     /**

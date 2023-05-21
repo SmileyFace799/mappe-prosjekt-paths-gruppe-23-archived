@@ -9,4 +9,11 @@ import no.ntnu.idata2001.g23.model.items.Weapon;
  */
 public record EquipWeaponEvent(
         Weapon equippedWeapon
-) implements GameUpdateEvent {}
+) implements GameUpdateEvent {
+    @Override
+    public String getDescriptiveText() {
+        return String.format("You equipped %s as your weapon",
+                equippedWeapon.getName()
+        );
+    }
+}

@@ -18,8 +18,15 @@ public class HealthAction implements Action {
     }
 
     @Override
-    public String getDetails() {
-        return (health < 0 ? "-" : "+") + Math.abs(health) + " Health";
+    public String getDescriptiveText() {
+        String baseString = health > 0 ? "Heal %s health" : "Take %s damage";
+        return String.format(baseString, Math.abs(health));
+    }
+
+    @Override
+    public String getExecutedText() {
+        String baseString = health > 0 ? "healed %s health" : "took %s damage";
+        return String.format(baseString, Math.abs(health));
     }
 
     /**

@@ -155,7 +155,7 @@ public abstract class Entity {
      * @param weapon The weapon to equip. If it's not in the entity's inventory, it will be added
      */
     public void equipWeapon(Weapon weapon) {
-        if (!inventory.hasItem(weapon)) {
+        if (weapon != null && !inventory.hasItem(weapon)) {
             inventory.addItem(weapon);
         }
         equippedWeapon = weapon;

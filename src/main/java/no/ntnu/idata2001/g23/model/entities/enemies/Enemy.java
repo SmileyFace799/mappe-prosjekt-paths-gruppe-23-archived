@@ -1,11 +1,15 @@
 package no.ntnu.idata2001.g23.model.entities.enemies;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.model.actions.Action;
+import no.ntnu.idata2001.g23.model.actions.GoldAction;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
+import no.ntnu.idata2001.g23.model.actions.InventoryAction;
+import no.ntnu.idata2001.g23.model.actions.ScoreAction;
 import no.ntnu.idata2001.g23.model.entities.Actor;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;
@@ -43,12 +47,32 @@ public class Enemy extends Entity implements Actor {
         this.canDropWeapon = canDropWeapon;
     }
 
-    public double getItemDropChance() {
-        return itemDropChance;
-    }
+    /**
+     * Makes an enemy drop all their loot.
+     *
+     * @return A list of actions that will give away the enemy's dropped loot
+     */
+    public List<Action> dropLoot() {
+        List<Action> dropActions = new ArrayList<>();
+        dropActions.add(new GoldAction(getGold()));
+        dropActions.add(new ScoreAction(getScore()));
+        if (!canDropWeapon) {
+            //Removes weapon so enemy can't drop it
+            getInventory().removeItem(getEquippedWeapon());
+        }
+        getInventory().getContents().forEach(item -> {
+            if (itemDropChance > Math.random()) {
+                dropActions.add(new InventoryAction(item));
+            }
+        });
 
-    public boolean canDropWeapon() {
-        return canDropWeapon;
+        //Enemy loses all their loot after dropping it
+        changeGold(-getGold());
+        changeScore(-getScore());
+        equipWeapon(null);
+        getInventory().clearItems();
+
+        return dropActions;
     }
 
     /**

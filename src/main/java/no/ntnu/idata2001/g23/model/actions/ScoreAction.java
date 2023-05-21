@@ -18,8 +18,19 @@ public class ScoreAction implements Action {
     }
 
     @Override
-    public String getDetails() {
-        return (points < 0 ? "-" : "+") + Math.abs(points) + " Points";
+    public String getDescriptiveText() {
+        return String.format("%s %s points",
+                points < 0 ? "Lose" : "Gain",
+                Math.abs(points)
+        );
+    }
+
+    @Override
+    public String getExecutedText() {
+        return String.format("%s %s points",
+                points < 0 ? "lost" : "gained",
+                Math.abs(points)
+        );
     }
 
     /**

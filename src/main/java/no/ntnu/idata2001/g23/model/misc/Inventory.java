@@ -78,6 +78,13 @@ public class Inventory {
     }
 
     /**
+     * Clears the inventory.
+     */
+    public void clearItems() {
+        contents.clear();
+    }
+
+    /**
      * Test for content equality between two objects.
      *
      * @param obj The object to compare to this one

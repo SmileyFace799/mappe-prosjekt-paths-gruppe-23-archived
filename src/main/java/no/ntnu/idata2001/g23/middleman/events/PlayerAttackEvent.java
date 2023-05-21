@@ -8,11 +8,19 @@ import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 /**
  * Indicates that the player attacked.
  *
- * @param player The attacking player
- * @param attack The attack done by the player
- * @param target The enemy affected by the attack
+ * @param player           The attacking player
+ * @param attack           The attack done by the player
+ * @param target           The enemy affected by the attack
  * @param remainingEnemies Every enemy remaining after the attack
  */
 public record PlayerAttackEvent(
         Player player, Action attack, Enemy target, List<Enemy> remainingEnemies
-) implements GameUpdateEvent {}
+) implements GameUpdateEvent {
+    @Override
+    public String getDescriptiveText() {
+        return String.format("You targeted %s, and they %s",
+                target.getName(),
+                attack.getExecutedText()
+        );
+    }
+}

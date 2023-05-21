@@ -15,4 +15,12 @@ public record NewGameEvent(
         Game game,
         Passage startPassage,
         Map<String, String> spritePaths
-) implements GameUpdateEvent {}
+) implements GameUpdateEvent {
+    @Override
+    public String getDescriptiveText() {
+        return String.format("%s set out on a brand new adventure through the story of %s",
+                game.getPlayer().getName(),
+                game.getStory().getTitle()
+        );
+    }
+}

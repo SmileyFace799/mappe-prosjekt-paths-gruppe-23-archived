@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -18,10 +18,12 @@ import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
+import no.ntnu.idata2001.g23.middleman.events.EnemyDeathEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.middleman.events.PlayerAttackEvent;
+import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
+import no.ntnu.idata2001.g23.middleman.events.UseItemEvent;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
@@ -41,7 +43,6 @@ import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 public class GameplayController extends GenericController implements GameUpdateListener {
     private final GameplayManager gameplayManager;
     private final GameplayScreen screen;
-    private final List<String> actionHistory;
 
     private Map<String, Image> sprites;
 
@@ -55,7 +56,6 @@ public class GameplayController extends GenericController implements GameUpdateL
         super(application);
         this.screen = screen;
         this.gameplayManager = GameplayManager.getInstance();
-        this.actionHistory = new ArrayList<>();
         GameplayManager.getInstance().addUpdateListener(this);
     }
 
@@ -184,11 +184,6 @@ public class GameplayController extends GenericController implements GameUpdateL
         screen.getEquipWeaponView().getSelectionModel().clearSelection();
     }
 
-    public void clearActionHistory() {
-        actionHistory.clear();
-        screen.getHistoryContent().getChildren().clear();
-    }
-
     @Override
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent newGameEvent) {
@@ -200,7 +195,7 @@ public class GameplayController extends GenericController implements GameUpdateL
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> ImageLoader.getImage(entry.getValue())
-                ));
+                        ));
             } else {
                 sprites = new HashMap<>();
             }
@@ -211,12 +206,14 @@ public class GameplayController extends GenericController implements GameUpdateL
             updateInventoryLists(player.getInventory());
             updatePlayerStats(player);
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
-            Passage currentPassage = changePassageEvent.currentPassage();
+            Passage currentPassage = changePassageEvent.newPassage();
             updateCurrentPassage(currentPassage);
             updateEnemies(currentPassage.getEnemies());
-            logAction("Moved to " + currentPassage.getTitle());
-        } else if (event instanceof InventoryUpdateEvent inventoryUpdateEvent) {
-            updateInventoryLists(inventoryUpdateEvent.inventory());
+        } else if (event instanceof UseItemEvent useItemEvent) {
+            Entity entity = useItemEvent.entity();
+            if (entity instanceof Player) {
+                updateInventoryLists(useItemEvent.entity().getInventory());
+            }
         } else if (event instanceof EnemyAttackEvent enemyAttackEvent) {
             List<Entity> targets = enemyAttackEvent.targets();
             targets.stream()
@@ -226,6 +223,17 @@ public class GameplayController extends GenericController implements GameUpdateL
             updateEnemies(enemyAttackEvent.remainingEnemies());
         } else if (event instanceof PlayerAttackEvent playerAttackEvent) {
             updateEnemies(playerAttackEvent.remainingEnemies());
+        } else if (event instanceof EnemyDeathEvent enemyDeathEvent
+                && (enemyDeathEvent.killer() instanceof Player player)) {
+            updatePlayerStats(player);
+            updateInventoryLists(player.getInventory());
+        } else if (event instanceof PlayerDeathEvent playerDeathEvent) {
+            //TODO: Lose game
+        }
+
+        String message = event.getDescriptiveText();
+        if (message != null && !message.isBlank()) {
+            logEvent(message);
         }
     }
 
@@ -234,14 +242,17 @@ public class GameplayController extends GenericController implements GameUpdateL
      *
      * @param logMessage THe message for the action to log
      */
-    public void logAction(String logMessage) {
-        if (actionHistory.size() >= 15) {
-            actionHistory.remove(0);
-        }
-        actionHistory.add(logMessage);
+    public void logEvent(String logMessage) {
         VBox historyContent = screen.getHistoryContent();
-        historyContent.getChildren().clear();
-        actionHistory.forEach(message -> historyContent.getChildren().add(new Label(message)));
+        if (!historyContent.getChildren().isEmpty()) {
+            //16 messages, accounting for separators
+            if (historyContent.getChildren().size() >= 31) {
+                //Removes event text, and the separator
+                historyContent.getChildren().remove(0, 2);
+            }
+            historyContent.getChildren().add(new Separator());
+        }
+        historyContent.getChildren().add(new Label(logMessage));
     }
 
     /**

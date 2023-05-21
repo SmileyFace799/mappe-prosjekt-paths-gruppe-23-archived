@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
+import no.ntnu.idata2001.g23.middleman.events.EnemyDeathEvent;
 import no.ntnu.idata2001.g23.middleman.events.EquipWeaponEvent;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.InventoryUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
 import no.ntnu.idata2001.g23.middleman.events.PlayerAttackEvent;
+import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
+import no.ntnu.idata2001.g23.middleman.events.UseItemEvent;
 import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
@@ -80,8 +82,9 @@ public class GameplayManager {
         if (link == null) {
             throw new IllegalArgumentException("\"link\" cannot be null");
         }
+        Passage oldPassage = currentPassage;
         this.currentPassage = game.go(link);
-        notifyListeners(new ChangePassageEvent(currentPassage));
+        notifyListeners(new ChangePassageEvent(oldPassage, currentPassage));
     }
 
     /**
@@ -90,8 +93,9 @@ public class GameplayManager {
      * @param item The item to use
      */
     public void useItem(UsableItem item) {
-        game.getPlayer().useItem(item);
-        notifyListeners(new InventoryUpdateEvent(game.getPlayer().getInventory()));
+        Player player = game.getPlayer();
+        player.useItem(item);
+        notifyListeners(new UseItemEvent(item, player));
     }
 
     public void equipWeapon(Weapon weapon) {
@@ -100,9 +104,38 @@ public class GameplayManager {
     }
 
     /**
-     * Executes an attack phase.
+     * Drops the loot of any enemy who has died, and gives it to the enemy's killer.
      *
-     * @param target The target to attack
+     * @param deadEnemy The enemy that died
+     * @param killedBy The entity that killed the enemy who died
+     */
+    private void enemyDeath(Enemy deadEnemy, Entity killedBy) {
+        List<Action> droppedLoot = deadEnemy.dropLoot();
+        if (killedBy != null) {
+            droppedLoot.forEach(action -> action.execute(killedBy));
+        }
+        notifyListeners(new EnemyDeathEvent(deadEnemy, killedBy, droppedLoot));
+    }
+
+    private void executeEnemyAttackAction(Enemy attacker, Action action, List<Entity> targets) {
+        targets.forEach(entity -> {
+            if (entity.getHealth() > 0) {
+                action.execute(entity);
+                if (entity.getHealth() <= 0) {
+                    if (entity instanceof Enemy e) {
+                        enemyDeath(e, attacker);
+                    } else if (entity instanceof Player player) {
+                        notifyListeners(new PlayerDeathEvent(player, attacker));
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Executes an attack phase, and kills any entity that would die during it.
+     *
+     * @param target The target for the player's attack
      */
     public void attack(Enemy target) {
         Player player = game.getPlayer();
@@ -110,10 +143,11 @@ public class GameplayManager {
         Action attack = new HealthAction(-player.getEquippedWeapon().getBaseDamage());
         attack.execute(target);
         if (target.getHealth() <= 0) {
+            enemyDeath(target, player);
             enemies.remove(target);
         }
         notifyListeners(new PlayerAttackEvent(
-                player, null, target, enemies));
+                player, attack, target, enemies));
 
         //After the player attacks, every enemy goes for an attack
         for (Enemy enemy : new ArrayList<>(enemies)) {
@@ -124,13 +158,12 @@ public class GameplayManager {
 
                 Map<Action, List<Entity>> actionMap = enemy.act(possibleTargets);
                 for (Map.Entry<Action, List<Entity>> actionEntry : actionMap.entrySet()) {
-                    Action action = actionEntry.getKey();
+                    Action enemyAttack = actionEntry.getKey();
                     List<Entity> targets = actionEntry.getValue();
-                    targets.forEach(action::execute);
-                    //TODO: Death event
+                    executeEnemyAttackAction(enemy, enemyAttack, targets);
                     enemies.removeIf(e -> e.getHealth() == 0);
                     notifyListeners(new EnemyAttackEvent(
-                            enemy, action, targets, enemies));
+                            enemy, enemyAttack, targets, enemies));
                 }
             }
         }

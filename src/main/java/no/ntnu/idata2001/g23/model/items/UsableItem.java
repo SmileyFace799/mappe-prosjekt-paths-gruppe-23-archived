@@ -25,6 +25,10 @@ public class UsableItem extends Item {
         this.onUse = onUse;
     }
 
+    public Action getUseAction() {
+        return onUse;
+    }
+
     public void use(Entity entity) {
         onUse.execute(entity);
     }
@@ -32,7 +36,7 @@ public class UsableItem extends Item {
     @Override
     public String getDetails() {
         return super.getDetails()
-                + "\nOn use: " + onUse.getDetails();
+                + "\nOn use: " + onUse.getDescriptiveText();
     }
 
     /**
