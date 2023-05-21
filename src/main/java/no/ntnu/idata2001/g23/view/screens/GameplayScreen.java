@@ -33,6 +33,7 @@ public class GameplayScreen extends GenericScreen {
     private BorderPane contentPane;
 
     private VBox pauseModal;
+    private VBox confirmRestartModal;
 
     private BorderPane topPrompt;
     private Label passageTitle;
@@ -84,6 +85,10 @@ public class GameplayScreen extends GenericScreen {
 
     public VBox getPauseModal() {
         return pauseModal;
+    }
+
+    public VBox getConfirmRestartModal() {
+        return confirmRestartModal;
     }
 
     public Label getPassageTitle() {
@@ -170,9 +175,34 @@ public class GameplayScreen extends GenericScreen {
         resumeButton.setOnAction(ae -> controller.removeTopModal());
         pauseModal.getChildren().add(resumeButton);
 
+        Button restartButton = new Button("Restart");
+        restartButton.setOnAction(ae -> controller.showConfirmRestartModal());
+        pauseModal.getChildren().add(restartButton);
+
         Button mainMenuButton = new Button("Main menu");
         mainMenuButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));
         pauseModal.getChildren().add(mainMenuButton);
+    }
+
+    private void initializeConfirmRestartModal() {
+        confirmRestartModal = new VBox(VERTICAL_SPACING);
+        confirmRestartModal.getStyleClass().add(Css.PROMPT);
+
+        Label confirmTitle = new Label("Are you sure you want to restart?");
+        confirmTitle.getStyleClass().add(GlobalCss.HEADER);
+        confirmRestartModal.getChildren().add(confirmTitle);
+
+        HBox buttonBox = new HBox((double) HORIZONTAL_SPACING * 10);
+        buttonBox.setStyle("-fx-alignment: center");
+        confirmRestartModal.getChildren().add(buttonBox);
+
+        Button yesButton = new Button("Yes");
+        yesButton.setOnAction(ae -> controller.restartGame());
+        buttonBox.getChildren().add(yesButton);
+
+        Button noButton = new Button("No");
+        noButton.setOnAction(ae -> controller.removeTopModal());
+        buttonBox.getChildren().add(noButton);
     }
 
     private void initializeTopPrompt() {
@@ -471,6 +501,7 @@ public class GameplayScreen extends GenericScreen {
     @Override
     protected void initializeNodes() {
         initializePauseModal();
+        initializeConfirmRestartModal();
 
         initializeTopPrompt();
 

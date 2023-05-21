@@ -27,6 +27,7 @@ import no.ntnu.idata2001.g23.middleman.events.UseItemEvent;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
+import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
@@ -34,6 +35,7 @@ import no.ntnu.idata2001.g23.model.misc.Inventory;
 import no.ntnu.idata2001.g23.model.story.Passage;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
+import no.ntnu.idata2001.g23.view.screens.GameOverScreen;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 
@@ -93,6 +95,13 @@ public class GameplayController extends GenericController implements GameUpdateL
      */
     public void showPauseModal() {
         addModal(screen.getPauseModal());
+    }
+
+    /**
+     * Prompts the player to confirm if they really wanna restart.
+     */
+    public void showConfirmRestartModal() {
+        addModal(screen.getConfirmRestartModal());
     }
 
     /**
@@ -164,6 +173,18 @@ public class GameplayController extends GenericController implements GameUpdateL
     }
 
     /**
+     * Restarts the game.
+     */
+    public void restartGame() {
+        try {
+            GameplayManager.getInstance().startGame();
+        } catch (CorruptFileException cfe) {
+            throw new IllegalStateException("Game could not restart (This should never happen)");
+        }
+        removeAllModal();
+    }
+
+    /**
      * Uses the selected item in the use item view.
      */
     public void useSelectedItem() {
@@ -205,6 +226,7 @@ public class GameplayController extends GenericController implements GameUpdateL
             Player player = newGameEvent.game().getPlayer();
             updateInventoryLists(player.getInventory());
             updatePlayerStats(player);
+            screen.getHistoryContent().getChildren().clear();
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
             Passage currentPassage = changePassageEvent.newPassage();
             updateCurrentPassage(currentPassage);
@@ -227,8 +249,8 @@ public class GameplayController extends GenericController implements GameUpdateL
                 && (enemyDeathEvent.killer() instanceof Player player)) {
             updatePlayerStats(player);
             updateInventoryLists(player.getInventory());
-        } else if (event instanceof PlayerDeathEvent playerDeathEvent) {
-            //TODO: Lose game
+        } else if (event instanceof PlayerDeathEvent) {
+            changeScreen(GameOverScreen.class);
         }
 
         String message = event.getDescriptiveText();

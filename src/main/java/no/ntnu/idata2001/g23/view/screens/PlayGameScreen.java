@@ -10,6 +10,7 @@ import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
 import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
+import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
 import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
@@ -69,6 +70,8 @@ public class PlayGameScreen extends GenericScreen implements GameUpdateListener 
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent) {
             continueStory.setDisable(false);
+        } else if (event instanceof PlayerDeathEvent) {
+            continueStory.setDisable(true);
         }
     }
 }

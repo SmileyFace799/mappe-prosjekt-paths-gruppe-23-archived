@@ -2,6 +2,7 @@ package no.ntnu.idata2001.g23.view;
 
 import java.util.Collection;
 import java.util.Set;
+import no.ntnu.idata2001.g23.view.screens.GameOverScreen;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.GenericScreen;
 import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
@@ -42,7 +43,8 @@ public class ScreenManager {
                 new SettingsScreen(application),
                 new PlayGameScreen(application),
                 new NewGameScreen(application),
-                new GameplayScreen(application)
+                new GameplayScreen(application),
+                new GameOverScreen(application)
         );
     }
 
