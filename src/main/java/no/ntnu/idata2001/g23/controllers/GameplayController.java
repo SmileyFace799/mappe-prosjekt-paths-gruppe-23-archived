@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
 import no.ntnu.idata2001.g23.middleman.GameplayManager;
+import no.ntnu.idata2001.g23.middleman.events.AllGoalsFulfilledEvent;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.EnemyDeathEvent;
@@ -37,6 +38,7 @@ import no.ntnu.idata2001.g23.view.DungeonApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 import no.ntnu.idata2001.g23.view.screens.GameOverScreen;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
+import no.ntnu.idata2001.g23.view.screens.VictoryScreen;
 import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 
 /**
@@ -172,6 +174,10 @@ public class GameplayController extends GenericController implements GameUpdateL
         screen.getContentPane().setLeft(screen.getEquipWeaponPrompt());
     }
 
+    public void showGoalsPrompt() {
+        screen.getContentPane().setLeft(screen.getGoalsPrompt());
+    }
+
     /**
      * Restarts the game.
      */
@@ -224,7 +230,6 @@ public class GameplayController extends GenericController implements GameUpdateL
             updateCurrentPassage(startPassage);
             updateEnemies(startPassage.getEnemies());
             Player player = newGameEvent.game().getPlayer();
-            updateInventoryLists(player.getInventory());
             updatePlayerStats(player);
             screen.getHistoryContent().getChildren().clear();
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
@@ -233,8 +238,8 @@ public class GameplayController extends GenericController implements GameUpdateL
             updateEnemies(currentPassage.getEnemies());
         } else if (event instanceof UseItemEvent useItemEvent) {
             Entity entity = useItemEvent.entity();
-            if (entity instanceof Player) {
-                updateInventoryLists(useItemEvent.entity().getInventory());
+            if (entity instanceof Player player) {
+                updatePlayerStats(player);
             }
         } else if (event instanceof EnemyAttackEvent enemyAttackEvent) {
             List<Entity> targets = enemyAttackEvent.targets();
@@ -248,33 +253,34 @@ public class GameplayController extends GenericController implements GameUpdateL
         } else if (event instanceof EnemyDeathEvent enemyDeathEvent
                 && (enemyDeathEvent.killer() instanceof Player player)) {
             updatePlayerStats(player);
-            updateInventoryLists(player.getInventory());
         } else if (event instanceof PlayerDeathEvent) {
             changeScreen(GameOverScreen.class);
+        } else if (event instanceof AllGoalsFulfilledEvent) {
+            changeScreen(VictoryScreen.class);
         }
 
-        String message = event.getDescriptiveText();
-        if (message != null && !message.isBlank()) {
-            logEvent(message);
-        }
+        logEvent(event);
     }
 
     /**
-     * Logs an action in the history pane.
+     * Logs an event in the history prompt.
      *
-     * @param logMessage THe message for the action to log
+     * @param event The event to log
      */
-    public void logEvent(String logMessage) {
-        VBox historyContent = screen.getHistoryContent();
-        if (!historyContent.getChildren().isEmpty()) {
-            //16 messages, accounting for separators
-            if (historyContent.getChildren().size() >= 31) {
-                //Removes event text, and the separator
-                historyContent.getChildren().remove(0, 2);
+    private void logEvent(GameUpdateEvent event) {
+        String logMessage = event.getDescriptiveText();
+        if (logMessage != null && !logMessage.isBlank()) {
+            VBox historyContent = screen.getHistoryContent();
+            if (!historyContent.getChildren().isEmpty()) {
+                //Goes up to 16 messages, accounting for separators
+                if (historyContent.getChildren().size() >= 31) {
+                    //Removes event text, and the separator
+                    historyContent.getChildren().remove(0, 2);
+                }
+                historyContent.getChildren().add(new Separator());
             }
-            historyContent.getChildren().add(new Separator());
+            historyContent.getChildren().add(new Label(logMessage));
         }
-        historyContent.getChildren().add(new Label(logMessage));
     }
 
     /**
@@ -282,7 +288,7 @@ public class GameplayController extends GenericController implements GameUpdateL
      *
      * @param newPassage The new passage with the updated text
      */
-    public void updateCurrentPassage(Passage newPassage) {
+    private void updateCurrentPassage(Passage newPassage) {
         screen.getPassageTitle().setText(newPassage.getTitle());
         screen.getPassageText().setText(newPassage.getContent());
 
@@ -303,7 +309,7 @@ public class GameplayController extends GenericController implements GameUpdateL
      *
      * @param inventory The inventory of items to show
      */
-    public void updateInventoryLists(Inventory inventory) {
+    private void updateInventoryLists(Inventory inventory) {
         ListView<Item> viewItemsView = screen.getViewItemsView();
         ListView<UsableItem> useItemView = screen.getUseItemView();
         ListView<Weapon> equipWeaponView = screen.getEquipWeaponView();
@@ -326,12 +332,14 @@ public class GameplayController extends GenericController implements GameUpdateL
      *
      * @param player The player with the updated stats to show
      */
-    public void updatePlayerStats(Player player) {
+    private void updatePlayerStats(Player player) {
         screen.getNameLabel().setText(player.getName());
         screen.getHpLabel().setText(String.format(
                 "%s/%s", player.getHealth(), player.getMaxHealth()));
         screen.getGoldLabel().setText(Integer.toString(player.getGold()));
         screen.getScoreLabel().setText(Integer.toString(player.getScore()));
+        updateInventoryLists(player.getInventory());
+        updateGoals();
     }
 
     /**
@@ -339,7 +347,7 @@ public class GameplayController extends GenericController implements GameUpdateL
      *
      * @param enemies The enemies to be showed on the screen
      */
-    public void updateEnemies(List<Enemy> enemies) {
+    private void updateEnemies(List<Enemy> enemies) {
         screen.getEnemyContent().getChildren().clear();
 
         enemies.forEach(enemy -> {
@@ -363,6 +371,21 @@ public class GameplayController extends GenericController implements GameUpdateL
             enemyBox.getChildren().add(new Label(String.format(
                     "HP: %s/%s", enemy.getHealth(), enemy.getMaxHealth()
             )));
+        });
+    }
+
+    /**
+     * Updates the player's list of goals.
+     */
+    private void updateGoals() {
+        VBox goalsBox = screen.getGoalsBox();
+        goalsBox.getChildren().clear();
+        GameplayManager.getInstance().checkGoals().forEach((goal, isFulfilled) -> {
+            Label goalText = new Label(goal.getDescriptiveText());
+            if (Boolean.TRUE.equals(isFulfilled)) {
+                goalText.setStyle("-fx-text-fill: lime;");
+            }
+            goalsBox.getChildren().add(goalText);
         });
     }
 }

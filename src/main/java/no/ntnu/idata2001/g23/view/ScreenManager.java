@@ -9,6 +9,7 @@ import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
 import no.ntnu.idata2001.g23.view.screens.NewGameScreen;
 import no.ntnu.idata2001.g23.view.screens.PlayGameScreen;
 import no.ntnu.idata2001.g23.view.screens.SettingsScreen;
+import no.ntnu.idata2001.g23.view.screens.VictoryScreen;
 
 /**
  * Creates & manages all the screens contained within the application.
@@ -44,7 +45,8 @@ public class ScreenManager {
                 new PlayGameScreen(application),
                 new NewGameScreen(application),
                 new GameplayScreen(application),
-                new GameOverScreen(application)
+                new GameOverScreen(application),
+                new VictoryScreen(application)
         );
     }
 

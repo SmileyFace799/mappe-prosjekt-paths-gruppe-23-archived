@@ -26,6 +26,11 @@ public class GoldGoal implements Goal {
         return player.getGold() >= minimumGold;
     }
 
+    @Override
+    public String getDescriptiveText() {
+        return String.format("Get at least %s gold", minimumGold);
+    }
+
     /**
      * Test for content equality between two objects.
      *

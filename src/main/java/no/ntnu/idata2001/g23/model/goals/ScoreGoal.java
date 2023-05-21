@@ -26,6 +26,11 @@ public class ScoreGoal implements Goal {
         return player.getScore() >= minimumPoints;
     }
 
+    @Override
+    public String getDescriptiveText() {
+        return String.format("Get at least %s points", minimumPoints);
+    }
+
     /**
      * Test for content equality between two objects.
      *

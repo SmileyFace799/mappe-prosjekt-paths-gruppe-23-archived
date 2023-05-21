@@ -27,6 +27,11 @@ public class InventoryGoal implements Goal {
         return player.getInventory().hasItem(mandatoryItem);
     }
 
+    @Override
+    public String getDescriptiveText() {
+        return "Obtain " + mandatoryItem;
+    }
+
     /**
      * Test for content equality between two objects.
      *

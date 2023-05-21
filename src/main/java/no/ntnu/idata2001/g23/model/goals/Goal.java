@@ -8,4 +8,11 @@ import no.ntnu.idata2001.g23.model.entities.Player;
  */
 public interface Goal {
     boolean isFulfilled(Player player);
+
+    /**
+     * A descriptive text string that explains the requirements for this goal.
+     *
+     * @return A string containing the goal's requirements
+     */
+    String getDescriptiveText();
 }

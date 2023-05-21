@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import no.ntnu.idata2001.g23.middleman.events.AllGoalsFulfilledEvent;
 import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
 import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
 import no.ntnu.idata2001.g23.middleman.events.EnemyDeathEvent;
@@ -141,7 +143,7 @@ public class GameplayManager {
      * Makes the set game & starts it from the beginning.
      *
      * @throws IllegalStateException If no game has been set
-     * @throws CorruptFileException If the game cannot be made due to one or more corrupt files
+     * @throws CorruptFileException  If the game cannot be made due to one or more corrupt files
      * @see #setGame(GameFileCollection, String, String)
      */
     public void startGame() throws CorruptFileException {
@@ -185,6 +187,9 @@ public class GameplayManager {
         Player player = game.getPlayer();
         player.useItem(item);
         notifyListeners(new UseItemEvent(item, player));
+        if (player.getHealth() <= 0) {
+            notifyListeners(new PlayerDeathEvent(player, null));
+        }
     }
 
     public void equipWeapon(Weapon weapon) {
@@ -256,5 +261,25 @@ public class GameplayManager {
                 }
             }
         }
+    }
+
+    /**
+     * Checks all the game's goals to see if the player fulfills them or not.
+     *
+     * @return A map of every goal, and if it's fulfilled or not
+     */
+    public Map<Goal, Boolean> checkGoals() {
+        Player player = game.getPlayer();
+        Map<Goal, Boolean> goalMap = game
+                .getGoals()
+                .stream()
+                .collect(Collectors.toMap(
+                        goal -> goal,
+                        goal -> goal.isFulfilled(player)
+                ));
+        if (goalMap.values().stream().allMatch(isFulfilled -> isFulfilled)) {
+            notifyListeners(new AllGoalsFulfilledEvent(game.getGoals()));
+        }
+        return goalMap;
     }
 }

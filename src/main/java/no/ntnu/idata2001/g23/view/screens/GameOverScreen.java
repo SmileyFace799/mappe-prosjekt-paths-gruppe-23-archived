@@ -41,6 +41,7 @@ public class GameOverScreen extends GenericScreen {
         root.getChildren().add(deathCause);
 
         VBox buttonBox = new VBox(VERTICAL_SPACING);
+        buttonBox.setStyle("-fx-alignment: center;");
         root.getChildren().add(buttonBox);
 
         Button restartButton = new Button("Restart");

@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -51,6 +52,9 @@ public class GameplayScreen extends GenericScreen {
     private ListView<UsableItem> useItemView;
     private ScrollPane equipWeaponPrompt;
     private ListView<Weapon> equipWeaponView;
+
+    private ScrollPane goalsPrompt;
+    private VBox goalsBox;
 
     private ScrollPane historyPrompt;
     private VBox historyContent;
@@ -137,6 +141,14 @@ public class GameplayScreen extends GenericScreen {
 
     public ListView<Weapon> getEquipWeaponView() {
         return equipWeaponView;
+    }
+
+    public ScrollPane getGoalsPrompt() {
+        return goalsPrompt;
+    }
+
+    public VBox getGoalsBox() {
+        return goalsBox;
     }
 
     public VBox getHistoryContent() {
@@ -242,6 +254,12 @@ public class GameplayScreen extends GenericScreen {
         Button inventoryButton = new Button("Inventory");
         inventoryButton.setOnAction(ae -> controller.showInventoryPrompt());
         actionPrompt.getChildren().add(inventoryButton);
+
+        actionPrompt.getChildren().add(new Separator());
+
+        Button goalsButton = new Button("View goals");
+        goalsButton.setOnAction(ae -> controller.showGoalsPrompt());
+        actionPrompt.getChildren().add(goalsButton);
     }
 
     private void initializeMovePrompt() {
@@ -439,6 +457,25 @@ public class GameplayScreen extends GenericScreen {
         equipWeaponContent.getChildren().add(equipButton);
     }
 
+    private void initilaizeGoalsPrompt() {
+        goalsPrompt = new DebugScrollPane();
+        goalsPrompt.getStyleClass().add(Css.LEFT_PROMPT);
+
+        VBox goalsContent = new VBox(VERTICAL_SPACING);
+        goalsPrompt.setContent(goalsContent);
+
+        Label goalsTitle = new Label("Goals");
+        goalsTitle.getStyleClass().add(GlobalCss.HEADER);
+        goalsContent.getChildren().add(goalsTitle);
+
+        goalsBox = new VBox(VERTICAL_SPACING);
+        goalsContent.getChildren().add(goalsBox);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(ae -> controller.showActionPrompt());
+        goalsContent.getChildren().add(backButton);
+    }
+
     private void initializeHistoryPrompt() {
         historyPrompt = new DebugScrollPane();
         historyPrompt.getStyleClass().add(Css.RIGHT_PROMPT);
@@ -511,6 +548,7 @@ public class GameplayScreen extends GenericScreen {
         initializeViewItemsPrompt();
         initializeUseItemPrompt();
         initializeEquipWeaponPrompt();
+        initilaizeGoalsPrompt();
 
         initializeHistoryPrompt();
 

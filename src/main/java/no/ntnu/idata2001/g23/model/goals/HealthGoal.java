@@ -26,6 +26,11 @@ public class HealthGoal implements Goal {
         return player.getHealth() >= minimumHealth;
     }
 
+    @Override
+    public String getDescriptiveText() {
+        return String.format("Get at least %s health", minimumHealth);
+    }
+
     /**
      * Test for content equality between two objects.
      *
