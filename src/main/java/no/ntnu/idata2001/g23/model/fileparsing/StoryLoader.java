@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.Action;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.misc.Provider;
 import no.ntnu.idata2001.g23.model.story.Link;
@@ -18,9 +19,11 @@ import no.ntnu.idata2001.g23.model.story.Story;
  */
 public class StoryLoader {
     private final Provider<Item> itemProvider;
+    private final Provider<Enemy> enemyProvider;
 
-    public StoryLoader(Provider<Item> itemProvider) {
+    public StoryLoader(Provider<Item> itemProvider, Provider<Enemy> enemyProvider) {
         this.itemProvider = itemProvider;
+        this.enemyProvider = enemyProvider;
     }
 
     private Link parseLink(String rawLinkData, int lineNumber)
@@ -65,12 +68,16 @@ public class StoryLoader {
         }
         StringBuilder passageContent = new StringBuilder();
         List<Link> passageLinks = new ArrayList<>();
+        List<Enemy> passageEnemies = new ArrayList<>();
         String nextLine;
         //Goes through one passage
         while ((nextLine = fileReader.readLine()) != null && !nextLine.isBlank()) {
             if ((nextLine.contains("[") && nextLine.contains("]"))
                     || (nextLine.contains("(") && nextLine.contains(")"))) {
                 passageLinks.add(parseLink(nextLine, fileReader.getLineNumber()));
+            } else if (nextLine.startsWith("!")) {
+                //TODO: Enemy parsing unit testing
+                passageEnemies.add(enemyProvider.provide(nextLine.substring(1)));
             } else {
                 if (!passageContent.isEmpty()) {
                     passageContent.append("\n");
@@ -83,9 +90,8 @@ public class StoryLoader {
                     fileReader.getLineNumber());
         }
         Passage returnPassage = new Passage(passageTitle, passageContent.toString());
-        for (Link passageLink : passageLinks) {
-            returnPassage.addLink(passageLink);
-        }
+        passageLinks.forEach(returnPassage::addLink);
+        passageEnemies.forEach(returnPassage::addEnemy);
         return returnPassage;
     }
 

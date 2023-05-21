@@ -23,7 +23,7 @@ class StoryLoaderTest {
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Test item", () ->
                 new Item(500, "Test Item", "Test description"));
-        this.storyLoader = new StoryLoader(itemProvider);
+        this.storyLoader = new StoryLoader(itemProvider, null);
     }
 
     /**

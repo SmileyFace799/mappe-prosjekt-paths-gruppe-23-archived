@@ -112,10 +112,10 @@ public class GameplayManager {
                 ? new EnemyLoader(itemProvider).loadEnemies(enemiesPath)
                 : null;
 
-        //parse & create story, using itemProvider
+        //parse & create story, using itemProvider & enemyProvider
         Path storyPath = gameFiles.getPathRequired(".paths",
                 CorruptFileException.Type.INFO_MISSING_STORY);
-        Story story = new StoryLoader(itemProvider).loadStory(storyPath);
+        Story story = new StoryLoader(itemProvider, enemyProvider).loadStory(storyPath);
 
         //parse & create player, using itemProvider, name & difficulty
         Path playerPath = gameFiles.getPathRequired(".player",
@@ -128,15 +128,8 @@ public class GameplayManager {
                 CorruptFileException.Type.INFO_MISSING_GOALS);
         List<Goal> goals = new GoalLoader(itemProvider, difficulty).loadGoals(goalsPath);
 
-        //Create game, using story & goals
-        Game loadedGame = new Game(player, story, goals);
-
-        //TODO: Remove this, make enemies part of .paths
-        for (String enemyName : new String[]{"Test Enemy", "Test Enemy"}) {
-            loadedGame.getStory().getPassages().forEach(passage ->
-                    passage.getEnemies().add(enemyProvider.provide(enemyName)));
-        }
-        return loadedGame;
+        //Create & return game, using story & goals
+        return new Game(player, story, goals);
     }
 
     /**
