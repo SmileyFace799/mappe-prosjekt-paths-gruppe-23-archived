@@ -17,9 +17,9 @@ public record UseItemEvent(
     public String getDescriptiveText() {
         String message;
         if (entity instanceof Player) {
-            message = String.format("You used %s, which %s",
+            message = String.format("You used %s, and %s",
                     usedItem.getName(),
-                    usedItem.getUseAction().getDescriptiveText()
+                    usedItem.getUseAction().getExecutedText()
             );
         } else {
             message = null;

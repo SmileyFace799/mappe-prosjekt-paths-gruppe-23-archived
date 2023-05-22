@@ -166,9 +166,17 @@ public class GameplayManager {
         if (link == null) {
             throw new IllegalArgumentException("\"link\" cannot be null");
         }
+        Player player = game.getPlayer();
+        List<Action> actions = link.getActions();
+        actions.forEach(action -> action.execute(player));
         Passage oldPassage = currentPassage;
         this.currentPassage = game.go(link);
-        notifyListeners(new ChangePassageEvent(oldPassage, currentPassage));
+        ChangePassageEvent changePassageEvent =
+                new ChangePassageEvent(oldPassage, currentPassage, actions, player);
+        notifyListeners(changePassageEvent);
+        if (player.getHealth() <= 0) {
+            notifyListeners(new PlayerDeathEvent(player, changePassageEvent));
+        }
     }
 
     /**
@@ -179,9 +187,10 @@ public class GameplayManager {
     public void useItem(UsableItem item) {
         Player player = game.getPlayer();
         player.useItem(item);
-        notifyListeners(new UseItemEvent(item, player));
+        UseItemEvent useItemEvent = new UseItemEvent(item, player);
+        notifyListeners(useItemEvent);
         if (player.getHealth() <= 0) {
-            notifyListeners(new PlayerDeathEvent(player, null));
+            notifyListeners(new PlayerDeathEvent(player, useItemEvent));
         }
     }
 
@@ -202,21 +211,6 @@ public class GameplayManager {
             droppedLoot.forEach(action -> action.execute(killedBy));
         }
         notifyListeners(new EnemyDeathEvent(deadEnemy, killedBy, droppedLoot));
-    }
-
-    private void executeEnemyAttackAction(Enemy attacker, Action action, List<Entity> targets) {
-        targets.forEach(entity -> {
-            if (entity.getHealth() > 0) {
-                action.execute(entity);
-                if (entity.getHealth() <= 0) {
-                    if (entity instanceof Enemy e) {
-                        enemyDeath(e, attacker);
-                    } else if (entity instanceof Player player) {
-                        notifyListeners(new PlayerDeathEvent(player, attacker));
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -247,10 +241,18 @@ public class GameplayManager {
                 for (Map.Entry<Action, List<Entity>> actionEntry : actionMap.entrySet()) {
                     Action enemyAttack = actionEntry.getKey();
                     List<Entity> targets = actionEntry.getValue();
-                    executeEnemyAttackAction(enemy, enemyAttack, targets);
-                    enemies.removeIf(e -> e.getHealth() == 0);
-                    notifyListeners(new EnemyAttackEvent(
-                            enemy, enemyAttack, targets, enemies));
+                    targets.forEach(enemyAttack::execute);
+                    EnemyAttackEvent enemyAttackEvent = new EnemyAttackEvent(
+                            enemy, enemyAttack, targets,
+                            enemies.stream().filter(e -> e.getHealth() > 0).toList());
+                    notifyListeners(enemyAttackEvent);
+                    targets.stream().filter(entity -> entity.getHealth() <= 0).forEach(dead -> {
+                        if (dead instanceof Enemy e) {
+                            enemyDeath(e, enemy);
+                        } else if (dead instanceof Player p) {
+                            notifyListeners(new PlayerDeathEvent(p, enemyAttackEvent));
+                        }
+                    });
                 }
             }
         }

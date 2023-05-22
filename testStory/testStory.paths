@@ -6,11 +6,6 @@ There is also an entrance behind you.
 [Try to open the door] (Another room)
 [Go behind you] (Test room) {Inventory: Big Sword UwU} {Gold: 500}
 !Test Enemy
-[A] (A)
-[B] (B)
-[C] (C)
-[D] (D)
-[E] (E)
 
 ::Another room
 The door opens to another room. You have reached the end of the game, there is no other option than going back.
@@ -19,3 +14,13 @@ The door opens to another room. You have reached the end of the game, there is n
 ::Test room
 Wowie, you found the debug area!
 [Back] (Beginnings) {Health: -5}
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy
+!Test Enemy

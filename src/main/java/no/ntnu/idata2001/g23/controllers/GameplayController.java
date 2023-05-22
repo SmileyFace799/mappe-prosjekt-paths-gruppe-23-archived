@@ -237,6 +237,7 @@ public class GameplayController extends GenericController implements GameUpdateL
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
             Passage currentPassage = changePassageEvent.newPassage();
             updateCurrentPassage(currentPassage);
+            updatePlayerStats(changePassageEvent.player());
             updateEnemies(currentPassage.getEnemies());
         } else if (event instanceof UseItemEvent useItemEvent) {
             Entity entity = useItemEvent.entity();

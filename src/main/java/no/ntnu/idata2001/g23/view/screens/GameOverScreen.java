@@ -28,6 +28,7 @@ public class GameOverScreen extends GenericScreen {
     @Override
     protected void initializeNodes() {
         deathCause = new Label();
+        deathCause.setStyle("-fx-text-alignment: center;");
     }
 
     @Override

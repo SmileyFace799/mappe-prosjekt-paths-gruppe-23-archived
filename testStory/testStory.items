@@ -5,8 +5,21 @@ Crit Chance: 0.3
 Value: 500
 Description: Your mother B)
 
+#Smol Sword UwU
+-Melee Weapon
+Damage: 1
+Crit Chance: 0.3
+Value: 200
+Description: Your father B)
+
 #Usable Test
 -Usable
 Value: 50
 Description: UwU
 On Use: {Inventory: Big Sword UwU}
+
+#Potion of Pain
+-Usable
+Value: 50
+Description: I really don't know why you would drink this...
+On Use: {Health: -50}
