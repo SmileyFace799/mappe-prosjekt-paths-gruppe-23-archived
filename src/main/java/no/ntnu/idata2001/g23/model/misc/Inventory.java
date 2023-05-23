@@ -10,10 +10,18 @@ import no.ntnu.idata2001.g23.model.items.Item;
 public class Inventory {
     private final List<Item> contents;
 
+    /**
+     * Makes a new inventory.
+     */
     public Inventory() {
         contents = new ArrayList<>();
     }
 
+    /**
+     * Gets the contents field.
+     *
+     * @return The contents field
+     */
     public List<Item> getContents() {
         return contents;
     }
@@ -36,6 +44,12 @@ public class Inventory {
         return foundItem;
     }
 
+    /**
+     * Checks if the inventory has an item.
+     *
+     * @param item The item to check if the inventory contains
+     * @return True if the inventory contains the specified item
+     */
     public boolean hasItem(Item item) {
         return contents.contains(item);
     }

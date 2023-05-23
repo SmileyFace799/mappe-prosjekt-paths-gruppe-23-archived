@@ -7,7 +7,15 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import no.ntnu.idata2001.g23.model.Game;
+import no.ntnu.idata2001.g23.model.entities.Player;
+import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
+import no.ntnu.idata2001.g23.model.goals.Goal;
+import no.ntnu.idata2001.g23.model.items.Item;
+import no.ntnu.idata2001.g23.model.misc.Provider;
+import no.ntnu.idata2001.g23.model.story.Story;
 
 /**
  * A collection of files that make up an entire game.
@@ -109,5 +117,46 @@ public class GameFileCollection {
     ) throws CorruptFileException {
         return getOptionalPath(fileExtension)
                 .orElseThrow(() -> new CorruptFileException(exceptionType));
+    }
+
+    /**
+     * Makes a new {@link Game} object from the collection of game files.
+     *
+     * @param playerName The player's name
+     * @param difficulty The game's difficulty
+     * @return The newly made game
+     * @throws CorruptFileException If the game cannot be made due to one or more corrupt files
+     */
+    public Game makeNewGame(String playerName, String difficulty) throws CorruptFileException {
+        //Parse items, create itemProvider
+        Path itemsPath = getPath(".items");
+        Provider<Item> itemProvider = itemsPath != null
+                ? ItemLoader.loadItems(itemsPath)
+                : null;
+
+        //Parse enemies, create enemyProvider, using itemProvider
+        Path enemiesPath = getPath(".enemies");
+        Provider<Enemy> enemyProvider = enemiesPath != null
+                ? new EnemyLoader(itemProvider).loadEnemies(enemiesPath)
+                : null;
+
+        //parse & create story, using itemProvider & enemyProvider
+        Path storyPath = getPathRequired(".paths",
+                CorruptFileException.Type.INFO_MISSING_STORY);
+        Story story = new StoryLoader(itemProvider, enemyProvider).loadStory(storyPath);
+
+        //parse & create player, using itemProvider, name & difficulty
+        Path playerPath = getPathRequired(".player",
+                CorruptFileException.Type.INFO_MISSING_PLAYER);
+        Player player = new PlayerLoader(itemProvider, playerName,
+                difficulty).loadPlayer(playerPath);
+
+        //parse & create goals, using itemProvider & difficulty
+        Path goalsPath = getPathRequired(".goals",
+                CorruptFileException.Type.INFO_MISSING_GOALS);
+        List<Goal> goals = new GoalLoader(itemProvider, difficulty).loadGoals(goalsPath);
+
+        //Create & return game, using story & goals
+        return new Game(player, story, goals);
     }
 }

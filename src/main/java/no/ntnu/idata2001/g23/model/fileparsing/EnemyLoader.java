@@ -49,6 +49,10 @@ public class EnemyLoader {
         if (dropWeaponString != null) {
             enemyBuilder.canDropWeapon(Boolean.parseBoolean(dropWeaponString));
         }
+        String escapeChanceString = parameterMap.get(Parameters.ESCAPE_CHANCE);
+        if (escapeChanceString != null) {
+            enemyBuilder.setEscapeChance(Double.parseDouble(escapeChanceString));
+        }
         return enemyBuilder::build;
     }
 
@@ -75,6 +79,10 @@ public class EnemyLoader {
         if (dropWeaponString != null) {
             vampireBuilder.canDropWeapon(Boolean.parseBoolean(dropWeaponString));
         }
+        String escapeChanceString = parameterMap.get(Parameters.ESCAPE_CHANCE);
+        if (escapeChanceString != null) {
+            vampireBuilder.setEscapeChance(Double.parseDouble(escapeChanceString));
+        }
         return vampireBuilder::build;
     }
 
@@ -82,7 +90,7 @@ public class EnemyLoader {
             throws IOException, CorruptFileException {
         String type = fileReader.readLine();
         if (!type.startsWith("-")) {
-            throw new CorruptFileException(CorruptFileException.Type.ITEM_NO_TYPE,
+            throw new CorruptFileException(CorruptFileException.Type.ENEMY_NO_TYPE,
                     fileReader.getLineNumber());
         }
 
@@ -168,6 +176,7 @@ public class EnemyLoader {
         public static final String DROP_CHANCE = "Drop Chance";
         public static final String WEAPON = "Weapon";
         public static final String DROP_WEAPON = "Drop Weapon";
+        public static final String ESCAPE_CHANCE = "Escape Chance";
 
         private Parameters() {
             throw new IllegalStateException("Do not instantiate this class pls :)");

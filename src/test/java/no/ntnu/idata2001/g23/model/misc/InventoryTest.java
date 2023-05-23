@@ -14,16 +14,13 @@ class InventoryTest {
 
     @BeforeEach
     void before() {
-        inventoryItem = new Item(
-                500, "Test item", "Test description");
-        inventorySword = new Weapon(5, 0.25, 500,
-                "Test sword", "Test description");
+        inventoryItem = new Item("Test item", "Test description");
+        inventorySword = new Weapon(5, "Test sword", "Test description");
         validInventory = new Inventory();
         validInventory.addItem(inventoryItem);
         validInventory.addItem(inventorySword);
 
-        otherItem = new Item(500, "Another test item",
-                "Another test description");
+        otherItem = new Item("Another test item", "Another test description");
     }
 
     @Test

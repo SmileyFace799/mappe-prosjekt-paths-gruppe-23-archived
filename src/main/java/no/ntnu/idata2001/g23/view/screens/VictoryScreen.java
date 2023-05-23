@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.controllers.VictoryController;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
@@ -16,11 +16,21 @@ public class VictoryScreen extends GenericScreen {
 
     private Label victoryText;
 
-    public VictoryScreen(DungeonApp application) {
+    /**
+     * Makes the victory screen.
+     *
+     * @param application The application instance to give to the controller
+     */
+    public VictoryScreen(PathsApp application) {
         super();
         this.controller = new VictoryController(this, application);
     }
 
+    /**
+     * Gets the victoryText field.
+     *
+     * @return The victoryText field
+     */
     public Label getVictoryText() {
         return victoryText;
     }

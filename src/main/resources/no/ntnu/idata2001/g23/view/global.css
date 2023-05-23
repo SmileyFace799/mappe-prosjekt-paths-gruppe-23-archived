@@ -3,7 +3,7 @@
 .root {
     -fx-alignment: center;
     -fx-background-color: #99E550;
-    -fx-background-image: url("textures/mainMenuBackground.png");
+    -fx-background-image: url("textures/defaultBackground.png");
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-background-size: contain;

@@ -1,11 +1,11 @@
 package no.ntnu.idata2001.g23.controllers;
 
-import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
-import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
+import no.ntnu.idata2001.g23.intermediary.GameUpdateListener;
+import no.ntnu.idata2001.g23.intermediary.GameplayManager;
+import no.ntnu.idata2001.g23.intermediary.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.intermediary.events.PlayerDeathEvent;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.screens.GameOverScreen;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 
@@ -21,7 +21,7 @@ public class GameOverController extends GenericController implements GameUpdateL
      * @param screen      The screen this controller belongs to
      * @param application The main application
      */
-    public GameOverController(GameOverScreen screen, DungeonApp application) {
+    public GameOverController(GameOverScreen screen, PathsApp application) {
         super(application);
         this.screen = screen;
         GameplayManager.getInstance().addUpdateListener(this);

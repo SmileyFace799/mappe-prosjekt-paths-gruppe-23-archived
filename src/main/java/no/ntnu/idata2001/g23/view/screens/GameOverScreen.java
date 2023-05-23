@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.idata2001.g23.controllers.GameOverController;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
@@ -16,11 +16,21 @@ public class GameOverScreen extends GenericScreen {
 
     private Label deathCause;
 
-    public GameOverScreen(DungeonApp application) {
+    /**
+     * Makes a new game over screen.
+     *
+     * @param application The application to pass to the controller
+     */
+    public GameOverScreen(PathsApp application) {
         super();
         controller = new GameOverController(this, application);
     }
 
+    /**
+     * Gets the deathCause field.
+     *
+     * @return The deathCause field
+     */
     public Label getDeathCause() {
         return deathCause;
     }

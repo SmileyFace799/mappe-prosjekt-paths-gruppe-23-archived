@@ -29,16 +29,13 @@ class ItemLoaderTest {
     @Test
     void testLoadingOfValidItems() {
         String validItemsString = """
-                #Big Sword UwU
-                -melee Weapon
+                ?Big Sword UwU
+                -Weapon
                 Damage: 5
-                Crit Chance: 0.3
-                Value: 500
                 Description: Your mother B)
                 
-                #Usable Test
+                ?Usable Test
                 -Usable
-                Value: 50
                 Description: UwU
                 On Use: {Inventory: Big Sword UwU}
                 """;
@@ -47,9 +44,9 @@ class ItemLoaderTest {
 
         Provider<Item> validItemProvider = new Provider<>();
         validItemProvider.addProvidable("Big Sword UwU", () -> new Weapon(5,
-                0.3, 500, "Big Sword UwU", "Your mother B)"));
+                "Big Sword UwU", "Your mother B)"));
         validItemProvider.addProvidable("Usable Test", () -> new UsableItem(
-                50, "Usable Test", "UwU",
+                "Usable Test", "UwU",
                 new InventoryAction(validItemProvider.provide("Big Sword UwU"))));
 
         parsedItemProvider.getIdentifiers().forEach(identifier -> assertEquals(
@@ -66,14 +63,14 @@ class ItemLoaderTest {
     @Test
     void testLoadingOfItemWithNoName() {
         assertCfeType("""
-                #
+                ?
                 """, CorruptFileException.Type.ITEM_NO_NAME);
     }
 
     @Test
     void testLoadingOfItemWithNoType() {
         assertCfeType("""
-                #Big Sword UwU
+                ?Big Sword UwU
                 Damage: 5
                 """, CorruptFileException.Type.ITEM_NO_TYPE);
     }
@@ -81,7 +78,7 @@ class ItemLoaderTest {
     @Test
     void testLoadingOfItemWithInvalidType() {
         assertCfeType("""
-                #Big Sword UwU
+                ?Big Sword UwU
                 -Invalid Type
                 """, CorruptFileException.Type.ITEM_INVALID_TYPE);
     }
@@ -89,11 +86,9 @@ class ItemLoaderTest {
     @Test
     void testLoadingOfItemWithInvalidParameterValue() {
         assertCfeType("""
-                #Big Sword UwU
-                -melee Weapon
-                Damage: 5
-                Crit Chance: 0.3
-                Value: Invalid Value
+                ?Big Sword UwU
+                -Weapon
+                Damage: minus five
                 Description: Your mother B)
                 """, CorruptFileException.Type.ITEM_INVALID_PARAMETER_VALUE);
     }

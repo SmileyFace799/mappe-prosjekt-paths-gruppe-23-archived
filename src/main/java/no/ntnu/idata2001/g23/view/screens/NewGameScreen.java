@@ -12,16 +12,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.NewGameController;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
- * The new game screen, where the player creates & starts a new game.
+ * The new game screen, where the player creates and starts a new game.
  */
 public class NewGameScreen extends GenericScreen {
     private final NewGameController controller;
 
-    public NewGameScreen(DungeonApp application) {
+    public NewGameScreen(PathsApp application) {
         super();
         controller = new NewGameController(this, application);
     }
@@ -35,34 +35,74 @@ public class NewGameScreen extends GenericScreen {
     private ListView<String> difficultyView;
     private Label difficultySelectErrorText;
 
+    /**
+     * Gets the contentPane field.
+     *
+     * @return The contentPane field
+     */
     public BorderPane getContentPane() {
         return contentPane;
     }
 
+    /**
+     * Gets the gameSelect field.
+     *
+     * @return The gameSelect field
+     */
     public VBox getGameSelect() {
         return gameSelect;
     }
 
+    /**
+     * Gets the playerNameInput field.
+     *
+     * @return The playerNameInput field
+     */
     public TextField getPlayerNameInput() {
         return playerNameInput;
     }
 
+    /**
+     * Gets the gameSelectErrorText field.
+     *
+     * @return The gameSelectErrorText field
+     */
     public Label getGameSelectErrorText() {
         return gameSelectErrorText;
     }
 
+    /**
+     * Gets the gamePathInput field.
+     *
+     * @return The gamePathInput field
+     */
     public TextField getGamePathInput() {
         return gamePathInput;
     }
 
+    /**
+     * Gets the difficultySelect field.
+     *
+     * @return The difficultySelect field
+     */
     public VBox getDifficultySelect() {
         return difficultySelect;
     }
 
+    /**
+     * Gets the difficultyView field.
+     *
+     * @return The difficultyView field
+     */
     public ListView<String> getDifficultyView() {
         return difficultyView;
     }
 
+    /**
+     * Gets the difficultySelectErrorText field.
+     *
+     * @return The difficultySelectErrorText field
+     */
     public Label getDifficultySelectErrorText() {
         return difficultySelectErrorText;
     }
@@ -82,11 +122,11 @@ public class NewGameScreen extends GenericScreen {
         nameBox.getChildren().add(new Label("Name:"));
 
         playerNameInput = new TextField();
-        playerNameInput.setMaxWidth(650);
+        playerNameInput.setMaxWidth(1000);
         playerNameInput.setTextFormatter(new TextFormatter<>(change -> {
             if (change.isContentChange()) {
                 String newText = change.getControlNewText();
-                int maxLength = 10;
+                int maxLength = 15;
                 if (newText.length() > maxLength) {
                     change.setText(newText.substring(0, maxLength));
                     change.setRange(0, change.getControlText().length());

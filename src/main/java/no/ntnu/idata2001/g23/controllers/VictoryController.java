@@ -1,11 +1,11 @@
 package no.ntnu.idata2001.g23.controllers;
 
-import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
-import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.middleman.events.AllGoalsFulfilledEvent;
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.intermediary.GameUpdateListener;
+import no.ntnu.idata2001.g23.intermediary.GameplayManager;
+import no.ntnu.idata2001.g23.intermediary.events.AllGoalsFulfilledEvent;
+import no.ntnu.idata2001.g23.intermediary.events.GameUpdateEvent;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.VictoryScreen;
 
@@ -21,7 +21,7 @@ public class VictoryController extends GenericController implements GameUpdateLi
      * @param screen      The screen this controller belongs to
      * @param application The main application
      */
-    public VictoryController(VictoryScreen screen, DungeonApp application) {
+    public VictoryController(VictoryScreen screen, PathsApp application) {
         super(application);
         this.screen = screen;
         GameplayManager.getInstance().addUpdateListener(this);

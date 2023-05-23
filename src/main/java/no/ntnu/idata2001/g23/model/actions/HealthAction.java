@@ -3,11 +3,16 @@ package no.ntnu.idata2001.g23.model.actions;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 
 /**
- * Changes the player's health.
+ * Changes an entity's health.
  */
 public class HealthAction implements Action {
     private final int health;
 
+    /**
+     * Makes a health action.
+     *
+     * @param health The health to add or remove
+     */
     public HealthAction(int health) {
         this.health = health;
     }
@@ -19,14 +24,28 @@ public class HealthAction implements Action {
 
     @Override
     public String getDescriptiveText() {
-        String baseString = health > 0 ? "Heal %s health" : "Take %s damage";
-        return String.format(baseString, Math.abs(health));
+        String message;
+        if (health > 0) {
+            message = String.format("Heal %s health", Math.abs(health));
+        } else if (health < 0) {
+            message = String.format("Take %s damage", Math.abs(health));
+        } else {
+            message = null;
+        }
+        return message;
     }
 
     @Override
     public String getExecutedText() {
-        String baseString = health > 0 ? "healed %s health" : "took %s damage";
-        return String.format(baseString, Math.abs(health));
+        String message;
+        if (health > 0) {
+            message = String.format("healed %s health", Math.abs(health));
+        } else if (health < 0) {
+            message = String.format("took %s damage", Math.abs(health));
+        } else {
+            message = null;
+        }
+        return message;
     }
 
     /**

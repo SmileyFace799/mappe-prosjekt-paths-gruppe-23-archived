@@ -3,11 +3,16 @@ package no.ntnu.idata2001.g23.model.actions;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 
 /**
- * Changes the amount of gold the player has.
+ * Changes the amount of gold the entity has.
  */
 public class GoldAction implements Action {
     private final int gold;
 
+    /**
+     * Makes a gold action.
+     *
+     * @param gold The amount of gold to add or remove
+     */
     public GoldAction(int gold) {
         this.gold = gold;
     }
@@ -19,18 +24,28 @@ public class GoldAction implements Action {
 
     @Override
     public String getDescriptiveText() {
-        return String.format("%s %s gold",
-                gold < 0 ? "Lose" : "Gain",
-                Math.abs(gold)
-        );
+        String message;
+        if (gold > 0) {
+            message = String.format("Gain %s gold", Math.abs(gold));
+        } else if (gold < 0) {
+            message = String.format("Lose %s gold", Math.abs(gold));
+        } else {
+            message = null;
+        }
+        return message;
     }
 
     @Override
     public String getExecutedText() {
-        return String.format("%s %s gold",
-                gold < 0 ? "lost" : "gained",
-                Math.abs(gold)
-        );
+        String message;
+        if (gold > 0) {
+            message = String.format("gained %s gold", Math.abs(gold));
+        } else if (gold < 0) {
+            message = String.format("lost %s gold", Math.abs(gold));
+        } else {
+            message = null;
+        }
+        return message;
     }
 
     /**

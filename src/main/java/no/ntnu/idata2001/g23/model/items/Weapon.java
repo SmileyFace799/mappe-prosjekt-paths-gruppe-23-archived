@@ -4,46 +4,37 @@ package no.ntnu.idata2001.g23.model.items;
  * Any item that can be equipped as a weapon to damage enemies.
  */
 public class Weapon extends Item {
-    protected final int baseDamage;
-    protected final double baseCritChance;
+    protected final int damage;
 
     /**
      * Makes a basic weapon.
      *
-     * @param baseDamage     The weapon's base damage.
-     * @param baseCritChance The chance for the weapon to critically strike its target.
-     * @param value          The base value of the weapon, used to calculate sell price.
-     *                       If the value is 0, it will not be sellable.
+     * @param damage     The weapon's damage.
      * @param name           The weapon's name.
      * @param description    The weapon's description.
      */
-    public Weapon(int baseDamage, double baseCritChance, int value,
+    public Weapon(int damage,
                      String name, String description) {
-        super(value, name, description);
-        if (baseDamage < 0) {
+        super(name, description);
+        if (damage < 0) {
             throw new IllegalArgumentException("int \"damage\" cannot be negative");
         }
-        if (baseCritChance < 0 || baseCritChance > 1) {
-            throw new IllegalArgumentException(
-                    "double \"baseCritChance\" cannot be less than 0, or greater than 1");
-        }
-        this.baseDamage = baseDamage;
-        this.baseCritChance = baseCritChance;
+        this.damage = damage;
     }
 
-    public int getBaseDamage() {
-        return baseDamage;
-    }
-
-    public double getBaseCritChance() {
-        return baseCritChance;
+    /**
+     * Gets the damage field.
+     *
+     * @return The damage field
+     */
+    public int getDamage() {
+        return damage;
     }
 
     @Override
     public String getDetails() {
         return super.getDetails()
-                + "\nBase damage: " + getBaseDamage()
-                + "\nBase critical strike chance: " + getBaseCritChance();
+                + "\nDamage: " + getDamage();
     }
 
     /**
@@ -65,8 +56,7 @@ public class Weapon extends Item {
         }
         Weapon weapon = (Weapon) obj;
         return super.equals(weapon)
-                && baseDamage == weapon.baseDamage
-                && baseCritChance == weapon.baseCritChance;
+                && damage == weapon.damage;
     }
 
     /**
@@ -77,8 +67,7 @@ public class Weapon extends Item {
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 31 * hash + Integer.hashCode(baseDamage);
-        hash = 31 * hash + Double.hashCode(baseCritChance);
+        hash = 31 * hash + Integer.hashCode(damage);
         return hash;
     }
 }

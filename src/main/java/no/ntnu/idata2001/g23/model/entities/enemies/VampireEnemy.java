@@ -1,8 +1,8 @@
 package no.ntnu.idata2001.g23.model.entities.enemies;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
 import no.ntnu.idata2001.g23.model.entities.Entity;
@@ -15,24 +15,26 @@ import no.ntnu.idata2001.g23.model.items.Weapon;
 public class VampireEnemy extends Enemy {
 
     /**
-     * Creates an enemy. This should only be called by {@link VampireEnemyBuilder}.
+     * Creates a vampire enemy. This should only be called by {@link VampireEnemyBuilder}.
      *
      * @param name           The name of the enemy
-     * @param maxHealth      How much max health the enemy has
+     * @param health         How much health the enemy has
      * @param score          The amount of score the enemy will give upon death
      * @param gold           How much gold the enemy will give upon death
      * @param itemDropChance The chance for the enemy to drop any of it's inventory items
      * @param canDropWeapon  If the enemy can drop their equipped weapon
+     * @param escapeChance   The chance of the player successfully escaping this enemy
      */
     protected VampireEnemy(
             String name,
-            int maxHealth,
+            int health,
             int score,
             int gold,
             double itemDropChance,
-            boolean canDropWeapon
+            boolean canDropWeapon,
+            double escapeChance
     ) {
-        super(name, maxHealth, score, gold, itemDropChance, canDropWeapon);
+        super(name, health, score, gold, itemDropChance, canDropWeapon, escapeChance);
     }
 
     @Override
@@ -48,11 +50,11 @@ public class VampireEnemy extends Enemy {
      * @return A map of the enemy's actions, and the targets of them
      */
     @Override
-    public Map<Action, List<Entity>> act(Collection<Entity> possibleTargets) {
+    public Map<Action, List<Entity>> act(List<Entity> possibleTargets) {
         Map<Action, List<Entity>> actions = super.act(possibleTargets);
         Weapon equippedWeapon = getEquippedWeapon();
         if (equippedWeapon != null) {
-            actions.put(new HealthAction(equippedWeapon.getBaseDamage() / 2), List.of(this));
+            actions.put(new HealthAction(equippedWeapon.getDamage() / 2), List.of(this));
         }
         return actions;
     }
@@ -63,57 +65,95 @@ public class VampireEnemy extends Enemy {
     public static class VampireEnemyBuilder {
         //Required
         private final String name;
-        private final int maxHealth;
+        private final int health;
 
         //Optional
-        private int health;
         private int score;
         private int gold;
         private List<Item> items;
         private Weapon weapon;
         private double itemDropChance;
         private boolean canDropWeapon;
+        private double escapeChance;
 
         /**
          * Makes a builder for the enemy.
          *
-         * @param name      The enemy's name
-         * @param maxHealth The enemy's max health
+         * @param name   The enemy's name
+         * @param health The enemy's max health
          */
-        public VampireEnemyBuilder(String name, int maxHealth) {
+        public VampireEnemyBuilder(String name, int health) {
+            if (name == null || name.isBlank()) {
+                throw new IllegalArgumentException("String \"name\" cannot be null or blank");
+            }
+            if (health < 0) {
+                throw new IllegalArgumentException("int \"health\" must be 0 or greater");
+            }
             this.name = name;
-            this.maxHealth = maxHealth;
+            this.health = health;
 
             //Default optional values
-            health = maxHealth;
-            score = 0;
-            gold = 0;
-            items = List.of();
-            weapon = null;
-            itemDropChance = 0.5;
-            canDropWeapon = true;
+            this.score = 0;
+            this.gold = 0;
+            this.items = List.of();
+            this.weapon = null;
+            this.itemDropChance = 0.5;
+            this.canDropWeapon = true;
+            this.escapeChance = 0.5;
         }
 
-        public VampireEnemyBuilder setHealth(int health) {
-            this.health = health;
-            return this;
-        }
-
+        /**
+         * Sets the score the enemy will give upon being killed.
+         *
+         * @param score The enemy's new score
+         * @return The builder
+         * @throws IllegalArgumentException If the enemy's new score is less than 0
+         */
         public VampireEnemyBuilder setScore(int score) {
+            if (score < 0) {
+                throw new IllegalArgumentException("int \"score\" must be 0 or greater");
+            }
             this.score = score;
             return this;
         }
 
+        /**
+         * Sets the gold the enemy will give upon being killed.
+         *
+         * @param gold The enemy's new gold
+         * @return The builder
+         * @throws IllegalArgumentException If the enemy's new gold is less than 0
+         */
         public VampireEnemyBuilder setGold(int gold) {
+            if (gold < 0) {
+                throw new IllegalArgumentException("int \"gold\" must be 0 or greater");
+            }
             this.gold = gold;
             return this;
         }
 
+        /**
+         * Sets the enemy's starting items.
+         *
+         * @param items The enemy's new list of starting items
+         * @return The builder
+         * @throws IllegalArgumentException If the list of new items contains {@code null}
+         */
         public VampireEnemyBuilder setStartingItems(List<Item> items) {
+            if (items != null && items.stream().anyMatch(Objects::isNull)) {
+                throw new IllegalArgumentException("List \"items\" cannot contain null");
+            }
             this.items = items;
             return this;
         }
 
+        /**
+         * Sets the enemy's equipped weapon.
+         * Will also be added to the enemy's list of items upon building.
+         *
+         * @param weapon The weapon to set as equipped
+         * @return The builder
+         */
         public VampireEnemyBuilder setEquippedWeapon(Weapon weapon) {
             this.weapon = weapon;
             return this;
@@ -134,8 +174,30 @@ public class VampireEnemy extends Enemy {
             return this;
         }
 
+        /**
+         * Sets if the enemy can drop its weapon upon death.
+         * The weapon will still have to pass the item drop chance to successfully drop.
+         *
+         * @param dropWeapon If the enemy's weapon can be dropped upon death
+         * @return The builder
+         */
         public VampireEnemyBuilder canDropWeapon(boolean dropWeapon) {
             this.canDropWeapon = dropWeapon;
+            return this;
+        }
+
+        /**
+         * Sets the chance of the player successfully escaping this enemy, if they try to move away.
+         *
+         * @param escapeChance The new escape chance
+         * @return The builder
+         */
+        public VampireEnemyBuilder setEscapeChance(double escapeChance) {
+            if (escapeChance < 0 || escapeChance > 1) {
+                throw new IllegalArgumentException(
+                        "double \"escapeChance\" cannot be less than 0 or greater than 1");
+            }
+            this.escapeChance = escapeChance;
             return this;
         }
 
@@ -146,8 +208,7 @@ public class VampireEnemy extends Enemy {
          */
         public VampireEnemy build() {
             VampireEnemy vampireEnemy = new VampireEnemy(
-                    name, maxHealth, score, gold, itemDropChance, canDropWeapon);
-            vampireEnemy.setHealth(health);
+                    name, health, score, gold, itemDropChance, canDropWeapon, escapeChance);
             for (Item item : items) {
                 vampireEnemy.getInventory().addItem(item);
             }

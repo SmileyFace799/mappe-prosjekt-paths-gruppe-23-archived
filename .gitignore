@@ -2,5 +2,6 @@
 target/
 *.iml
 *.docx
+*.pdf
 *.tmp
 *.aseprite

@@ -150,7 +150,7 @@ public abstract class Entity {
     }
 
     /**
-     * Assigns a weapon for the entity to use during combat.
+     * Assigns a weapon for the entity to use during combat. Can be {@code null}.
      *
      * @param weapon The weapon to equip. If it's not in the entity's inventory, it will be added
      */

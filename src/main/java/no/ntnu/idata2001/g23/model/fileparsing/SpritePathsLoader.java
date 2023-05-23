@@ -18,11 +18,23 @@ import no.ntnu.idata2001.g23.view.textures.ImageLoader;
 public class SpritePathsLoader {
     private final Path gamePath;
 
+    /**
+     * Makes a sprite paths loader.
+     *
+     * @param gamePath The file path of the game to load sprites for
+     */
     public SpritePathsLoader(Path gamePath) {
         this.gamePath = gamePath;
     }
 
-    //TODO: Unit testing
+    /**
+     * Parses sprite paths from a {@link LineNumberReader},
+     * and returns a {@link Map} with every object name and the path to its associated sprite.
+     *
+     * @param fileReader A {@link LineNumberReader} that contains some sprite paths.
+     * @return A {@link Map} that can contains all the sprite paths
+     * @throws CorruptFileException If the sprite paths could not be parsed
+     */
     public Map<String, String> parseSpritePaths(LineNumberReader fileReader)
             throws CorruptFileException {
         Map<String, String> spritePaths;
@@ -44,6 +56,14 @@ public class SpritePathsLoader {
         return spritePaths;
     }
 
+    /**
+     * Loads sprite paths from a {@link LineNumberReader},
+     * and returns a {@link Map} with every object name and the path to its associated sprite.
+     *
+     * @param spritesFilePath The file path of the sprites to load
+     * @return A {@link Map} that can contains all the sprite paths
+     * @throws CorruptFileException If the sprite paths could not be parsed
+     */
     public Map<String, String> loadSpritePaths(Path spritesFilePath)
             throws CorruptFileException {
         Map<String, String> spritePaths;

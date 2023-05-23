@@ -11,20 +11,26 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
-import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.middleman.events.AllGoalsFulfilledEvent;
-import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
-import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
-import no.ntnu.idata2001.g23.middleman.events.EnemyDeathEvent;
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
-import no.ntnu.idata2001.g23.middleman.events.PlayerAttackEvent;
-import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
-import no.ntnu.idata2001.g23.middleman.events.UseItemEvent;
+import no.ntnu.idata2001.g23.intermediary.GameUpdateListener;
+import no.ntnu.idata2001.g23.intermediary.GameplayManager;
+import no.ntnu.idata2001.g23.intermediary.events.AllGoalsFulfilledEvent;
+import no.ntnu.idata2001.g23.intermediary.events.ChangePassageEvent;
+import no.ntnu.idata2001.g23.intermediary.events.EnemyAttackEvent;
+import no.ntnu.idata2001.g23.intermediary.events.EnemyDeathEvent;
+import no.ntnu.idata2001.g23.intermediary.events.EquipWeaponEvent;
+import no.ntnu.idata2001.g23.intermediary.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.intermediary.events.NewGameEvent;
+import no.ntnu.idata2001.g23.intermediary.events.PlayerAttackEvent;
+import no.ntnu.idata2001.g23.intermediary.events.PlayerDeathEvent;
+import no.ntnu.idata2001.g23.intermediary.events.UseItemEvent;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
@@ -32,9 +38,8 @@ import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
-import no.ntnu.idata2001.g23.model.misc.Inventory;
 import no.ntnu.idata2001.g23.model.story.Passage;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 import no.ntnu.idata2001.g23.view.screens.GameOverScreen;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
@@ -49,6 +54,7 @@ public class GameplayController extends GenericController implements GameUpdateL
     private final GameplayScreen screen;
 
     private Map<String, Image> sprites;
+    private Player player;
 
     /**
      * Controller for the gameplay screen.
@@ -56,7 +62,7 @@ public class GameplayController extends GenericController implements GameUpdateL
      * @param screen      The screen this is a controller for
      * @param application THe main application
      */
-    public GameplayController(GameplayScreen screen, DungeonApp application) {
+    public GameplayController(GameplayScreen screen, PathsApp application) {
         super(application);
         this.screen = screen;
         this.gameplayManager = GameplayManager.getInstance();
@@ -100,20 +106,21 @@ public class GameplayController extends GenericController implements GameUpdateL
     }
 
     /**
-     * Prompts the player to confirm if they really wanna restart.
+     * Prompts the player to confirm if they really want to restart.
      */
     public void showConfirmRestartModal() {
         addModal(screen.getConfirmRestartModal());
     }
 
     /**
-     * Shows a modal window with enemy stats & interaction options.
+     * Shows a modal window with enemy stats and interaction options.
      *
      * @param enemy The enemy to show a modal window for
      */
     public void showEnemyModal(Enemy enemy) {
         VBox enemyModal = new VBox(GameplayScreen.VERTICAL_SPACING);
         enemyModal.getStyleClass().add(GameplayScreen.Css.PROMPT);
+        enemyModal.setStyle("-fx-max-width: 2000px;");
 
         Label enemyHeader = new Label(enemy.getName());
         enemyHeader.getStyleClass().add(GlobalCss.HEADER);
@@ -132,6 +139,11 @@ public class GameplayController extends GenericController implements GameUpdateL
             removeTopModal();
         });
         enemyModal.getChildren().add(attackButton);
+
+        if (player.getEquippedWeapon() == null) {
+            attackButton.setDisable(true);
+            enemyModal.getChildren().add(new Label("(No Weapon equipped, can't attack)"));
+        }
 
         Button closeButton = new Button("Close");
         closeButton.setOnAction(ae -> removeTopModal());
@@ -155,27 +167,39 @@ public class GameplayController extends GenericController implements GameUpdateL
     }
 
     /**
-     * Shows the player's inventory on the left side of the screen.
+     * Shows the player's inventory options on the left side of the screen.
      */
     public void showInventoryPrompt() {
         screen.getContentPane().setLeft(screen.getInventoryPrompt());
     }
 
+    /**
+     * Shows the player's inventory on the left side of the screen.
+     */
     public void showViewItemsPrompt() {
         screen.getViewItemsView().getSelectionModel().clearSelection();
         screen.getContentPane().setLeft(screen.getViewItemsPrompt());
     }
 
+    /**
+     * Shows every usable item, and allows the player to use one.
+     */
     public void showUseItemPrompt() {
         screen.getUseItemView().getSelectionModel().clearSelection();
         screen.getContentPane().setLeft(screen.getUseItemPrompt());
     }
 
+    /**
+     * Shows the player every weapon they have, and allows the player to equip one.
+     */
     public void showEquipWeaponPrompt() {
         screen.getEquipWeaponView().getSelectionModel().clearSelection();
         screen.getContentPane().setLeft(screen.getEquipWeaponPrompt());
     }
 
+    /**
+     * Shows the goals prompt that keeps track of the player's goals.
+     */
     public void showGoalsPrompt() {
         screen.getContentPane().setLeft(screen.getGoalsPrompt());
     }
@@ -213,6 +237,13 @@ public class GameplayController extends GenericController implements GameUpdateL
         screen.getEquipWeaponView().getSelectionModel().clearSelection();
     }
 
+    /**
+     * Un-equips the player's current weapon.
+     */
+    public void unEquipCurrentWeapon() {
+        gameplayManager.equipWeapon(null);
+    }
+
     @Override
     public void onUpdate(GameUpdateEvent event) {
         if (event instanceof NewGameEvent newGameEvent) {
@@ -228,38 +259,40 @@ public class GameplayController extends GenericController implements GameUpdateL
             } else {
                 sprites = new HashMap<>();
             }
+            player = newGameEvent.game().getPlayer();
             Passage startPassage = newGameEvent.startPassage();
             updateCurrentPassage(startPassage);
             updateEnemies(startPassage.getEnemies());
-            Player player = newGameEvent.game().getPlayer();
-            updatePlayerStats(player);
+            updatePlayerStats();
             screen.getHistoryContent().getChildren().clear();
         } else if (event instanceof ChangePassageEvent changePassageEvent) {
             Passage currentPassage = changePassageEvent.newPassage();
             updateCurrentPassage(currentPassage);
-            updatePlayerStats(changePassageEvent.player());
+            updatePlayerStats();
             updateEnemies(currentPassage.getEnemies());
         } else if (event instanceof UseItemEvent useItemEvent) {
             Entity entity = useItemEvent.entity();
-            if (entity instanceof Player player) {
-                updatePlayerStats(player);
+            if (entity instanceof Player) {
+                updatePlayerStats();
             }
         } else if (event instanceof EnemyAttackEvent enemyAttackEvent) {
             List<Entity> targets = enemyAttackEvent.targets();
             targets.stream()
                     .filter(Player.class::isInstance)
                     .findFirst()
-                    .ifPresent(playerEntity -> updatePlayerStats((Player) playerEntity));
+                    .ifPresent(e -> updatePlayerStats());
             updateEnemies(enemyAttackEvent.remainingEnemies());
         } else if (event instanceof PlayerAttackEvent playerAttackEvent) {
             updateEnemies(playerAttackEvent.remainingEnemies());
         } else if (event instanceof EnemyDeathEvent enemyDeathEvent
-                && (enemyDeathEvent.killer() instanceof Player player)) {
-            updatePlayerStats(player);
+                && (enemyDeathEvent.killer() instanceof Player)) {
+            updatePlayerStats();
         } else if (event instanceof PlayerDeathEvent) {
             changeScreen(GameOverScreen.class);
         } else if (event instanceof AllGoalsFulfilledEvent) {
             changeScreen(VictoryScreen.class);
+        } else if (event instanceof EquipWeaponEvent) {
+            updatePlayerStats();
         }
 
         logEvent(event);
@@ -292,8 +325,22 @@ public class GameplayController extends GenericController implements GameUpdateL
      * @param newPassage The new passage with the updated text
      */
     private void updateCurrentPassage(Passage newPassage) {
-        screen.getPassageTitle().setText(newPassage.getTitle());
+        String passageTitle = newPassage.getTitle();
+        screen.getPassageTitle().setText(passageTitle);
         screen.getPassageText().setText(newPassage.getContent());
+        screen.getContentPane().setBackground(sprites.containsKey(passageTitle)
+                ? new Background(new BackgroundImage(
+                sprites.get(passageTitle),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER, new BackgroundSize(
+                1,
+                1,
+                true,
+                true,
+                true,
+                false)))
+                : Background.EMPTY);
 
         VBox moveOptions = screen.getMoveOptions();
         moveOptions.getChildren().clear();
@@ -309,10 +356,8 @@ public class GameplayController extends GenericController implements GameUpdateL
 
     /**
      * Updates any inventory list views.
-     *
-     * @param inventory The inventory of items to show
      */
-    private void updateInventoryLists(Inventory inventory) {
+    private void updateInventoryLists() {
         ListView<Item> viewItemsView = screen.getViewItemsView();
         ListView<UsableItem> useItemView = screen.getUseItemView();
         ListView<Weapon> equipWeaponView = screen.getEquipWeaponView();
@@ -320,7 +365,7 @@ public class GameplayController extends GenericController implements GameUpdateL
         useItemView.getItems().clear();
         equipWeaponView.getItems().clear();
 
-        inventory.getContents().forEach(item -> {
+        player.getInventory().getContents().forEach(item -> {
             viewItemsView.getItems().add(item);
             if (item instanceof UsableItem usableItem) {
                 useItemView.getItems().add(usableItem);
@@ -332,16 +377,16 @@ public class GameplayController extends GenericController implements GameUpdateL
 
     /**
      * Update the player stats shown on screen.
-     *
-     * @param player The player with the updated stats to show
      */
-    private void updatePlayerStats(Player player) {
+    private void updatePlayerStats() {
         screen.getNameLabel().setText(player.getName());
         screen.getHpLabel().setText(String.format(
-                "%s/%s", player.getHealth(), player.getMaxHealth()));
-        screen.getGoldLabel().setText(Integer.toString(player.getGold()));
-        screen.getScoreLabel().setText(Integer.toString(player.getScore()));
-        updateInventoryLists(player.getInventory());
+                "Health: %s/%s", player.getHealth(), player.getMaxHealth()));
+        screen.getGoldLabel().setText("Gold: " + player.getGold());
+        screen.getScoreLabel().setText("Score: " + player.getScore());
+        Weapon weapon = player.getEquippedWeapon();
+        screen.getWeaponLabel().setText("Weapon: " + (weapon != null ? weapon.getName() : "None"));
+        updateInventoryLists();
         updateGoals();
     }
 

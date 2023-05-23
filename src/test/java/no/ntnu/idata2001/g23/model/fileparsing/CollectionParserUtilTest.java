@@ -31,12 +31,12 @@ class CollectionParserUtilTest {
 
         Map<String, String> loadedMap = assertDoesNotThrow(() -> CollectionParserUtil
                 .parseMap(new LineNumberReader(new StringReader(validMapString)), true,
-                        "keY 3", "K3Y tW0"));
+                        " kE Y3 ", " k3yTw0 "));
 
         Map<String, String> validMap = Map.of(
-                "key1", "Value1",
-                "k3ytw0", "v4lu3Tw0",
-                "key3", "vA L uE 3"
+                "Key1", "Value1",
+                "k3yTw0", "v4lu3Tw0",
+                "kE Y3", "vA L uE 3"
         );
 
         assertEquals(validMap, loadedMap);

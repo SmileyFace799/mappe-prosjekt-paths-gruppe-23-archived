@@ -21,6 +21,12 @@ public class GoalLoader {
     private final Provider<Item> itemProvider;
     private final String difficulty;
 
+    /**
+     * Makes a new goal loader.
+     *
+     * @param itemProvider The {@link Provider} to use to provide items
+     * @param difficulty The difficulty to load goals for
+     */
     public GoalLoader(Provider<Item> itemProvider, String difficulty) {
         this.itemProvider = itemProvider;
         this.difficulty = difficulty;

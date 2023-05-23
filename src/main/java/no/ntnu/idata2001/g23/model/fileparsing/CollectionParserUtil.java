@@ -20,13 +20,14 @@ public class CollectionParserUtil {
      * Parses a line of text containing list elements into a {@link List}.
      * Commas ({@code ,}) are used as separators to separate each element.
      *
-     * <p>Each element gets trimmed for leading & trailing spaces.</p>
+     * <p>Each element gets trimmed for leading and trailing spaces.</p>
      *
      * <p>An example of how the parsing works
-     * <h2>Input ({@link String})</h2>
+     * <b>Input ({@link String})</b>
      * " foo, BAR ,7357 "
-     * <h2>Output ({@link List}<{@link String}>)</h2>
-     * "foo", "BAR", "7357"</p>
+     * <b>Output ({@link List})</b>
+     * "foo", "BAR", "7357"
+     * </p>
      *
      * @param listString The string to be parsed as a list
      * @return A parsed list with every element in the provided string
@@ -50,23 +51,23 @@ public class CollectionParserUtil {
 
     /**
      * Parses multiple lines of text containing key/value-pairs into a {@link Map}.
-     * Colons ({@code :}) are used as separators to separate the keys & values.
+     * Colons ({@code :}) are used as separators to separate the keys and values.
      *
-     * <p>The keys & values are trimmed for leading & trailing spaces.</p>
+     * <p>The keys and values are trimmed for leading and trailing spaces.</p>
      *
-     * <p>An example of how the parsing works:
-     * <h2>Input (Multiline {@link String}):</h2>
+     * <p>An example of how the parsing works:</p>
+     * <b>Input (Multiline {@link String}):</b>
      * <ol>
      *     <li>""" Key1:  Value1</li>
      *     <li>k3yTw0  :v4lu3Tw0</li>
      *     <li>kE Y3: vA L uE 3 """</li>
      * </ol>
-     * <h2>Output ({@link Map}<{@link String}, {@link String}>)</h2>
+     * <b>Output ({@link Map})</b>
      * <ol>
      *     <li>"Key1": "Value1"</li>
      *     <li>"k3yTw0": "v4lu3Tw0"</li>
      *     <li>"kE Y3": "vA L uE 3"</li>
-     * </ol></p>
+     * </ol>
      *
      * @param fileReader      The {@link LineNumberReader} that contains the map to parse
      * @param stopAtBlankLine If the file reader should stop parsing upon reaching a blank line
@@ -74,7 +75,7 @@ public class CollectionParserUtil {
      *                        {@link CorruptFileException} with type {@link
      *                        CorruptFileException.Type#REQUIRED_KEY_MISSING REQUIRED_KEY_MISSING}
      *                        if any of these are not present
-     * @return A parsed map with any found string keys & values
+     * @return A parsed map with any found string keys and values
      * @throws IOException          If an I/O error occurs
      * @throws CorruptFileException If a line is missing a ":"-separator,
      *                              or a required key is missing

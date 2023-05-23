@@ -2,11 +2,11 @@ package no.ntnu.idata2001.g23.controllers;
 
 import java.io.File;
 import javafx.stage.DirectoryChooser;
-import no.ntnu.idata2001.g23.middleman.GameplayManager;
+import no.ntnu.idata2001.g23.intermediary.GameplayManager;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
 import no.ntnu.idata2001.g23.model.fileparsing.DifficultyLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.GameFileCollection;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.screens.GameplayScreen;
 import no.ntnu.idata2001.g23.view.screens.NewGameScreen;
 
@@ -24,7 +24,7 @@ public class NewGameController extends GenericController {
      * @param screen      The screen this controller belongs to
      * @param application The main application
      */
-    public NewGameController(NewGameScreen screen, DungeonApp application) {
+    public NewGameController(NewGameScreen screen, PathsApp application) {
         super(application);
         this.screen = screen;
         this.gameChooser = new DirectoryChooser();

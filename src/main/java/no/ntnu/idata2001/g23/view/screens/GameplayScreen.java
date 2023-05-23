@@ -16,7 +16,7 @@ import no.ntnu.idata2001.g23.controllers.GameplayController;
 import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.misc.DebugScrollPane;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 import no.ntnu.idata2001.g23.view.textures.ImageLoader;
@@ -25,8 +25,18 @@ import no.ntnu.idata2001.g23.view.textures.ImageLoader;
  * The gameplay screen, where the game is played.
  */
 public class GameplayScreen extends GenericScreen {
+    /**
+     * The default horizontal spacing between elements.
+     */
     public static final int HORIZONTAL_SPACING = 50;
-    public static final int VERTICAL_SPACING = 30;
+    /**
+     * The default vertical spacing between elements.
+     */
+    public static final int VERTICAL_SPACING = 39;
+
+    /**
+     * Filename for the back icon.
+     */
     private static final String BACK_ICON = "backIcon.png";
 
     private final GameplayController controller;
@@ -59,11 +69,12 @@ public class GameplayScreen extends GenericScreen {
     private ScrollPane historyPrompt;
     private VBox historyContent;
 
-    private HBox statPrompt;
+    private VBox statPrompt;
     private Label nameLabel;
     private Label hpLabel;
     private Label goldLabel;
     private Label scoreLabel;
+    private Label weaponLabel;
 
     private ScrollPane enemyPane;
     private TilePane enemyContent;
@@ -73,7 +84,7 @@ public class GameplayScreen extends GenericScreen {
      *
      * @param application The application instance to give to the controller.
      */
-    public GameplayScreen(DungeonApp application) {
+    public GameplayScreen(PathsApp application) {
         super("gameplay.css");
         controller = new GameplayController(this, application);
     }
@@ -83,94 +94,218 @@ public class GameplayScreen extends GenericScreen {
         return (StackPane) super.getRootPane();
     }
 
+    /**
+     * Gets the contentPane field.
+     *
+     * @return The contentPane field
+     */
     public BorderPane getContentPane() {
         return contentPane;
     }
 
+    /**
+     * Gets the pauseModal field.
+     *
+     * @return The pauseModal field
+     */
     public VBox getPauseModal() {
         return pauseModal;
     }
 
+    /**
+     * Gets the confirmRestartModal field.
+     *
+     * @return The confirmRestartModal field
+     */
     public VBox getConfirmRestartModal() {
         return confirmRestartModal;
     }
 
+    /**
+     * Gets the passageTitle field.
+     *
+     * @return The passageTitle field
+     */
     public Label getPassageTitle() {
         return passageTitle;
     }
 
+    /**
+     * Gets the passageText field.
+     *
+     * @return The passageText field
+     */
     public Label getPassageText() {
         return passageText;
     }
 
+    /**
+     * Gets the actionPrompt field.
+     *
+     * @return The actionPrompt field
+     */
     public VBox getActionPrompt() {
         return actionPrompt;
     }
 
+    /**
+     * Gets the movePrompt field.
+     *
+     * @return The movePrompt field
+     */
     public ScrollPane getMovePrompt() {
         return movePrompt;
     }
 
+    /**
+     * Gets the moveOptions field.
+     *
+     * @return The moveOptions field
+     */
     public VBox getMoveOptions() {
         return moveOptions;
     }
 
+    /**
+     * Gets the inventoryPrompt field.
+     *
+     * @return The inventoryPrompt field
+     */
     public VBox getInventoryPrompt() {
         return inventoryPrompt;
     }
 
+    /**
+     * Gets the viewItemsPrompt field.
+     *
+     * @return The viewItemsPrompt field
+     */
     public ScrollPane getViewItemsPrompt() {
         return viewItemsPrompt;
     }
 
+    /**
+     * Gets the viewItemsView field.
+     *
+     * @return The viewItemsView field
+     */
     public ListView<Item> getViewItemsView() {
         return viewItemsView;
     }
 
+    /**
+     * Gets the useItemPrompt field.
+     *
+     * @return The useItemPrompt field
+     */
     public ScrollPane getUseItemPrompt() {
         return useItemPrompt;
     }
 
+    /**
+     * Gets the useItemView field.
+     *
+     * @return The useItemView field
+     */
     public ListView<UsableItem> getUseItemView() {
         return useItemView;
     }
 
+    /**
+     * Gets the equipWeaponPrompt field.
+     *
+     * @return The equipWeaponPrompt field
+     */
     public ScrollPane getEquipWeaponPrompt() {
         return equipWeaponPrompt;
     }
 
+    /**
+     * Gets the equipWeaponView field.
+     *
+     * @return The equipWeaponView field
+     */
     public ListView<Weapon> getEquipWeaponView() {
         return equipWeaponView;
     }
 
+    /**
+     * Gets the goalsPrompt field.
+     *
+     * @return The goalsPrompt field
+     */
     public ScrollPane getGoalsPrompt() {
         return goalsPrompt;
     }
 
+    /**
+     * Gets the goalsBox field.
+     *
+     * @return The goalsBox field
+     */
     public VBox getGoalsBox() {
         return goalsBox;
     }
 
+    /**
+     * Gets the historyContent field.
+     *
+     * @return The historyContent field
+     */
     public VBox getHistoryContent() {
         return historyContent;
     }
 
+    /**
+     * Gets the nameLabel field.
+     *
+     * @return The nameLabel field
+     */
     public Label getNameLabel() {
         return nameLabel;
     }
 
+    /**
+     * Gets the hpLabel field.
+     *
+     * @return The hpLabel field
+     */
     public Label getHpLabel() {
         return hpLabel;
     }
 
+    /**
+     * Gets the goldLabel field.
+     *
+     * @return The goldLabel field
+     */
     public Label getGoldLabel() {
         return goldLabel;
     }
 
+    /**
+     * Gets the scoreLabel field.
+     *
+     * @return The scoreLabel field
+     */
     public Label getScoreLabel() {
         return scoreLabel;
     }
 
+    /**
+     * Gets the weaponLabel field.
+     *
+     * @return The weaponLabel field
+     */
+    public Label getWeaponLabel() {
+        return weaponLabel;
+    }
+
+    /**
+     * Gets the enemyContent field.
+     *
+     * @return The enemyContent field
+     */
     public TilePane getEnemyContent() {
         return enemyContent;
     }
@@ -354,6 +489,7 @@ public class GameplayScreen extends GenericScreen {
         });
         viewItemsContent.getChildren().add(viewItemsView);
         Label selectedItemDetails = new Label();
+        selectedItemDetails.getStyleClass().add(Css.SIDE_TEXT);
         viewItemsView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> selectedItemDetails
@@ -398,6 +534,7 @@ public class GameplayScreen extends GenericScreen {
         useItemContent.getChildren().add(useItemView);
 
         Label selectedItemDetails = new Label();
+        selectedItemDetails.getStyleClass().add(Css.SIDE_TEXT);
         useItemView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> selectedItemDetails
@@ -446,6 +583,7 @@ public class GameplayScreen extends GenericScreen {
         equipWeaponContent.getChildren().add(equipWeaponView);
 
         Label selectedItemDetails = new Label();
+        selectedItemDetails.getStyleClass().add(Css.SIDE_TEXT);
         equipWeaponView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> selectedItemDetails
@@ -455,9 +593,13 @@ public class GameplayScreen extends GenericScreen {
         Button equipButton = new Button("Equip");
         equipButton.setOnAction(ae -> controller.equipSelectedWeapon());
         equipWeaponContent.getChildren().add(equipButton);
+
+        Button unEquipButton = new Button("Un-equip current weapon");
+        unEquipButton.setOnAction(ae -> controller.unEquipCurrentWeapon());
+        equipWeaponContent.getChildren().add(unEquipButton);
     }
 
-    private void initilaizeGoalsPrompt() {
+    private void initializeGoalsPrompt() {
         goalsPrompt = new DebugScrollPane();
         goalsPrompt.getStyleClass().add(Css.LEFT_PROMPT);
 
@@ -495,35 +637,28 @@ public class GameplayScreen extends GenericScreen {
     }
 
     private void initializeStatPrompt() {
-        statPrompt = new HBox(HORIZONTAL_SPACING * 4D);
-        statPrompt.getStyleClass().addAll(Css.PROMPT, GlobalCss.HEADER);
+        statPrompt = new VBox(VERTICAL_SPACING);
+        statPrompt.getStyleClass().add(Css.PROMPT);
 
         nameLabel = new Label();
+        nameLabel.getStyleClass().add(GlobalCss.HEADER);
         statPrompt.getChildren().add(nameLabel);
 
-        HBox hpBox = new HBox();
-        statPrompt.getChildren().add(hpBox);
-
-        hpBox.getChildren().add(new Label("HP: "));
+        HBox statBox = new HBox(HORIZONTAL_SPACING * 4d);
+        statBox.setStyle("-fx-alignment: center;");
+        statPrompt.getChildren().add(statBox);
 
         hpLabel = new Label();
-        hpBox.getChildren().add(hpLabel);
-
-        HBox goldBox = new HBox();
-        statPrompt.getChildren().add(goldBox);
-
-        goldBox.getChildren().add(new Label("Gold: "));
+        statBox.getChildren().add(hpLabel);
 
         goldLabel = new Label();
-        goldBox.getChildren().add(goldLabel);
-
-        HBox scoreBox = new HBox();
-        statPrompt.getChildren().add(scoreBox);
-
-        scoreBox.getChildren().add(new Label("Score: "));
+        statBox.getChildren().add(goldLabel);
 
         scoreLabel = new Label();
-        scoreBox.getChildren().add(scoreLabel);
+        statBox.getChildren().add(scoreLabel);
+
+        weaponLabel = new Label();
+        statBox.getChildren().add(weaponLabel);
     }
 
     private void initializeEnemyPane() {
@@ -531,7 +666,7 @@ public class GameplayScreen extends GenericScreen {
         enemyPane.getStyleClass().add(Css.CENTER_PANE);
 
         enemyContent = new TilePane();
-        enemyContent.getStyleClass().add(Css.CENTER_CONTENT);
+        enemyContent.getStyleClass().add(Css.TILE_PANE);
         enemyPane.setContent(enemyContent);
     }
 
@@ -548,7 +683,7 @@ public class GameplayScreen extends GenericScreen {
         initializeViewItemsPrompt();
         initializeUseItemPrompt();
         initializeEquipWeaponPrompt();
-        initilaizeGoalsPrompt();
+        initializeGoalsPrompt();
 
         initializeHistoryPrompt();
 
@@ -581,16 +716,50 @@ public class GameplayScreen extends GenericScreen {
      * This class is public so {@link GameplayController} can access it.
      */
     public static class Css {
+        /**
+         * overlay .css class.
+         */
         public static final String OVERLAY = "overlay";
+        /**
+         * prompt .css class.
+         */
         public static final String PROMPT = "prompt";
+        /**
+         * top-prompt .css class.
+         */
         public static final String TOP_PROMPT = "top-prompt";
+        /**
+         * left-prompt .css class.
+         */
         public static final String LEFT_PROMPT = "left-prompt";
+        /**
+         * right-prompt .css class.
+         */
         public static final String RIGHT_PROMPT = "right-prompt";
+        /**
+         * center-pane .css class.
+         */
         public static final String CENTER_PANE = "center-pane";
+        /**
+         * top-content .css class.
+         */
         public static final String TOP_CONTENT = "top-content";
-        public static final String CENTER_CONTENT = "center-content";
+        /**
+         * tile-pane .css class.
+         */
+        public static final String TILE_PANE = "tile-pane";
+        /**
+         * back-button-box .css class.
+         */
         public static final String BACK_BUTTON_BOX = "back-button-box";
+        /**
+         * enemy-button .css class.
+         */
         public static final String ENEMY_BUTTON = "enemy-button";
+        /**
+         * side-text .css class.
+         */
+        public static final String SIDE_TEXT = "side-text";
 
         private Css() {
             throw new IllegalStateException("Do not instantiate this class pls :)");

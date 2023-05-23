@@ -26,8 +26,8 @@ class PlayerLoaderTest {
 
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Big Sword UwU", () -> new Weapon(5,
-                0.3, 500, "Big Sword UwU", "Your mother B)"));
-        itemProvider.addProvidable("Usable Test", () -> new UsableItem(50,
+                "Big Sword UwU", "Your mother B)"));
+        itemProvider.addProvidable("Usable Test", () -> new UsableItem(
                 "Usable Test", "UwU", new InventoryAction(
                         itemProvider.provide("Big Sword UwU"))));
 

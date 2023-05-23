@@ -8,6 +8,11 @@ import no.ntnu.idata2001.g23.model.entities.Entity;
 public class ScoreAction implements Action {
     private final int points;
 
+    /**
+     * Makes a score action.
+     *
+     * @param points The amount of points to add or remove
+     */
     public ScoreAction(int points) {
         this.points = points;
     }
@@ -19,18 +24,28 @@ public class ScoreAction implements Action {
 
     @Override
     public String getDescriptiveText() {
-        return String.format("%s %s points",
-                points < 0 ? "Lose" : "Gain",
-                Math.abs(points)
-        );
+        String message;
+        if (points > 0) {
+            message = String.format("Gain %s points", Math.abs(points));
+        } else if (points < 0) {
+            message = String.format("Lose %s points", Math.abs(points));
+        } else {
+            message = null;
+        }
+        return message;
     }
 
     @Override
     public String getExecutedText() {
-        return String.format("%s %s points",
-                points < 0 ? "lost" : "gained",
-                Math.abs(points)
-        );
+        String message;
+        if (points > 0) {
+            message = String.format("gained %s points", Math.abs(points));
+        } else if (points < 0) {
+            message = String.format("lost %s points", Math.abs(points));
+        } else {
+            message = null;
+        }
+        return message;
     }
 
     /**

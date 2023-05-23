@@ -10,78 +10,36 @@ class WeaponTest {
 
     @BeforeEach
     void before() {
-        validWeapon = new Weapon(5, 0.25, 500,
-                "Test name", "Test description");
+        validWeapon = new Weapon(5, "Test name", "Test description");
     }
 
     @Test
     void testCreationOfWeaponWithInvalidBaseDamage() {
         assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                -5, 0.25, 500,
-                "Test name", "Test description"
-        ));
-    }
-
-    @Test
-    void testCreationOfWeaponWithInvalidBaseCritChance() {
-        assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, -0.25, 500,
-                "Test name", "Test description"
-        ));
-        assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, 1.25, 500,
-                "Test name", "Test description"
-        ));
-    }
-
-    @Test
-    void testCreationOfWeaponWithInvalidValue() {
-        assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, 0.25, -500,
-                "Test name", "Test description"));
+                -5, "Test name", "Test description"));
     }
 
     @Test
     void testCreationOfWeaponWithInvalidName() {
         assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, 0.25, 500,
-                null, "Test description"
-        ));
+                5, null, "Test description"));
         assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, 0.25, 500,
-                "  ", "Test description"
-        ));
+                5, "  ", "Test description"));
     }
 
     @Test
     void testCreationOfWeaponWithInvalidDescription() {
         assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, 0.25, 500,
-                "Test name", null
-        ));
+                5, "Test name", null));
         assertThrows(IllegalArgumentException.class, () -> new Weapon(
-                5, 0.25, 500,
-                "Test name", "  "
-        ));
+                5, "Test name", "  "));
     }
 
     @Test
     void testCreationOfWeaponWithValidParameters() {
-        assertEquals(5, validWeapon.getBaseDamage());
-        assertEquals(0.25, validWeapon.getBaseCritChance());
-        assertEquals(500, validWeapon.getValue());
-        assertTrue(validWeapon.isSellable());
+        assertEquals(5, validWeapon.getDamage());
         assertEquals("Test name", validWeapon.getName());
         assertEquals("Test description", validWeapon.getDescription());
-    }
-
-    @Test
-    void testCreationOfWeaponWithZeroValue() {
-        Weapon unsellableWeapon = new Weapon(
-                5, 0.25, 0,
-                "Test name", "Test description");
-        assertEquals(0, unsellableWeapon.getValue());
-        assertFalse(unsellableWeapon.isSellable());
     }
 
     @Test
@@ -90,18 +48,14 @@ class WeaponTest {
         assertNotEquals(null, validWeapon);
         assertNotEquals(new Object(), validWeapon);
 
-        assertNotEquals(new Weapon(10, 0.25, 500,
+        assertNotEquals(new Weapon(10,
                 "Test name", "Test description"), validWeapon);
-        assertNotEquals(new Weapon(5, 0.5, 500,
-                "Test name", "Test description"), validWeapon);
-        assertNotEquals(new Weapon(5, 0.25, 250,
-                "Test name", "Test description"), validWeapon);
-        assertNotEquals(new Weapon(5, 0.25, 500,
+        assertNotEquals(new Weapon(5,
                 "Different name", "Test description"), validWeapon);
-        assertNotEquals(new Weapon(5, 0.25, 500,
+        assertNotEquals(new Weapon(5,
                 "Test name", "Different description"), validWeapon);
 
-        assertEquals(new Weapon(5, 0.25, 500,
+        assertEquals(new Weapon(5,
                 "Test name", "Test description"), validWeapon);
     }
 

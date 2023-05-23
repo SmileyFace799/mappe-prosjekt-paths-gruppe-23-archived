@@ -1,0 +1,5 @@
+/* Built-in classes */
+
+.root {
+    -fx-background-image: url("textures/mainMenuBackground.png");
+}

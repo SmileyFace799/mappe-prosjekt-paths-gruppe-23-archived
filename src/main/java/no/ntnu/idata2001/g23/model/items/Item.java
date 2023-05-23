@@ -4,45 +4,40 @@ package no.ntnu.idata2001.g23.model.items;
  * Any item that can be stored in some inventory.
  */
 public class Item {
-    private final int value;
     private final String name;
     private final String description;
 
     /**
      * Makes a basic item.
      *
-     * @param value       The base value of the item, used to calculate sell price.
-     *                    If the value is 0, it will not be sellable.
-     * @param name        The item's name.
-     * @param description The item's description.
+     * @param name        The item's name
+     * @param description The item's description
      */
-    public Item(int value, String name, String description) {
-        if (value < 0) {
-            throw new IllegalArgumentException("int \"value\" cannot be negative");
-        }
+    public Item(String name, String description) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("String \"name\" cannot be null or blank");
         }
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("String \"description\" cannot be null or blank");
         }
-        this.value = value;
         this.name = name;
         this.description = description;
     }
 
-    public int getValue() {
-        return value;
-    }
-
-    public boolean isSellable() {
-        return value != 0;
-    }
-
+    /**
+     * Gets the name field.
+     *
+     * @return The name field
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the description field.
+     *
+     * @return The description field
+     */
     public String getDescription() {
         return description;
     }
@@ -53,9 +48,7 @@ public class Item {
      * @return The item's details
      */
     public String getDetails() {
-        return "Value: " + getValue()
-                + "\nSellable: " + isSellable()
-                + "\nName: " + getName()
+        return "Name: " + getName()
                 + "\nDescription: " + getDescription();
     }
 
@@ -77,8 +70,7 @@ public class Item {
             return false;
         }
         Item item = (Item) obj;
-        return value == item.value
-                && name.equals(item.name)
+        return name.equals(item.name)
                 && description.equals(item.description);
     }
 
@@ -90,7 +82,6 @@ public class Item {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Integer.hashCode(value);
         hash = 31 * hash + name.hashCode();
         hash = 31 * hash + description.hashCode();
         return hash;

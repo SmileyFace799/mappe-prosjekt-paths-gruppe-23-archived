@@ -7,6 +7,12 @@ import no.ntnu.idata2001.g23.model.entities.Player;
  * Makes it possible to check if the player has achieved an expected result.
  */
 public interface Goal {
+    /**
+     * Checks if the player fulfills a goal.
+     *
+     * @param player The player to check if fulfills the goal
+     * @return True if the player fulfills the goal
+     */
     boolean isFulfilled(Player player);
 
     /**

@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.middleman;
+package no.ntnu.idata2001.g23.intermediary;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -6,17 +6,19 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import no.ntnu.idata2001.g23.middleman.events.AllGoalsFulfilledEvent;
-import no.ntnu.idata2001.g23.middleman.events.ChangePassageEvent;
-import no.ntnu.idata2001.g23.middleman.events.EnemyAttackEvent;
-import no.ntnu.idata2001.g23.middleman.events.EnemyDeathEvent;
-import no.ntnu.idata2001.g23.middleman.events.EquipWeaponEvent;
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
-import no.ntnu.idata2001.g23.middleman.events.PlayerAttackEvent;
-import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
-import no.ntnu.idata2001.g23.middleman.events.UseItemEvent;
+import no.ntnu.idata2001.g23.intermediary.events.AllGoalsFulfilledEvent;
+import no.ntnu.idata2001.g23.intermediary.events.ChangePassageEvent;
+import no.ntnu.idata2001.g23.intermediary.events.ChangePassageFailedEvent;
+import no.ntnu.idata2001.g23.intermediary.events.EnemyAttackEvent;
+import no.ntnu.idata2001.g23.intermediary.events.EnemyDeathEvent;
+import no.ntnu.idata2001.g23.intermediary.events.EquipWeaponEvent;
+import no.ntnu.idata2001.g23.intermediary.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.intermediary.events.NewGameEvent;
+import no.ntnu.idata2001.g23.intermediary.events.PlayerAttackEvent;
+import no.ntnu.idata2001.g23.intermediary.events.PlayerDeathEvent;
+import no.ntnu.idata2001.g23.intermediary.events.UseItemEvent;
 import no.ntnu.idata2001.g23.model.Game;
 import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.actions.HealthAction;
@@ -24,24 +26,16 @@ import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.entities.enemies.Enemy;
 import no.ntnu.idata2001.g23.model.fileparsing.CorruptFileException;
-import no.ntnu.idata2001.g23.model.fileparsing.EnemyLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.GameFileCollection;
-import no.ntnu.idata2001.g23.model.fileparsing.GoalLoader;
-import no.ntnu.idata2001.g23.model.fileparsing.ItemLoader;
-import no.ntnu.idata2001.g23.model.fileparsing.PlayerLoader;
 import no.ntnu.idata2001.g23.model.fileparsing.SpritePathsLoader;
-import no.ntnu.idata2001.g23.model.fileparsing.StoryLoader;
 import no.ntnu.idata2001.g23.model.goals.Goal;
-import no.ntnu.idata2001.g23.model.items.Item;
 import no.ntnu.idata2001.g23.model.items.UsableItem;
 import no.ntnu.idata2001.g23.model.items.Weapon;
-import no.ntnu.idata2001.g23.model.misc.Provider;
 import no.ntnu.idata2001.g23.model.story.Link;
 import no.ntnu.idata2001.g23.model.story.Passage;
-import no.ntnu.idata2001.g23.model.story.Story;
 
 /**
- * A middle manager between the view & the model that keeps track of game progress,
+ * A middle manager between the view and the model that keeps track of game progress,
  * and contains methods for the controllers to interact with the game.
  * Also makes use of observer pattern to notify the view about any changes.
  */
@@ -71,10 +65,20 @@ public class GameplayManager {
         return instance;
     }
 
+    /**
+     * Adds a listener that can listen for updates.
+     *
+     * @param listener The listener to add
+     */
     public void addUpdateListener(GameUpdateListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Notifies every listener about an event.
+     *
+     * @param event The event to notify all listeners of
+     */
     private void notifyListeners(GameUpdateEvent event) {
         listeners.forEach(listener -> listener.onUpdate(event));
     }
@@ -94,46 +98,7 @@ public class GameplayManager {
     }
 
     /**
-     * Makes a new {@link Game} object from the set game files, player name & difficulty.
-     *
-     * @return The newly made game
-     * @throws CorruptFileException If the game cannot be made due to one or more corrupt files
-     */
-    private Game makeNewGame() throws CorruptFileException {
-        //Parse items, create itemProvider
-        Path itemsPath = gameFiles.getPath(".items");
-        Provider<Item> itemProvider = itemsPath != null
-                ? ItemLoader.loadItems(itemsPath)
-                : null;
-
-        //Parse enemies, create enemyProvider, using itemProvider
-        Path enemiesPath = gameFiles.getPath(".enemies");
-        Provider<Enemy> enemyProvider = enemiesPath != null
-                ? new EnemyLoader(itemProvider).loadEnemies(enemiesPath)
-                : null;
-
-        //parse & create story, using itemProvider & enemyProvider
-        Path storyPath = gameFiles.getPathRequired(".paths",
-                CorruptFileException.Type.INFO_MISSING_STORY);
-        Story story = new StoryLoader(itemProvider, enemyProvider).loadStory(storyPath);
-
-        //parse & create player, using itemProvider, name & difficulty
-        Path playerPath = gameFiles.getPathRequired(".player",
-                CorruptFileException.Type.INFO_MISSING_PLAYER);
-        Player player = new PlayerLoader(itemProvider, playerName,
-                difficulty).loadPlayer(playerPath);
-
-        //parse & create goals, using itemProvider & difficulty
-        Path goalsPath = gameFiles.getPathRequired(".goals",
-                CorruptFileException.Type.INFO_MISSING_GOALS);
-        List<Goal> goals = new GoalLoader(itemProvider, difficulty).loadGoals(goalsPath);
-
-        //Create & return game, using story & goals
-        return new Game(player, story, goals);
-    }
-
-    /**
-     * Makes the set game & starts it from the beginning.
+     * Makes the set game and starts it from the beginning.
      *
      * @throws IllegalStateException If no game has been set
      * @throws CorruptFileException  If the game cannot be made due to one or more corrupt files
@@ -146,7 +111,7 @@ public class GameplayManager {
         ) {
             throw new IllegalStateException("No game has been set");
         }
-        this.game = makeNewGame();
+        this.game = gameFiles.makeNewGame(playerName, difficulty);
         this.currentPassage = game.begin();
         Path spritesFilePath = gameFiles.getPath(".sprites");
         Map<String, String> spritePaths = spritesFilePath != null
@@ -166,16 +131,30 @@ public class GameplayManager {
         if (link == null) {
             throw new IllegalArgumentException("\"link\" cannot be null");
         }
-        Player player = game.getPlayer();
-        List<Action> actions = link.getActions();
-        actions.forEach(action -> action.execute(player));
+
         Passage oldPassage = currentPassage;
-        this.currentPassage = game.go(link);
-        ChangePassageEvent changePassageEvent =
-                new ChangePassageEvent(oldPassage, currentPassage, actions, player);
-        notifyListeners(changePassageEvent);
-        if (player.getHealth() <= 0) {
-            notifyListeners(new PlayerDeathEvent(player, changePassageEvent));
+        Passage newPassage = game.go(link);
+        Optional<Enemy> blockingEnemy = oldPassage
+                .getEnemies()
+                .stream()
+                .filter(enemy -> enemy.getEscapeChance() < Math.random())
+                .findFirst();
+
+        if (blockingEnemy.isEmpty()) {
+            Player player = game.getPlayer();
+            List<Action> actions = link.getActions();
+            actions.forEach(action -> action.execute(player));
+            this.currentPassage = game.go(link);
+            ChangePassageEvent changePassageEvent =
+                    new ChangePassageEvent(oldPassage, currentPassage, actions);
+            notifyListeners(changePassageEvent);
+            if (player.getHealth() <= 0) {
+                notifyListeners(new PlayerDeathEvent(changePassageEvent));
+            }
+        } else {
+            notifyListeners(new ChangePassageFailedEvent(
+                    oldPassage, newPassage, blockingEnemy.get()));
+            enemiesAttack();
         }
     }
 
@@ -190,10 +169,15 @@ public class GameplayManager {
         UseItemEvent useItemEvent = new UseItemEvent(item, player);
         notifyListeners(useItemEvent);
         if (player.getHealth() <= 0) {
-            notifyListeners(new PlayerDeathEvent(player, useItemEvent));
+            notifyListeners(new PlayerDeathEvent(useItemEvent));
         }
     }
 
+    /**
+     * Equips the player wit a specified weapons.
+     *
+     * @param weapon The weapon to equip
+     */
     public void equipWeapon(Weapon weapon) {
         game.getPlayer().equipWeapon(weapon);
         notifyListeners(new EquipWeaponEvent(game.getPlayer().getEquippedWeapon()));
@@ -214,23 +198,10 @@ public class GameplayManager {
     }
 
     /**
-     * Executes an attack phase, and kills any entity that would die during it.
-     *
-     * @param target The target for the player's attack
+     * Makes every enemy attack.
      */
-    public void attack(Enemy target) {
-        Player player = game.getPlayer();
+    private void enemiesAttack() {
         List<Enemy> enemies = currentPassage.getEnemies();
-        Action attack = new HealthAction(-player.getEquippedWeapon().getBaseDamage());
-        attack.execute(target);
-        if (target.getHealth() <= 0) {
-            enemyDeath(target, player);
-            enemies.remove(target);
-        }
-        notifyListeners(new PlayerAttackEvent(
-                player, attack, target, enemies));
-
-        //After the player attacks, every enemy goes for an attack
         for (Enemy enemy : new ArrayList<>(enemies)) {
             if (enemy.getHealth() > 0) {
                 List<Entity> possibleTargets = new ArrayList<>();
@@ -249,13 +220,33 @@ public class GameplayManager {
                     targets.stream().filter(entity -> entity.getHealth() <= 0).forEach(dead -> {
                         if (dead instanceof Enemy e) {
                             enemyDeath(e, enemy);
-                        } else if (dead instanceof Player p) {
-                            notifyListeners(new PlayerDeathEvent(p, enemyAttackEvent));
+                        } else if (dead instanceof Player) {
+                            notifyListeners(new PlayerDeathEvent(enemyAttackEvent));
                         }
                     });
                 }
             }
         }
+    }
+
+    /**
+     * Executes an attack phase, and kills any entity that would die during it.
+     *
+     * @param target The target for the player's attack
+     */
+    public void attack(Enemy target) {
+        Player player = game.getPlayer();
+        List<Enemy> enemies = currentPassage.getEnemies();
+        Action attack = new HealthAction(-player.getEquippedWeapon().getDamage());
+        attack.execute(target);
+        if (target.getHealth() <= 0) {
+            enemyDeath(target, player);
+            enemies.remove(target);
+        }
+        notifyListeners(new PlayerAttackEvent(attack, target, enemies));
+
+        //After the player attacks, every enemy goes for an attack
+        enemiesAttack();
     }
 
     /**

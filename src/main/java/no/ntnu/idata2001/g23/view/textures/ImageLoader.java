@@ -75,7 +75,7 @@ public class ImageLoader {
      * @throws IllegalArgumentException <ul>
      *                                  <li>If {@code width} or {@code height} is less than 0</li>
      *                                  <li>If {@code preserveRatio == true},
-     *                                  but both {@code width} & {@code height} are not 0.</li>
+     *                                  but both {@code width} and {@code height} are not 0.</li>
      *                                  </ul>
      */
     public static ImageView getImageView(

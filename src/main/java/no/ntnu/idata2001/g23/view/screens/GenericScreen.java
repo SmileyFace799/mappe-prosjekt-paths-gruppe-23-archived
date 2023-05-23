@@ -10,9 +10,21 @@ import javafx.scene.transform.Scale;
  * and a reference to the scene's corresponding controller.
  */
 public abstract class GenericScreen extends Scene {
-    public static final int BASE_WIDTH = 3840;
+    /**
+     * The screen's base width. Every screen can treat this as the constant screen width.
+     */
     public static final int BASE_HEIGHT = 2160;
+    /**
+     * The screen's base height. Every screen can treat this as the constant screen height.
+     */
+    public static final int BASE_WIDTH = 3840;
+    /**
+     * The default horizontal spacing between elements.
+     */
     public static final int HORIZONTAL_SPACING = 60;
+    /**
+     * The default vertical spacing between elements.
+     */
     public static final int VERTICAL_SPACING = 60;
 
     private static final int DEFAULT_WINDOW_WIDTH = 1280;
@@ -51,10 +63,8 @@ public abstract class GenericScreen extends Scene {
         }
 
         //Makes the root pane scale upon window resize
-        widthProperty().addListener((observableValue, oldValue, newValue) ->
-                sizeChangeListener());
-        heightProperty().addListener((observableValue, oldValue, newValue) ->
-                sizeChangeListener());
+        widthProperty().addListener((observableValue, oldValue, newValue) -> updateSize());
+        heightProperty().addListener((observableValue, oldValue, newValue) -> updateSize());
     }
 
     /**
@@ -88,9 +98,10 @@ public abstract class GenericScreen extends Scene {
     }
 
     /**
-     * A listener function that runs whenever this screen is visible & resized.
+     * Transforms the root pane to fit the scene's size.
+     * Is called whenever the screen is resized while visible.
      */
-    public void sizeChangeListener() {
+    public void updateSize() {
         double newWidth = getWidth();
         double newHeight = getHeight();
 
@@ -109,6 +120,11 @@ public abstract class GenericScreen extends Scene {
         rootPane.setPrefHeight(newHeight / scaleFactor);
     }
 
+    /**
+     * Gets the screen's root pane.
+     *
+     * @return The screen's root pane
+     */
     public Pane getRootPane() {
         return rootPane;
     }

@@ -1,6 +1,6 @@
-package no.ntnu.idata2001.g23.middleman;
+package no.ntnu.idata2001.g23.intermediary;
 
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.intermediary.events.GameUpdateEvent;
 
 /**
  * A subscriber that gets notified whenever the state of the model updates.

@@ -8,11 +8,10 @@ import no.ntnu.idata2001.g23.view.screens.GenericScreen;
 import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
 import no.ntnu.idata2001.g23.view.screens.NewGameScreen;
 import no.ntnu.idata2001.g23.view.screens.PlayGameScreen;
-import no.ntnu.idata2001.g23.view.screens.SettingsScreen;
 import no.ntnu.idata2001.g23.view.screens.VictoryScreen;
 
 /**
- * Creates & manages all the screens contained within the application.
+ * Creates and manages all the screens contained within the application.
  */
 public class ScreenManager {
     private static ScreenManager instance;
@@ -38,10 +37,9 @@ public class ScreenManager {
      *
      * @param application The application itself, which is passed to the controller of each screen
      */
-    public void makeMenuScreens(DungeonApp application) {
+    public void makeMenuScreens(PathsApp application) {
         screenCollection = Set.of(
                 new MainMenuScreen(application),
-                new SettingsScreen(application),
                 new PlayGameScreen(application),
                 new NewGameScreen(application),
                 new GameplayScreen(application),

@@ -52,10 +52,10 @@ public class Player extends Entity {
             this.health = health;
 
             //Default optional values
-            score = 0;
-            gold = 0;
-            items = List.of();
-            weapon = null;
+            this.score = 0;
+            this.gold = 0;
+            this.items = List.of();
+            this.weapon = null;
         }
 
         /**
@@ -105,8 +105,9 @@ public class Player extends Entity {
 
         /**
          * Sets the player's equipped weapon.
+         * Will also be added to the player's list of items upon building.
          *
-         * @param weapon The player's new equipped weapon
+         * @param weapon The weapon to set as equipped
          * @return The builder
          */
         public PlayerBuilder setEquippedWeapon(Weapon weapon) {

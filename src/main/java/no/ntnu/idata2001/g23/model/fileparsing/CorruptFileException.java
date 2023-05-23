@@ -100,6 +100,7 @@ public class CorruptFileException extends Exception {
                 + "that separates the action type & value"),
         ACTION_INVALID_TYPE("Cannot recognize action type"),
         ACTION_INVALID_VALUE("Value cannot be assigned to action"),
+        STORY_BROKEN_LINKS("The story has broken links that don't reference a passage"),
 
         //Item exceptions
         UNKNOWN_ITEMS("An unknown error occurred while attempting to read the items file"),
@@ -128,6 +129,7 @@ public class CorruptFileException extends Exception {
         INVALID_ENEMY("Expected to find an enemy, "
                 + "found non-empty line that isn't an enemy"),
         ENEMY_NO_NAME("Found enemy with no name"),
+        ENEMY_NO_TYPE("Found enemy with no type"),
         ENEMY_INVALID_TYPE("Found enemy with invalid type"),
         ENEMY_INVALID_PARAMETER_VALUE("A parameter value for an enemy is invalid"),
 

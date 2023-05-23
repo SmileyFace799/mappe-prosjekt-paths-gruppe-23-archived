@@ -43,27 +43,29 @@ public class ItemLoader {
         Supplier<Item> itemSupplier;
         try {
             switch (type.substring(1).toLowerCase().replace(" ", "")) {
-                case "meleeweapon" -> {
+                case "basic" -> {
+                    Map<String, String> itemParameterMap = CollectionParserUtil
+                            .parseMap(fileReader, true, Parameters.getBasicRequired());
+                    itemSupplier = () -> new Item(name,
+                            itemParameterMap.get(Parameters.DESCRIPTION));
+                }
+                case "weapon" -> {
                     Map<String, String> itemParameterMap = CollectionParserUtil
                             .parseMap(fileReader, true, Parameters.getWeaponRequired());
                     int damage = Integer.parseInt(itemParameterMap.get(Parameters.DAMAGE));
-                    double critChance = Double.parseDouble(
-                            itemParameterMap.get(Parameters.CRIT_CHANCE));
-                    int value = Integer.parseInt(itemParameterMap.get(Parameters.VALUE));
-                    itemSupplier = () -> new Weapon(damage, critChance, value, name,
+                    itemSupplier = () -> new Weapon(damage, name,
                             itemParameterMap.get(Parameters.DESCRIPTION));
                 }
                 case "usable" -> {
                     Map<String, String> itemParameterMap = CollectionParserUtil
                             .parseMap(fileReader, true, Parameters.getUsableRequired());
-                    int value = Integer.parseInt(itemParameterMap.get(Parameters.VALUE));
                     Action onUse = ActionParser.parseAction(
                             itemParameterMap
                                     .get(Parameters.ON_USE)
                                     .replaceAll("[{}]", "")
                                     .trim(),
                             fileReader.getLineNumber(), itemProvider);
-                    itemSupplier = () -> new UsableItem(value, name,
+                    itemSupplier = () -> new UsableItem(name,
                             itemParameterMap.get(Parameters.DESCRIPTION), onUse);
                 }
                 default -> throw new CorruptFileException(
@@ -92,7 +94,7 @@ public class ItemLoader {
             String nextLine;
             //Goes through entire file
             while ((nextLine = fileReader.readLine()) != null) {
-                if (nextLine.startsWith("#")) {
+                if (nextLine.startsWith("?")) {
                     if (nextLine.length() == 1) {
                         throw new CorruptFileException(CorruptFileException.Type.ITEM_NO_NAME,
                                 fileReader.getLineNumber());
@@ -132,22 +134,24 @@ public class ItemLoader {
     }
 
     private static class Parameters {
-        public static final String VALUE = "Value";
         public static final String DESCRIPTION = "Description";
         public static final String DAMAGE = "Damage";
-        public static final String CRIT_CHANCE = "Crit Chance";
         public static final String ON_USE = "On Use";
 
         private Parameters() {
             throw new IllegalStateException("Do not instantiate this class pls :)");
         }
 
+        public static String[] getBasicRequired() {
+            return new String[]{DESCRIPTION};
+        }
+
         public static String[] getWeaponRequired() {
-            return new String[]{VALUE, DESCRIPTION, DAMAGE, CRIT_CHANCE};
+            return new String[]{DESCRIPTION, DAMAGE};
         }
 
         public static  String[] getUsableRequired() {
-            return new String[]{VALUE, DESCRIPTION, ON_USE};
+            return new String[]{DESCRIPTION, ON_USE};
         }
     }
 }

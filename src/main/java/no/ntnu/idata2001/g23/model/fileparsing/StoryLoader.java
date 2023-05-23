@@ -21,6 +21,12 @@ public class StoryLoader {
     private final Provider<Item> itemProvider;
     private final Provider<Enemy> enemyProvider;
 
+    /**
+     * Makes a story loader.
+     *
+     * @param itemProvider THe {@link Provider} to use to provide items.
+     * @param enemyProvider THe {@link Provider} to use to provide enemies.
+     */
     public StoryLoader(Provider<Item> itemProvider, Provider<Enemy> enemyProvider) {
         this.itemProvider = itemProvider;
         this.enemyProvider = enemyProvider;
@@ -76,7 +82,6 @@ public class StoryLoader {
                     || (nextLine.contains("(") && nextLine.contains(")"))) {
                 passageLinks.add(parseLink(nextLine, fileReader.getLineNumber()));
             } else if (nextLine.startsWith("!")) {
-                //TODO: Enemy parsing unit testing
                 passageEnemies.add(enemyProvider.provide(nextLine.substring(1)));
             } else {
                 if (!passageContent.isEmpty()) {
@@ -131,6 +136,15 @@ public class StoryLoader {
             }
             loadedStory = new Story(storyTitle.trim(), passages.remove(0));
             passages.forEach(loadedStory::addPassage);
+
+            List<Link> brokenLinks = loadedStory.getBrokenLinks();
+            if (!brokenLinks.isEmpty()) {
+                throw new CorruptFileException(CorruptFileException.Type.STORY_BROKEN_LINKS,
+                        fileReader.getLineNumber(), String.join(
+                                ", ", brokenLinks.stream().map(Link::getText).toList()));
+            }
+            loadedStory.getPassages().forEach(passage ->
+                    passage.getLinks().removeIf(loadedStory.getBrokenLinks()::contains));
         } catch (IOException ioe) {
             throw new CorruptFileException(CorruptFileException.Type.UNKNOWN_STORY,
                     fileReader.getLineNumber());

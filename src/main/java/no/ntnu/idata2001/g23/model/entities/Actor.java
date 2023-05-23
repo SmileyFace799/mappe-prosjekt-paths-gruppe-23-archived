@@ -1,6 +1,5 @@
 package no.ntnu.idata2001.g23.model.entities;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import no.ntnu.idata2001.g23.model.actions.Action;
@@ -17,5 +16,5 @@ public interface Actor {
      *                        by the actor
      * @return A map of every action to do, and a list of every target to be affected by the action
      */
-    Map<Action, List<Entity>> act(Collection<Entity> possibleTargets);
+    Map<Action, List<Entity>> act(List<Entity> possibleTargets);
 }

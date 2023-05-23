@@ -32,18 +32,38 @@ public class Passage {
         this.enemies = new ArrayList<>();
     }
 
+    /**
+     * Gets the title field.
+     *
+     * @return The title field
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets the content field.
+     *
+     * @return The content field
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Gets the links field.
+     *
+     * @return The links field
+     */
     public List<Link> getLinks() {
         return links;
     }
 
+    /**
+     * Gets the enemies field.
+     *
+     * @return The enemies field
+     */
     public List<Enemy> getEnemies() {
         return enemies;
     }
@@ -86,18 +106,6 @@ public class Passage {
             throw new IllegalArgumentException("\"enemy\" cannot be null");
         }
         enemies.add(enemy);
-    }
-
-    /**
-     * Removes an enemy from this passage.
-     *
-     * @param enemy The enemy to remove
-     */
-    public void removeEnemy(Enemy enemy) {
-        if (!enemies.contains(enemy)) {
-            throw new IllegalArgumentException("\"enemy\" is not in the passage's list of enemies");
-        }
-        enemies.remove(enemy);
     }
 
     @Override

@@ -4,7 +4,7 @@ import no.ntnu.idata2001.g23.model.actions.Action;
 import no.ntnu.idata2001.g23.model.entities.Entity;
 
 /**
- * An item that can be used & consumed upon use.
+ * An item that can be used and consumed upon use.
  */
 public class UsableItem extends Item {
     private final Action onUse;
@@ -12,23 +12,32 @@ public class UsableItem extends Item {
     /**
      * Makes a usable item.
      *
-     * @param value       The base value of the item, used to calculate sell price.
-     *                    If the value is 0, it will not be sellable.
      * @param name        The item's name.
      * @param description The item's description.
+     * @param onUse       The action to execute when the item is used
      */
-    public UsableItem(int value, String name, String description, Action onUse) {
-        super(value, name, description);
+    public UsableItem(String name, String description, Action onUse) {
+        super(name, description);
         if (onUse == null) {
             throw new IllegalArgumentException("Action \"onUse\" cannot be null");
         }
         this.onUse = onUse;
     }
 
+    /**
+     * Gets the onUse field.
+     *
+     * @return The onUse field
+     */
     public Action getUseAction() {
         return onUse;
     }
 
+    /**
+     * Uses the item on an entity.
+     *
+     * @param entity The entity to use the item on
+     */
     public void use(Entity entity) {
         onUse.execute(entity);
     }

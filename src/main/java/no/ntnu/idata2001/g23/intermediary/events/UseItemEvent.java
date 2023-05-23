@@ -1,4 +1,4 @@
-package no.ntnu.idata2001.g23.middleman.events;
+package no.ntnu.idata2001.g23.intermediary.events;
 
 import no.ntnu.idata2001.g23.model.entities.Entity;
 import no.ntnu.idata2001.g23.model.entities.Player;

@@ -1,8 +1,7 @@
-package no.ntnu.idata2001.g23.middleman.events;
+package no.ntnu.idata2001.g23.intermediary.events;
 
 import java.util.List;
 import no.ntnu.idata2001.g23.model.actions.Action;
-import no.ntnu.idata2001.g23.model.entities.Player;
 import no.ntnu.idata2001.g23.model.story.Passage;
 
 /**
@@ -11,13 +10,11 @@ import no.ntnu.idata2001.g23.model.story.Passage;
  * @param oldPassage The old passage the player moved from
  * @param newPassage THe new passage the player moved to
  * @param linkActions The actions executed on the player upon moving
- * @param player The player that changed the passage
  */
 public record ChangePassageEvent(
         Passage oldPassage,
         Passage newPassage,
-        List<Action> linkActions,
-        Player player
+        List<Action> linkActions
 ) implements GameUpdateEvent {
     @Override
     public String getDescriptiveText() {

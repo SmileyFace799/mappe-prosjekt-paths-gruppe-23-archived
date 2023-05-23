@@ -8,6 +8,12 @@ public class GlobalCss {
         throw new IllegalStateException("Do not instantiate this class pls :)");
     }
 
+    /**
+     * header .css class
+     */
     public static final String HEADER = "header";
+    /**
+     * error-label .css class
+     */
     public static final String ERROR_LABEL = "error-label";
 }

@@ -34,14 +34,29 @@ public class Story {
 
     }
 
+    /**
+     * Gets the title field.
+     *
+     * @return The title field
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets the story's opening passage.
+     *
+     * @return The story's opening passage
+     */
     public Passage getOpeningPassage() {
         return openingPassage;
     }
 
+    /**
+     * Gets every passage in the story.
+     *
+     * @return Every passage in the story
+     */
     public Collection<Passage> getPassages() {
         return passages.values();
     }

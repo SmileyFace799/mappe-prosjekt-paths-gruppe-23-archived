@@ -1,4 +1,9 @@
 /* Built-in classes */
+.root {
+    -fx-background-color: #000000;
+    -fx-background-image: none;
+}
+
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-hbar-policy: as-needed;
@@ -57,7 +62,7 @@
     -fx-padding: 60px;
 }
 
-.center-content {
+.tile-pane {
     -fx-alignment: top-center;
     -fx-hgap: 100px;
     -fx-vgap: 100px;
@@ -75,4 +80,8 @@
 
 .enemy-button:hover {
     -fx-background-color: rgba(16, 16, 16, 0.25)
+}
+
+.side-text {
+    -fx-max-width: 1000px;
 }

@@ -6,12 +6,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import no.ntnu.idata2001.g23.controllers.PlayGameController;
-import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
-import no.ntnu.idata2001.g23.middleman.GameplayManager;
-import no.ntnu.idata2001.g23.middleman.events.GameUpdateEvent;
-import no.ntnu.idata2001.g23.middleman.events.NewGameEvent;
-import no.ntnu.idata2001.g23.middleman.events.PlayerDeathEvent;
-import no.ntnu.idata2001.g23.view.DungeonApp;
+import no.ntnu.idata2001.g23.intermediary.GameUpdateListener;
+import no.ntnu.idata2001.g23.intermediary.GameplayManager;
+import no.ntnu.idata2001.g23.intermediary.events.GameUpdateEvent;
+import no.ntnu.idata2001.g23.intermediary.events.NewGameEvent;
+import no.ntnu.idata2001.g23.intermediary.events.PlayerDeathEvent;
+import no.ntnu.idata2001.g23.view.PathsApp;
 import no.ntnu.idata2001.g23.view.misc.GlobalCss;
 
 /**
@@ -26,7 +26,7 @@ public class PlayGameScreen extends GenericScreen implements GameUpdateListener 
      *
      * @param application The application instance to give to the controller
      */
-    public PlayGameScreen(DungeonApp application) {
+    public PlayGameScreen(PathsApp application) {
         super();
         controller = new PlayGameController(application);
         GameplayManager.getInstance().addUpdateListener(this);
@@ -54,11 +54,6 @@ public class PlayGameScreen extends GenericScreen implements GameUpdateListener 
         Button startNewStory = new Button("Start New Story");
         startNewStory.setOnAction(ae -> controller.changeScreen(NewGameScreen.class));
         content.getChildren().add(startNewStory);
-
-        Button tutorial = new Button("Tutorial");
-        //TODO: Make this button work
-        tutorial.setDisable(true);
-        content.getChildren().add(tutorial);
 
         Button backButton = new Button("Back");
         backButton.setOnAction(ae -> controller.changeScreen(MainMenuScreen.class));

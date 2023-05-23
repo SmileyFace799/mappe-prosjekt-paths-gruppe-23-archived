@@ -1,6 +1,6 @@
-package no.ntnu.idata2001.g23.middleman.events;
+package no.ntnu.idata2001.g23.intermediary.events;
 
-import no.ntnu.idata2001.g23.middleman.GameUpdateListener;
+import no.ntnu.idata2001.g23.intermediary.GameUpdateListener;
 
 /**
  * A generic event that will be passed to {@link GameUpdateListener#onUpdate(GameUpdateEvent)} )}

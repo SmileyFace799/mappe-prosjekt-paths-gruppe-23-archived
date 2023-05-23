@@ -11,7 +11,7 @@ import no.ntnu.idata2001.g23.view.screens.MainMenuScreen;
 /**
  * The top-level application class.
  */
-public class DungeonApp extends Application {
+public class PathsApp extends Application {
     private Stage primaryStage;
 
     @Override
@@ -48,7 +48,7 @@ public class DungeonApp extends Application {
         GenericScreen screen =
                 ScreenManager.getInstance().getScreen(screenClass);
         screen.setDefaultState();
-        screen.sizeChangeListener();
+        screen.updateSize();
         primaryStage.setScene(screen);
         primaryStage.setFullScreen(fullscreen);
         primaryStage.setWidth(width);

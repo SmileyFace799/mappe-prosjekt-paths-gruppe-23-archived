@@ -6,7 +6,7 @@
 
     <groupId>no.ntnu.idata2001.g23</groupId>
     <artifactId>mappe-prosjekt-paths-gruppe-23</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <!-- Use properties for versions. Properties are like variables -->
     <properties>
@@ -35,6 +35,20 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Add a newer version of the Maven compiler to be compliant with modules -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -23,9 +23,9 @@ class GoalLoaderTest {
     void before() {
         itemProvider = new Provider<>();
         itemProvider.addProvidable("Test Item", () ->
-                new Item(500, "Test Item", "Test description"));
+                new Item("Test Item", "Test description"));
         itemProvider.addProvidable("Other Item", () ->
-                new Item(500, "Other Item", "Other description"));
+                new Item("Other Item", "Other description"));
         difficulty = "Test";
         goalLoader = new GoalLoader(itemProvider, difficulty);
     }
